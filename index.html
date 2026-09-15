@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SafarX - Commercial Transport & Logistics Super-App</title>
-    <!-- Google Official Sign-In SDK -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #0f172a; color: #f8fafc; height: 100vh; overflow-x: hidden; }
@@ -37,7 +35,6 @@
         .card h1 { font-size: 24px; color: #ffffff; margin-bottom: 5px; }
         .card p { color: #94a3b8; font-size: 13px; margin-bottom: 20px; }
 
-        /* Custom Styled Google Button Wrapper */
         .btn-google {
             width: 100%; background-color: #ffffff; color: #1e2124; border: none; padding: 14px;
             font-size: 15px; font-weight: 600; border-radius: 8px; cursor: pointer; display: flex;
@@ -59,6 +56,27 @@
         .btn-primary:hover { background-color: #2563eb; }
 
         .profile-avatar { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; margin: 0 auto 15px auto; border: 2px solid #3b82f6; display: none; }
+
+        /* PROFESSIONAL GOOGLE ACCOUNT CHOOSER MODAL */
+        #googleModal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75); display: none; justify-content: center; align-items: center; z-index: 10000;
+        }
+        .g-modal-box {
+            background: #ffffff; color: #1e293b; width: 100%; max-width: 400px; border-radius: 12px;
+            padding: 25px 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); text-align: left; position: relative;
+        }
+        .g-modal-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .g-modal-header h3 { font-size: 18px; font-weight: 600; color: #202124; }
+        .account-option {
+            display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px;
+            cursor: pointer; transition: background 0.2s; border: 1px solid #e2e8f0; margin-bottom: 10px;
+        }
+        .account-option:hover { background-color: #f1f5f9; border-color: #cbd5e1; }
+        .acc-avatar { width: 36px; height: 36px; border-radius: 50%; background: #3b82f6; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; }
+        .acc-info .acc-name { font-weight: 600; font-size: 14px; color: #1e293b; }
+        .acc-info .acc-mail { font-size: 12px; color: #64748b; }
+        .g-close { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 18px; cursor: pointer; color: #64748b; }
     </style>
 </head>
 <body>
@@ -77,8 +95,8 @@
             <h1>SafarX</h1>
             <p>Commercial Logistics & Transport Super-App</p>
             
-            <!-- Real Google Login Trigger -->
-            <button class="btn-google" onclick="triggerGoogleOneTap()">
+            <!-- Click karne par ab professional modal khulega -->
+            <button class="btn-google" onclick="openGoogleModal()">
                 <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.63-.06-1.25-.19-1.84H9v3.49h4.84c-.21 1.12-.84 2.07-1.78 2.71v2.25h2.87c1.68-1.55 2.75-3.83 2.75-6.61z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.87-2.25c-.81.54-1.84.86-3.09.86-2.37 0-4.38-1.6-5.1-3.76H.88v2.33C2.38 15.96 5.42 18 9 18z"/><path fill="#FBBC05" d="M3.9 10.67c-.19-.54-.3-1.12-.3-1.72s.11-1.18.3-1.72V4.9H.88C.32 6.01 0 7.27 0 8.62s.32 2.61.88 3.72l3.02-1.67z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0 5.42 0 2.38 2.04.88 4.9l3.02 2.33c.72-2.16 2.73-3.65 5.1-3.65z"/></svg>
                 Continue with Google
             </button>
@@ -94,6 +112,34 @@
                 <input type="password" id="loginPassword" class="input-box" placeholder="••••••••">
             </div>
             <button class="btn-primary" onclick="handleEmailAuth()">Continue with Email</button>
+        </div>
+    </div>
+
+    <!-- PROFESSIONAL GOOGLE ACCOUNT CHOOSER MODAL -->
+    <div id="googleModal">
+        <div class="g-modal-box">
+            <button class="g-close" onclick="closeGoogleModal()">✕</button>
+            <div class="g-modal-header">
+                <svg width="24" height="24" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.63-.06-1.25-.19-1.84H9v3.49h4.84c-.21 1.12-.84 2.07-1.78 2.71v2.25h2.87c1.68-1.55 2.75-3.83 2.75-6.61z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.87-2.25c-.81.54-1.84.86-3.09.86-2.37 0-4.38-1.6-5.1-3.76H.88v2.33C2.38 15.96 5.42 18 9 18z"/><path fill="#FBBC05" d="M3.9 10.67c-.19-.54-.3-1.12-.3-1.72s.11-1.18.3-1.72V4.9H.88C.32 6.01 0 7.27 0 8.62s.32 2.61.88 3.72l3.02-1.67z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0 5.42 0 2.38 2.04.88 4.9l3.02 2.33c.72-2.16 2.73-3.65 5.1-3.65z"/></svg>
+                <h3>Sign in with Google</h3>
+            </div>
+            <p style="font-size: 13px; color: #5f6368; margin-bottom: 15px;">Choose an account to continue to <b>SafarX</b></p>
+            
+            <div class="account-option" onclick="selectAccount('Sarfaraj Alam', 'alamsarfaraj@gmail.com')">
+                <div class="acc-avatar" style="background: #2563eb;">S</div>
+                <div class="acc-info">
+                    <div class="acc-name">Sarfaraj Alam</div>
+                    <div class="acc-mail">alamsarfaraj@gmail.com</div>
+                </div>
+            </div>
+
+            <div class="account-option" onclick="selectAccount('SafarX Operations', 'safarx.official@gmail.com')">
+                <div class="acc-avatar" style="background: #0284c7;">S</div>
+                <div class="acc-info">
+                    <div class="acc-name">SafarX Operations</div>
+                    <div class="acc-mail">safarx.official@gmail.com</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -157,62 +203,23 @@
                 splash.style.opacity = '0';
                 setTimeout(() => { splash.style.display = 'none'; }, 600);
             }, 2500);
-
-            // Initialize Google Identity Services
-            try {
-                google.accounts.id.initialize({
-                    client_id: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com", // Replace with your free Google OAuth Client ID later
-                    callback: handleGoogleResponse
-                });
-            } catch(e) {
-                console.log("Google SDK ready");
-            }
         });
 
-        // Trigger Real Google Account Chooser Popup
-        function triggerGoogleOneTap() {
-            try {
-                google.accounts.id.prompt((notification) => {
-                    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-                        // Fallback to standard Google sign-in flow or account selection dialog
-                        openSimulatedRealChooser();
-                    }
-                });
-            } catch(err) {
-                openSimulatedRealChooser();
-            }
+        function openGoogleModal() {
+            document.getElementById('googleModal').style.display = 'flex';
         }
 
-        // Professional Account Chooser Modal for Live Environment testing
-        function openSimulatedRealChooser() {
-            let selectedEmail = prompt("Select Google Account:\nEnter your Gmail address to sign in:", "safarx.official@gmail.com");
-            if (!selectedEmail) return;
+        function closeGoogleModal() {
+            document.getElementById('googleModal').style.display = 'none';
+        }
 
-            let name = selectedEmail.split('@')[0].toUpperCase();
-            document.getElementById('profileEmail').value = selectedEmail;
+        function selectAccount(name, email) {
+            document.getElementById('googleModal').style.display = 'none';
+            document.getElementById('profileEmail').value = email;
             document.getElementById('fullName').value = name;
             
             let avatar = document.getElementById('userAvatar');
             avatar.src = "https://www.w3schools.com/howto/img_avatar.png";
-            avatar.style.display = "block";
-
-            switchToProfileScreen();
-        }
-
-        function handleGoogleResponse(response) {
-            // Decodes official Google JWT Token
-            let base64Url = response.credential.split('.')[1];
-            let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            let jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-
-            let data = JSON.parse(jsonPayload);
-            document.getElementById('profileEmail').value = data.email;
-            document.getElementById('fullName').value = data.name;
-            
-            let avatar = document.getElementById('userAvatar');
-            avatar.src = data.picture;
             avatar.style.display = "block";
 
             switchToProfileScreen();
