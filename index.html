@@ -201,7 +201,7 @@
 
     <script>
         const SUPABASE_URL = "https://oczoyqkxryppdwomqbgx.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable__LpokGotsPR8vJWSm1DaeQ_xWa13..."; 
+        const SUPABASE_ANON_KEY = "sb_publishable__LpoKgOtsPR8vJWSm1DaeQ_xWa13Z_C"; // Real API Key inserted
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         window.addEventListener('load', () => {
@@ -336,7 +336,6 @@
             document.getElementById('profileScreen').style.display = 'flex';
         }
 
-        // Back to Login Functionality
         function backToLogin() {
             document.getElementById('profileScreen').style.display = 'none';
             document.getElementById('loginScreen').style.display = 'flex';
