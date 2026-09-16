@@ -148,12 +148,12 @@
 
             <div style="display: flex; gap: 10px;">
                 <div class="input-group" style="flex: 1;">
-                    <label>Permanent Mobile Number</label>
-                    <input type="tel" id="permMobile" class="input-box" placeholder="10-digit mobile" maxlength="10">
+                    <label>Permanent Mobile Number (10 digits)</label>
+                    <input type="tel" id="permMobile" class="input-box" placeholder="10-digit mobile" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                 </div>
                 <div class="input-group" style="flex: 1;">
                     <label>Alternative Mobile Number</label>
-                    <input type="tel" id="altMobile" class="input-box" placeholder="Optional" maxlength="10">
+                    <input type="tel" id="altMobile" class="input-box" placeholder="Optional" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                 </div>
             </div>
 
@@ -217,14 +217,14 @@
             let email = document.getElementById('loginEmail').value.trim();
             let pass = document.getElementById('loginPassword').value.trim();
 
-            // 1. Real Email Regex Check (prevents fake emails like hgfdghhgfhgg)
+            // 1. Real Email Regex Check
             let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
             if (!emailRegex.test(email)) {
                 alert("❌ Please enter a valid, real email address (e.g., name@gmail.com). Fake emails are not allowed!");
                 return;
             }
 
-            // 2. Strong Password Check (Min 8 chars, must contain letters AND numbers)
+            // 2. Strong Password Check (Min 8 chars, letters + numbers)
             let hasLetter = /[a-zA-Z]/.test(pass);
             let hasNumber = /[0-9]/.test(pass);
             if (pass.length < 8 || !hasLetter || !hasNumber) {
@@ -232,7 +232,6 @@
                 return;
             }
 
-            // Auto-fill profile email & auto-generate name from email prefix
             document.getElementById('profileEmail').value = email;
             let derivedName = email.split('@')[0];
             document.getElementById('fullName').value = derivedName.charAt(0).toUpperCase() + derivedName.slice(1);
@@ -286,7 +285,15 @@
                 alert("Please fill all required profile fields!");
                 return;
             }
-            alert("Profile setup complete! Welcome to SafarX Dashboard.");
+
+            // Strict Mobile Number Verification (Must be exactly 10 digits and start with 6,7,8,9)
+            let mobileRegex = /^[6-9]\d{9}$/;
+            if (!mobileRegex.test(mobile)) {
+                alert("❌ Please enter a valid 10-digit Indian mobile number (starting with 6, 7, 8, or 9). Fake or incomplete numbers are not allowed!");
+                return;
+            }
+
+            alert("🎉 Profile setup complete! Welcome to SafarX Dashboard.");
         }
     </script>
 </body>
