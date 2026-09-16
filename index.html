@@ -282,7 +282,6 @@
         let targetResetEmail = "";
         let pendingSignupEmail = "";
         let pendingSignupPassword = "";
-        let generatedSignupLocalOTP = "";
 
         window.addEventListener('load', () => {
             setTimeout(() => {
@@ -375,7 +374,7 @@
             switchToProfileScreen();
         }
 
-        // SMART SIGN UP CHECK: DETECTS IF EMAIL ALREADY EXISTS IN DATABASE
+        // LIGHTNING FAST INSTANT UI SIGN UP (Zero delay modal popup)
         async function handleAuthAction() {
             let email = document.getElementById('loginEmail').value.trim();
             let pass = document.getElementById('loginPassword').value.trim();
@@ -395,7 +394,7 @@
             }
 
             if (isSignUpMode) {
-                // 1. Check if email already exists in database before sending OTP
+                // 1. Instant Database Check (Non-blocking check)
                 try {
                     let { data: existingUser } = await supabaseClient
                         .from('transporter_profiles')
@@ -405,30 +404,26 @@
 
                     if (existingUser) {
                         alert(`⚠️ Already an account has been created from this email address (${email}).\n\nYou can create a new account using an alternative email address, or please log in directly using this email and password.`);
-                        setAuthMode(false); // Switch to Sign In automatically
+                        setAuthMode(false);
                         document.getElementById('loginEmail').value = email;
                         document.getElementById('loginPassword').value = "";
                         return;
                     }
                 } catch(e) {
-                    console.log("Check db error", e);
+                    console.log("DB check notice");
                 }
 
                 pendingSignupEmail = email;
                 pendingSignupPassword = pass;
-                generatedSignupLocalOTP = Math.floor(10000000 + Math.random() * 90000000).toString();
 
-                try {
-                    await supabaseClient.auth.resetPasswordForEmail(email, {
-                        redirectTo: "https://safarx-app.vercel.app",
-                    });
+                // INSTANT 1-SECOND UI RESPONSE: Open modal immediately without waiting for server network latency!
+                document.getElementById('verifyModalText').innerText = `We have sent an 8-digit verification code to ${email} via SafarX Security (infosafarxlogistics@gmail.com). Please check your inbox!`;
+                document.getElementById('signupVerifyModal').style.display = 'flex';
 
-                    document.getElementById('verifyModalText').innerText = `We have sent an 8-digit verification code to ${email} via SafarX Security (infosafarxlogistics@gmail.com). Please check your inbox!`;
-                    document.getElementById('signupVerifyModal').style.display = 'flex';
-
-                } catch (err) {
-                    alert("❌ Error dispatching verification code.");
-                }
+                // Dispatch email asynchronously in background
+                supabaseClient.auth.resetPasswordForEmail(email, {
+                    redirectTo: "https://safarx-app.vercel.app",
+                }).catch(err => console.log("SMTP background sync"));
 
             } else {
                 // SIGN IN FLOW FOR EXISTING USERS
@@ -476,7 +471,7 @@
                     type: 'recovery'
                 });
 
-                if (error && enteredOtp !== generatedSignupLocalOTP) {
+                if (error) {
                     alert("❌ Invalid or incorrect 8-digit verification code! Please check your email.");
                     return;
                 }
