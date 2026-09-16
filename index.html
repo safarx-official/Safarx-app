@@ -374,7 +374,7 @@
             switchToProfileScreen();
         }
 
-        // LIGHTNING FAST INSTANT UI SIGN UP (Zero delay modal popup)
+        // STRICT EXISTING USER CHECK DURING SIGN UP
         async function handleAuthAction() {
             let email = document.getElementById('loginEmail').value.trim();
             let pass = document.getElementById('loginPassword').value.trim();
@@ -394,7 +394,7 @@
             }
 
             if (isSignUpMode) {
-                // 1. Instant Database Check (Non-blocking check)
+                // 1. STRICT CHECK: Database mein email pehle se hai ya nahi?
                 try {
                     let { data: existingUser } = await supabaseClient
                         .from('transporter_profiles')
@@ -403,20 +403,20 @@
                         .maybeSingle();
 
                     if (existingUser) {
-                        alert(`⚠️ Already an account has been created from this email address (${email}).\n\nYou can create a new account using an alternative email address, or please log in directly using this email and password.`);
-                        setAuthMode(false);
+                        alert(`⚠️ Already an account has been created from this email address (${email}).\n\nYou can log in with your email ID and password, or you can create a new account from an alternative email address.`);
+                        setAuthMode(false); // Switch to Sign In screen automatically
                         document.getElementById('loginEmail').value = email;
                         document.getElementById('loginPassword').value = "";
-                        return;
+                        return; // HALT EXECUTION: Do not open OTP modal, do not send code!
                     }
                 } catch(e) {
-                    console.log("DB check notice");
+                    console.log("DB check notice", e);
                 }
 
                 pendingSignupEmail = email;
                 pendingSignupPassword = pass;
 
-                // INSTANT 1-SECOND UI RESPONSE: Open modal immediately without waiting for server network latency!
+                // INSTANT 1-SECOND UI RESPONSE FOR NEW USERS
                 document.getElementById('verifyModalText').innerText = `We have sent an 8-digit verification code to ${email} via SafarX Security (infosafarxlogistics@gmail.com). Please check your inbox!`;
                 document.getElementById('signupVerifyModal').style.display = 'flex';
 
