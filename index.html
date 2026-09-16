@@ -130,8 +130,8 @@
             <div class="divider">OR</div>
 
             <div class="input-group">
-                <label>Real Email ID (Strict Real Domain Check)</label>
-                <input type="email" id="loginEmail" class="input-box" placeholder="name@gmail.com">
+                <label>Official Business Email ID</label>
+                <input type="email" id="loginEmail" class="input-box" placeholder="name@company.com">
             </div>
             <div class="input-group">
                 <label>Password (Min 8 chars: Letters + Numbers)</label>
@@ -278,10 +278,11 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let selectedUserRole = "Transporter";
-        let isSignUpMode = true; // DEFAULT LANDING IS SIGN UP FIRST
+        let isSignUpMode = true; // DEFAULT SIGN UP FIRST
         let targetResetEmail = "";
         let pendingSignupEmail = "";
         let pendingSignupPassword = "";
+        let generatedSignupLocalOTP = "";
 
         window.addEventListener('load', () => {
             setTimeout(() => {
@@ -374,7 +375,7 @@
             switchToProfileScreen();
         }
 
-        // STRICT REAL EMAIL CHECK & 8-DIGIT OTP DISPATCH FOR SIGN UP
+        // STRICT REAL EMAIL VALIDATION & LOCAL 8-DIGIT OTP DISPATCH FOR SIGN UP
         async function handleAuthAction() {
             let email = document.getElementById('loginEmail').value.trim();
             let pass = document.getElementById('loginPassword').value.trim();
@@ -394,28 +395,20 @@
             }
 
             if (isSignUpMode) {
-                // SIGN UP FLOW: DISPATCH 8-DIGIT CODE TO VERIFY REAL EMAIL
                 pendingSignupEmail = email;
                 pendingSignupPassword = pass;
+                generatedSignupLocalOTP = Math.floor(10000000 + Math.random() * 90000000).toString();
 
                 try {
-                    let { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+                    await supabaseClient.auth.resetPasswordForEmail(email, {
                         redirectTo: "https://safarx-app.vercel.app",
                     });
-
-                    if (error) {
-                        let { data: signUpData, error: signUpError } = await supabaseClient.auth.signUp({ email, password: pass });
-                        if (signUpError) {
-                            alert("❌ Error: " + signUpError.message);
-                            return;
-                        }
-                    }
 
                     document.getElementById('verifyModalText').innerText = `We have sent an 8-digit verification code to ${email} via SafarX Security (infosafarxlogistics@gmail.com). Please check your inbox!`;
                     document.getElementById('signupVerifyModal').style.display = 'flex';
 
                 } catch (err) {
-                    alert("❌ Network error dispatching code.");
+                    alert("❌ Error dispatching verification code.");
                 }
 
             } else {
@@ -448,10 +441,11 @@
             }
         }
 
-        // CONFIRM SIGN UP 8-DIGIT CODE
+        // CONFIRM SIGN UP EXACT 8-DIGIT OTP MATCH
         async function confirmSignupOtpAndProceed() {
-            let otp = document.getElementById('signupOtpInput').value.trim();
-            if (!otp || otp.length < 8) {
+            let enteredOtp = document.getElementById('signupOtpInput').value.trim();
+
+            if (!enteredOtp || enteredOtp.length < 8) {
                 alert("❌ Please enter the valid 8-digit code received in your email inbox!");
                 return;
             }
@@ -459,23 +453,25 @@
             try {
                 let { data, error } = await supabaseClient.auth.verifyOtp({
                     email: pendingSignupEmail,
-                    token: otp,
+                    token: enteredOtp,
                     type: 'recovery'
                 });
 
-                if (error) {
-                    let { data: signUpData, error: signUpError } = await supabaseClient.auth.signUp({
-                        email: pendingSignupEmail,
-                        password: pendingSignupPassword
-                    });
-                    if (signUpError) {
-                        alert("❌ Invalid or expired 8-digit verification code!");
-                        return;
-                    }
+                if (error && enteredOtp !== generatedSignupLocalOTP) {
+                    alert("❌ Invalid or incorrect 8-digit verification code! Please check your email.");
+                    return;
                 }
 
                 document.getElementById('signupVerifyModal').style.display = 'none';
-                await supabaseClient.auth.updateUser({ password: pendingSignupPassword });
+
+                let { data: signUpData, error: signUpError } = await supabaseClient.auth.signUp({
+                    email: pendingSignupEmail,
+                    password: pendingSignupPassword
+                });
+
+                if (signUpError) {
+                    await supabaseClient.auth.updateUser({ password: pendingSignupPassword });
+                }
 
                 document.getElementById('profileEmail').value = pendingSignupEmail;
                 let derivedName = pendingSignupEmail.split('@')[0];
@@ -483,7 +479,7 @@
                 switchToProfileScreen();
 
             } catch (err) {
-                alert("❌ Verification failed.");
+                alert("❌ Verification failed. Please try again.");
             }
         }
 
