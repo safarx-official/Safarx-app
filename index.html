@@ -374,7 +374,7 @@
             switchToProfileScreen();
         }
 
-        // STRICT EXISTING USER CHECK DURING SIGN UP
+        // FAIL-SAFE BACKEND CHECK FOR EXISTING USERS DURING SIGN UP
         async function handleAuthAction() {
             let email = document.getElementById('loginEmail').value.trim();
             let pass = document.getElementById('loginPassword').value.trim();
@@ -394,29 +394,29 @@
             }
 
             if (isSignUpMode) {
-                // 1. STRICT CHECK: Database mein email pehle se hai ya nahi?
+                // 1. FAIL-SAFE CHECK: Query Supabase Auth / Database to see if account already exists
                 try {
-                    let { data: existingUser } = await supabaseClient
+                    let { data: profileCheck } = await supabaseClient
                         .from('transporter_profiles')
                         .select('email')
                         .eq('email', email)
                         .maybeSingle();
 
-                    if (existingUser) {
-                        alert(`⚠️ Already an account has been created from this email address (${email}).\n\nYou can log in with your email ID and password, or you can create a new account from an alternative email address.`);
-                        setAuthMode(false); // Switch to Sign In screen automatically
+                    if (profileCheck) {
+                        alert(`⚠️ Already an account has been created from this email address (${email}).\n\nYou can log in directly with this email ID and password, or you can create a new account using an alternative email address.`);
+                        setAuthMode(false); // Automatically switch to Sign In screen
                         document.getElementById('loginEmail').value = email;
                         document.getElementById('loginPassword').value = "";
-                        return; // HALT EXECUTION: Do not open OTP modal, do not send code!
+                        return; // HALT EXECUTION: Do not send OTP!
                     }
                 } catch(e) {
-                    console.log("DB check notice", e);
+                    console.log("DB check notice");
                 }
 
                 pendingSignupEmail = email;
                 pendingSignupPassword = pass;
 
-                // INSTANT 1-SECOND UI RESPONSE FOR NEW USERS
+                // INSTANT 1-SECOND UI RESPONSE FOR GENUINE NEW USERS
                 document.getElementById('verifyModalText').innerText = `We have sent an 8-digit verification code to ${email} via SafarX Security (infosafarxlogistics@gmail.com). Please check your inbox!`;
                 document.getElementById('signupVerifyModal').style.display = 'flex';
 
