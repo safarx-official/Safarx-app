@@ -126,7 +126,6 @@
             <h2 style="color: #fff; font-size: 20px; margin-bottom: 5px;">SafarX Security - Password Reset</h2>
             <p style="color: #94a3b8; font-size: 12px; margin-bottom: 15px;" id="forgotStepText">Enter your registered email address to receive a 6-digit OTP from SafarX.</p>
             
-            <!-- Step 1: Email Input -->
             <div id="forgotStep1">
                 <div class="input-group">
                     <label>Registered Email</label>
@@ -135,7 +134,6 @@
                 <button class="btn-primary" onclick="sendSafarXOTP()">Send 6-Digit OTP</button>
             </div>
 
-            <!-- Step 2: OTP Verification & New Password Setup -->
             <div id="forgotStep2" style="display: none;">
                 <div class="input-group">
                     <label>Enter 6-Digit OTP Code</label>
@@ -215,7 +213,7 @@
         </div>
     </div>
 
-    <!-- 4. MAIN DASHBOARD / APP SCREEN (After Login/Profile) -->
+    <!-- 4. MAIN DASHBOARD / APP SCREEN -->
     <div id="dashboardScreen" class="screen-box">
         <div class="card" style="max-width: 600px;">
             <h1 style="color: #3b82f6; margin-bottom: 10px;">Welcome to SafarX</h1>
@@ -238,9 +236,11 @@
         window.addEventListener('load', () => {
             setTimeout(() => {
                 let splash = document.getElementById('splashScreen');
-                splash.style.opacity = '0';
-                setTimeout(() => { splash.style.display = 'none'; }, 600);
-            }, 2500);
+                if (splash) {
+                    splash.style.opacity = '0';
+                    setTimeout(() => { splash.style.display = 'none'; }, 600);
+                }
+            }, 2000);
 
             try {
                 google.accounts.id.initialize({
@@ -338,7 +338,6 @@
             document.getElementById('forgotModal').style.display = 'none';
         }
 
-        // STEP 1: SEND 6-DIGIT OTP VIA COMPANY MAIL (infosafarxlogistics@gmail.com)
         async function sendSafarXOTP() {
             let email = document.getElementById('resetEmail').value.trim();
             let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -357,14 +356,13 @@
             if (error) {
                 alert("❌ Error sending OTP: " + error.message);
             } else {
-                alert(`✅ 6-digit verification OTP has been dispatched to ${email} via SafarX (${infosafarxlogistics@gmail.com}). Please check your inbox!`);
+                alert(`✅ 6-digit verification OTP has been dispatched to ${email} via SafarX Logistics. Please check your inbox!`);
                 document.getElementById('forgotStep1').style.display = 'none';
                 document.getElementById('forgotStep2').style.display = 'block';
                 document.getElementById('forgotStepText').innerText = `OTP sent successfully to ${email}. Enter the 6-digit code below to set your new password.`;
             }
         }
 
-        // STEP 2: VERIFY OTP AND SET NEW & CONFIRM PASSWORD
         async function verifyOtpAndResetPassword() {
             let otp = document.getElementById('enteredOtp').value.trim();
             let newPass = document.getElementById('newPasswordInput').value.trim();
