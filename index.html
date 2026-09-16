@@ -69,7 +69,6 @@
         .forgot-link { display: block; text-align: right; font-size: 12px; color: #3b82f6; margin-top: -6px; margin-bottom: 15px; cursor: pointer; text-decoration: none; }
         .forgot-link:hover { text-decoration: underline; }
 
-        /* BACK NAVIGATION BUTTON */
         .back-btn {
             position: absolute; top: 20px; left: 20px; background: none; border: none;
             color: #94a3b8; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 5px;
@@ -77,7 +76,6 @@
         }
         .back-btn:hover { color: #ffffff; }
 
-        /* PROFILE AVATAR & UPLOADER */
         .profile-container { position: relative; width: 80px; height: 80px; margin: 0 auto 15px auto; }
         .profile-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #3b82f6; background: #0f172a; }
         .upload-badge {
@@ -86,7 +84,6 @@
             justify-content: center; font-size: 14px; cursor: pointer; border: 2px solid #1e293b;
         }
 
-        /* MODAL */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 10000; padding: 20px; }
         .modal-card { background: #1e293b; padding: 30px; border-radius: 16px; border: 1px solid #334155; width: 100%; max-width: 400px; text-align: left; }
     </style>
@@ -374,7 +371,7 @@
             switchToProfileScreen();
         }
 
-        // FAIL-SAFE BACKEND CHECK FOR EXISTING USERS DURING SIGN UP
+        // FAIL-SAFE EXISTING USER DETECTION & LIGHTNING FAST SIGN UP
         async function handleAuthAction() {
             let email = document.getElementById('loginEmail').value.trim();
             let pass = document.getElementById('loginPassword').value.trim();
@@ -394,20 +391,20 @@
             }
 
             if (isSignUpMode) {
-                // 1. FAIL-SAFE CHECK: Query Supabase Auth / Database to see if account already exists
+                // 1. Check if user already exists in database before triggering anything
                 try {
-                    let { data: profileCheck } = await supabaseClient
+                    let { data: existingCheck } = await supabaseClient
                         .from('transporter_profiles')
                         .select('email')
                         .eq('email', email)
                         .maybeSingle();
 
-                    if (profileCheck) {
+                    if (existingCheck) {
                         alert(`⚠️ Already an account has been created from this email address (${email}).\n\nYou can log in directly with this email ID and password, or you can create a new account using an alternative email address.`);
                         setAuthMode(false); // Automatically switch to Sign In screen
                         document.getElementById('loginEmail').value = email;
                         document.getElementById('loginPassword').value = "";
-                        return; // HALT EXECUTION: Do not send OTP!
+                        return; // HALT: Code bilkul nahi jayega!
                     }
                 } catch(e) {
                     console.log("DB check notice");
@@ -416,11 +413,11 @@
                 pendingSignupEmail = email;
                 pendingSignupPassword = pass;
 
-                // INSTANT 1-SECOND UI RESPONSE FOR GENUINE NEW USERS
+                // INSTANT 1-SECOND UI RESPONSE FOR NEW USERS
                 document.getElementById('verifyModalText').innerText = `We have sent an 8-digit verification code to ${email} via SafarX Security (infosafarxlogistics@gmail.com). Please check your inbox!`;
                 document.getElementById('signupVerifyModal').style.display = 'flex';
 
-                // Dispatch email asynchronously in background
+                // Dispatch verification code via Supabase background sync
                 supabaseClient.auth.resetPasswordForEmail(email, {
                     redirectTo: "https://safarx-app.vercel.app",
                 }).catch(err => console.log("SMTP background sync"));
