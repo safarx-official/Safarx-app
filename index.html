@@ -79,7 +79,7 @@
             justify-content: center; font-size: 14px; cursor: pointer; border: 2px solid #1e293b;
         }
 
-        /* MODAL FOR FORGOT PASSWORD */
+        /* MODAL FOR FORGOT PASSWORD & OTP */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 10000; padding: 20px; }
         .modal-card { background: #1e293b; padding: 30px; border-radius: 16px; border: 1px solid #334155; width: 100%; max-width: 400px; text-align: left; }
     </style>
@@ -108,8 +108,8 @@
             <div class="divider">OR</div>
 
             <div class="input-group">
-                <label>Email Address</label>
-                <input type="email" id="loginEmail" class="input-box" placeholder="name@example.com">
+                <label>Username / Email ID</label>
+                <input type="email" id="loginEmail" class="input-box" placeholder="Enter your email or username">
             </div>
             <div class="input-group">
                 <label>Password (Min 8 chars: Letters + Numbers)</label>
@@ -120,18 +120,36 @@
         </div>
     </div>
 
-    <!-- SAFARX FORGOT PASSWORD MODAL -->
+    <!-- SAFARX FORGOT PASSWORD & OTP MODAL -->
     <div id="forgotModal" class="modal-overlay">
         <div class="modal-card">
-            <h2 style="color: #fff; font-size: 20px; margin-bottom: 5px;">SafarX Security - Reset Password</h2>
-            <p style="color: #94a3b8; font-size: 12px; margin-bottom: 15px;" id="forgotStepText">Enter your registered email address to receive password reset instructions.</p>
+            <h2 style="color: #fff; font-size: 20px; margin-bottom: 5px;">SafarX Security - Password Reset</h2>
+            <p style="color: #94a3b8; font-size: 12px; margin-bottom: 15px;" id="forgotStepText">Enter your registered email address to receive a 6-digit OTP from SafarX.</p>
             
+            <!-- Step 1: Email Input -->
             <div id="forgotStep1">
                 <div class="input-group">
                     <label>Registered Email</label>
                     <input type="email" id="resetEmail" class="input-box" placeholder="name@example.com">
                 </div>
-                <button class="btn-primary" onclick="sendSafarXPasswordReset()">Send Reset Email</button>
+                <button class="btn-primary" onclick="sendSafarXOTP()">Send 6-Digit OTP</button>
+            </div>
+
+            <!-- Step 2: OTP Verification & New Password Setup -->
+            <div id="forgotStep2" style="display: none;">
+                <div class="input-group">
+                    <label>Enter 6-Digit OTP Code</label>
+                    <input type="text" id="enteredOtp" class="input-box" placeholder="Enter 6-digit code" maxlength="6">
+                </div>
+                <div class="input-group">
+                    <label>New Password (Min 8 chars: Letters + Numbers)</label>
+                    <input type="password" id="newPasswordInput" class="input-box" placeholder="New Password">
+                </div>
+                <div class="input-group">
+                    <label>Confirm New Password</label>
+                    <input type="password" id="confirmPasswordInput" class="input-box" placeholder="Confirm Password">
+                </div>
+                <button class="btn-primary" onclick="verifyOtpAndResetPassword()">Verify OTP & Reset Password</button>
             </div>
 
             <button style="background: none; border: none; color: #94a3b8; font-size: 12px; margin-top: 15px; cursor: pointer; width: 100%; text-align: center;" onclick="closeForgotModal()">Cancel</button>
@@ -193,13 +211,29 @@
                 </div>
             </div>
 
-            <button class="btn-primary" onclick="submitProfileSetup()">Confirm & Go to Dashboard</button>
+            <button class="btn-primary" onclick="submitProfileSetup()">Confirm & Enter App</button>
+        </div>
+    </div>
+
+    <!-- 4. MAIN DASHBOARD / APP SCREEN (After Login/Profile) -->
+    <div id="dashboardScreen" class="screen-box">
+        <div class="card" style="max-width: 600px;">
+            <h1 style="color: #3b82f6; margin-bottom: 10px;">Welcome to SafarX</h1>
+            <p style="color: #f8fafc; font-size: 15px; margin-bottom: 20px;">Commercial Logistics & Transport Dashboard</p>
+            <div style="background: #0f172a; padding: 20px; border-radius: 12px; border: 1px solid #334155; text-align: left; margin-bottom: 20px;">
+                <p style="color: #94a3b8; font-size: 14px; margin-bottom: 8px;">👤 Transporter: <span id="dashName" style="color: #fff; font-weight: 600;">-</span></p>
+                <p style="color: #94a3b8; font-size: 14px; margin-bottom: 8px;">📧 Email: <span id="dashEmail" style="color: #fff; font-weight: 600;">-</span></p>
+                <p style="color: #94a3b8; font-size: 14px;">📍 Region: <span id="dashLocation" style="color: #fff; font-weight: 600;">-</span></p>
+            </div>
+            <button class="btn-primary" style="background-color: #ef4444;" onclick="logoutApp()">Log Out</button>
         </div>
     </div>
  <script>
         const SUPABASE_URL = "https://oczoyqkxryppdwomqbgx.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable__LpoKgOtsPR8vJWSm1DaeQ_xWa13Z_C"; 
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let targetResetEmail = "";
 
         window.addEventListener('load', () => {
             setTimeout(() => {
@@ -254,7 +288,7 @@
 
             let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
             if (!emailRegex.test(email)) {
-                alert("❌ Please enter a valid, real email address.");
+                alert("❌ Please enter a valid email address.");
                 return;
             }
 
@@ -294,6 +328,9 @@
 
         function openForgotModal() {
             document.getElementById('forgotModal').style.display = 'flex';
+            document.getElementById('forgotStep1').style.display = 'block';
+            document.getElementById('forgotStep2').style.display = 'none';
+            document.getElementById('forgotStepText').innerText = "Enter your registered email address to receive a 6-digit OTP from SafarX.";
             document.getElementById('resetEmail').value = "";
         }
 
@@ -301,8 +338,8 @@
             document.getElementById('forgotModal').style.display = 'none';
         }
 
-        // PROFESSIONAL SAFARX PASSWORD RESET DISPATCH
-        async function sendSafarXPasswordReset() {
+        // STEP 1: SEND 6-DIGIT OTP VIA COMPANY MAIL (infosafarxlogistics@gmail.com)
+        async function sendSafarXOTP() {
             let email = document.getElementById('resetEmail').value.trim();
             let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
             if (!emailRegex.test(email)) {
@@ -310,15 +347,72 @@
                 return;
             }
 
-            let { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-                redirectTo: "https://safarx-app.vercel.app",
+            targetResetEmail = email;
+
+            let { data, error } = await supabaseClient.auth.signInWithOtp({
+                email: email,
+                options: { shouldCreateUser: false }
             });
 
             if (error) {
-                alert("❌ Error: " + error.message);
+                alert("❌ Error sending OTP: " + error.message);
             } else {
-                alert(`✅ Password reset instructions have been sent to ${email}. Please check your inbox!`);
-                closeForgotModal();
+                alert(`✅ 6-digit verification OTP has been dispatched to ${email} via SafarX (${infosafarxlogistics@gmail.com}). Please check your inbox!`);
+                document.getElementById('forgotStep1').style.display = 'none';
+                document.getElementById('forgotStep2').style.display = 'block';
+                document.getElementById('forgotStepText').innerText = `OTP sent successfully to ${email}. Enter the 6-digit code below to set your new password.`;
+            }
+        }
+
+        // STEP 2: VERIFY OTP AND SET NEW & CONFIRM PASSWORD
+        async function verifyOtpAndResetPassword() {
+            let otp = document.getElementById('enteredOtp').value.trim();
+            let newPass = document.getElementById('newPasswordInput').value.trim();
+            let confirmPass = document.getElementById('confirmPasswordInput').value.trim();
+
+            if (!otp || otp.length < 6) {
+                alert("❌ Please enter the valid 6-digit OTP received in your email!");
+                return;
+            }
+
+            let hasLetter = /[a-zA-Z]/.test(newPass);
+            let hasNumber = /[0-9]/.test(newPass);
+            if (newPass.length < 8 || !hasLetter || !hasNumber) {
+                alert("❌ New password must be at least 8 characters long and contain both letters and numbers!");
+                return;
+            }
+
+            if (newPass !== confirmPass) {
+                alert("❌ New password and Confirm password do not match!");
+                return;
+            }
+
+            try {
+                let { data: verifyData, error: verifyError } = await supabaseClient.auth.verifyOtp({
+                    email: targetResetEmail,
+                    token: otp,
+                    type: 'email'
+                });
+
+                if (verifyError) {
+                    alert("❌ Invalid or Expired OTP: " + verifyError.message);
+                    return;
+                }
+
+                let { error: updateError } = await supabaseClient.auth.updateUser({
+                    password: newPass
+                });
+
+                if (updateError) {
+                    alert("❌ Error updating password: " + updateError.message);
+                } else {
+                    alert("🎉 Password successfully reset under SafarX! You can now log in with your new password.");
+                    closeForgotModal();
+                    document.getElementById('loginEmail').value = targetResetEmail;
+                    document.getElementById('loginPassword').value = "";
+                }
+            } catch (err) {
+                alert("❌ Error processing verification.");
             }
         }
 
@@ -367,6 +461,8 @@
             let pincode = document.getElementById('pincodeInput').value.trim();
             let address = document.getElementById('permAddress').value.trim();
             let mobile = document.getElementById('permMobile').value.trim();
+            let district = document.getElementById('districtInput').value.trim();
+            let state = document.getElementById('stateInput').value.trim();
 
             if(!name || !pincode || !address || !mobile) {
                 alert("Please fill all required profile fields!");
@@ -392,7 +488,21 @@
                 console.log("Database sync notice");
             }
 
-            alert("🎉 Profile securely saved to Supabase Database! Welcome to SafarX Commercial Dashboard.");
+            document.getElementById('dashName').innerText = name;
+            document.getElementById('dashEmail').innerText = document.getElementById('profileEmail').value;
+            document.getElementById('dashLocation').innerText = `${district}, ${state} (${pincode})`;
+
+            alert("Welcome to SafarX!");
+            
+            document.getElementById('profileScreen').style.display = 'none';
+            document.getElementById('dashboardScreen').style.display = 'flex';
+        }
+
+        function logoutApp() {
+            document.getElementById('dashboardScreen').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('loginEmail').value = "";
+            document.getElementById('loginPassword').value = "";
         }
     </script>
 </body>
