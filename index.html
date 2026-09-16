@@ -86,7 +86,7 @@
             justify-content: center; font-size: 14px; cursor: pointer; border: 2px solid #1e293b;
         }
 
-        /* MODAL FOR OTP VERIFICATION & PASSWORD RESET */
+        /* MODAL */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 10000; padding: 20px; }
         .modal-card { background: #1e293b; padding: 30px; border-radius: 16px; border: 1px solid #334155; width: 100%; max-width: 400px; text-align: left; }
     </style>
@@ -115,7 +115,7 @@
         </div>
     </div>
 
-    <!-- 2. AUTH SCREEN (Default Sign Up First) -->
+    <!-- 2. AUTH SCREEN (Default Sign Up First with Real Email Validation) -->
     <div id="authScreen" class="screen-box">
         <div class="card">
             <button class="back-btn" onclick="backToRoleScreen()">← Back</button>
@@ -130,34 +130,19 @@
             <div class="divider">OR</div>
 
             <div class="input-group">
-                <label>Real Email ID (Verification Required)</label>
-                <input type="email" id="loginEmail" class="input-box" placeholder="name@example.com">
+                <label>Real Email ID (Strict Real Domain Check)</label>
+                <input type="email" id="loginEmail" class="input-box" placeholder="name@gmail.com">
             </div>
             <div class="input-group">
                 <label>Password (Min 8 chars: Letters + Numbers)</label>
                 <input type="password" id="loginPassword" class="input-box" placeholder="••••••••">
             </div>
             <a id="forgotPassLink" class="forgot-link" onclick="openForgotModal()" style="display: none;">Forgot Password?</a>
-            <button id="authBtnPrimary" class="btn-primary" onclick="handleAuthAction()">Proceed to Email Verification</button>
+            <button id="authBtnPrimary" class="btn-primary" onclick="handleAuthAction()">Sign Up</button>
 
             <div class="auth-switch" id="authSwitchText" onclick="toggleAuthMode()">
                 Already have an account? <span>Sign In</span>
             </div>
-        </div>
-    </div>
-
-    <!-- SIGN UP EMAIL VERIFICATION MODAL (BLOCKS FAKE EMAILS) -->
-    <div id="signupVerifyModal" class="modal-overlay">
-        <div class="modal-card">
-            <h2 style="color: #fff; font-size: 20px; margin-bottom: 5px;">SafarX Email Verification</h2>
-            <p style="color: #94a3b8; font-size: 12px; margin-bottom: 15px;" id="verifyModalText">We have sent a verification code to your email. Please enter it below to confirm your real email.</p>
-            
-            <div class="input-group">
-                <label>Enter 6-Digit Verification Code</label>
-                <input type="text" id="signupOtpInput" class="input-box" placeholder="Enter 6-digit code" maxlength="6">
-            </div>
-            <button class="btn-primary" onclick="confirmSignupOtpAndProceed()">Verify & Complete Profile</button>
-            <button style="background: none; border: none; color: #94a3b8; font-size: 12px; margin-top: 15px; cursor: pointer; width: 100%; text-align: center;" onclick="document.getElementById('signupVerifyModal').style.display='none'">Cancel</button>
         </div>
     </div>
 
@@ -280,8 +265,6 @@
         let selectedUserRole = "Transporter";
         let isSignUpMode = true; // DEFAULT LANDING IS SIGN UP FIRST!
         let targetResetEmail = "";
-        let pendingSignupEmail = "";
-        let pendingSignupPassword = "";
 
         window.addEventListener('load', () => {
             setTimeout(() => {
@@ -328,12 +311,12 @@
             if (isSignUpMode) {
                 title.innerText = `SafarX Sign Up (${selectedUserRole})`;
                 sub.innerText = `Create your new commercial ${selectedUserRole} account`;
-                btn.innerText = "Proceed to Email Verification";
+                btn.innerText = "Sign Up";
                 switchText.innerHTML = `Already have an account? <span>Sign In</span>`;
                 forgotLink.style.display = "none";
             } else {
-                title.innerText = `SafarX Sign In (${selectedUserRole})`;
-                sub.innerText = `Access your existing ${selectedUserRole} account`;
+                title.innerText = `SafarX Sign Up First`;
+                sub.innerText = `If you have an account, Sign In below`;
                 btn.innerText = "Sign In";
                 switchText.innerHTML = `Don't have an account? <span>Sign Up</span>`;
                 forgotLink.style.display = "block";
@@ -374,14 +357,16 @@
             switchToProfileScreen();
         }
 
-        // AUTH ACTION: BLOCKS FAKE EMAILS VIA OTP & HANDLES SIGN IN
+        // STRICT REAL EMAIL VALIDATION (BLOCKS FAKE EMAILS & INVALID DOMAINS)
         async function handleAuthAction() {
             let email = document.getElementById('loginEmail').value.trim();
             let pass = document.getElementById('loginPassword').value.trim();
 
-            let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            if (!emailRegex.test(email)) {
-                alert("❌ Please enter a valid real email address.");
+            // Strict Regex for Real Email Domains (Blocks test@abc, fake@xyz, random strings, etc.)
+            let realEmailRegex = /^[a-zA-Z0-9._%+-]+@(gmail|yahoo|outlook|hotmail|icloud|proton|rediffmail|zoho|gov|edu|[a-zA-Z0-9-]+\.[a-zA-Z]{2,})$/;
+            
+            if (!realEmailRegex.test(email) || email.endsWith('.test') || email.endsWith('.fake') || email.includes('..')) {
+                alert("❌ Please fill up a real e-mail address!");
                 return;
             }
 
@@ -393,29 +378,26 @@
             }
 
             if (isSignUpMode) {
-                // SIGN UP: DISPATCH REAL OTP TO VERIFY IF EMAIL IS REAL (BLOCKS FAKE EMAILS)
-                pendingSignupEmail = email;
-                pendingSignupPassword = pass;
-
+                // SIGN UP FLOW
                 try {
-                    let { data, error } = await supabaseClient.auth.signInWithOtp({
+                    let { data, error } = await supabaseClient.auth.signUp({
                         email: email,
-                        options: { shouldCreateUser: true }
+                        password: pass,
                     });
 
                     if (error) {
-                        alert("❌ Error sending verification code: " + error.message);
+                        alert("❌ Sign Up Error: " + error.message);
                         return;
                     }
 
-                    // Open Verification Modal so user must enter real code to proceed
-                    document.getElementById('verifyModalText').innerText = `We have sent a 6-digit verification code to ${email} via SafarX Security. Enter it below to verify your real email address.`;
-                    document.getElementById('signupVerifyModal').style.display = 'flex';
+                    document.getElementById('profileEmail').value = email;
+                    let derivedName = email.split('@')[0];
+                    document.getElementById('fullName').value = derivedName.charAt(0).toUpperCase() + derivedName.slice(1);
+                    switchToProfileScreen();
 
                 } catch (err) {
-                    alert("❌ Network error connecting to mail server.");
+                    alert("❌ Network error during sign up.");
                 }
-
             } else {
                 // SIGN IN FLOW FOR EXISTING USERS
                 try {
@@ -425,8 +407,8 @@
                     });
 
                     if (error) {
-                        alert("⚠️ Account not found or incorrect password. If you are a new user, please switch to Sign Up!");
-                        setAuthMode(true); // Automatically switch to Sign Up
+                        alert("⚠️ Account not found or incorrect password. Please Sign Up first!");
+                        setAuthMode(true); // Switch back to Sign Up
                         return;
                     }
 
@@ -443,42 +425,6 @@
                 } catch (err) {
                     alert("❌ Login connection error.");
                 }
-            }
-        }
-
-        // CONFIRM SIGN UP OTP & CREATE ACCOUNT
-        async function confirmSignupOtpAndProceed() {
-            let otp = document.getElementById('signupOtpInput').value.trim();
-            if (!otp || otp.length < 6) {
-                alert("❌ Please enter the valid 6-digit verification code!");
-                return;
-            }
-
-            try {
-                let { data, error } = await supabaseClient.auth.verifyOtp({
-                    email: pendingSignupEmail,
-                    token: otp,
-                    type: 'email'
-                });
-
-                if (error) {
-                    alert("❌ Invalid or expired verification code! Fake or incorrect emails cannot be verified.");
-                    return;
-                }
-
-                // If verified successfully, create final password session & proceed to profile
-                document.getElementById('signupVerifyModal').style.display = 'none';
-                
-                // Set password for the verified user
-                await supabaseClient.auth.updateUser({ password: pendingSignupPassword });
-
-                document.getElementById('profileEmail').value = pendingSignupEmail;
-                let derivedName = pendingSignupEmail.split('@')[0];
-                document.getElementById('fullName').value = derivedName.charAt(0).toUpperCase() + derivedName.slice(1);
-                switchToProfileScreen();
-
-            } catch (err) {
-                alert("❌ Verification failed.");
             }
         }
 
