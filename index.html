@@ -201,7 +201,7 @@
 
     <script>
         const SUPABASE_URL = "https://oczoyqkxryppdwomqbgx.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable__LpoKgOtsPR8vJWSm1DaeQ_xWa13Z_C"; // Real API Key inserted
+        const SUPABASE_ANON_KEY = "sb_publishable__LpoKgOtsPR8vJWSm1DaeQ_xWa13Z_C"; 
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         window.addEventListener('load', () => {
@@ -312,13 +312,13 @@
             }
 
             let { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-                redirectTo: window.location.href,
+                redirectTo: "https://safarx-app.vercel.app",
             });
 
             if (error) {
                 alert("❌ Error: " + error.message);
             } else {
-                alert(`✅ Secure password reset instructions have been dispatched to ${email} via Supabase Mail Server.`);
+                alert(`✅ Secure password reset instructions have been dispatched to ${email}. Check your inbox!`);
                 closeForgotModal();
             }
         }
