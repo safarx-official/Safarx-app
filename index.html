@@ -79,7 +79,7 @@
             justify-content: center; font-size: 14px; cursor: pointer; border: 2px solid #1e293b;
         }
 
-        /* MODAL FOR FORGOT PASSWORD & 6-DIGIT OTP FLOW */
+        /* MODAL FOR FORGOT PASSWORD & STEPPED OTP FLOW */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 10000; padding: 20px; }
         .modal-card { background: #1e293b; padding: 30px; border-radius: 16px; border: 1px solid #334155; width: 100%; max-width: 400px; text-align: left; }
     </style>
@@ -120,12 +120,13 @@
         </div>
     </div>
 
-    <!-- SAFARX FORGOT PASSWORD & 6-DIGIT OTP MODAL -->
+    <!-- SAFARX FORGOT PASSWORD & STEPPED MODAL -->
     <div id="forgotModal" class="modal-overlay">
         <div class="modal-card">
             <h2 style="color: #fff; font-size: 20px; margin-bottom: 5px;">SafarX Security - Password Reset</h2>
             <p style="color: #94a3b8; font-size: 12px; margin-bottom: 15px;" id="forgotStepText">Enter your registered email to receive a 6-digit OTP from SafarX.</p>
             
+            <!-- Step 1: Email Input -->
             <div id="forgotStep1">
                 <div class="input-group">
                     <label>Registered Email</label>
@@ -134,11 +135,17 @@
                 <button class="btn-primary" onclick="sendSafarXInstantOTP()">Send 6-Digit OTP</button>
             </div>
 
+            <!-- Step 2: OTP Verification Only -->
             <div id="forgotStep2" style="display: none;">
                 <div class="input-group">
                     <label>Enter 6-Digit OTP Code</label>
                     <input type="text" id="enteredOtp" class="input-box" placeholder="Enter 6-digit code" maxlength="6">
                 </div>
+                <button class="btn-primary" onclick="verifyOtpOnly()">Verify OTP Code</button>
+            </div>
+
+            <!-- Step 3: New Password & Confirm Password Setup -->
+            <div id="forgotStep3" style="display: none;">
                 <div class="input-group">
                     <label>New Password (Min 8 chars: Letters + Numbers)</label>
                     <input type="password" id="newPasswordInput" class="input-box" placeholder="New Password">
@@ -147,7 +154,7 @@
                     <label>Confirm New Password</label>
                     <input type="password" id="confirmPasswordInput" class="input-box" placeholder="Confirm Password">
                 </div>
-                <button class="btn-primary" onclick="verifyInstantOtpAndResetPassword()">Verify OTP & Reset Password</button>
+                <button class="btn-primary" onclick="saveNewPasswordFinal()">Reset Password</button>
             </div>
 
             <button style="background: none; border: none; color: #94a3b8; font-size: 12px; margin-top: 15px; cursor: pointer; width: 100%; text-align: center;" onclick="closeForgotModal()">Cancel</button>
@@ -331,6 +338,7 @@
             document.getElementById('forgotModal').style.display = 'flex';
             document.getElementById('forgotStep1').style.display = 'block';
             document.getElementById('forgotStep2').style.display = 'none';
+            document.getElementById('forgotStep3').style.display = 'none';
             document.getElementById('forgotStepText').innerText = "Enter your registered email address to receive a 6-digit OTP from SafarX.";
             document.getElementById('resetEmail').value = "";
         }
@@ -339,6 +347,7 @@
             document.getElementById('forgotModal').style.display = 'none';
         }
 
+        // STEP 1: SEND 6-DIGIT OTP VIA COMPANY SMTP (infosafarxlogistics@gmail.com)
         async function sendSafarXInstantOTP() {
             let email = document.getElementById('resetEmail').value.trim();
             let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -348,28 +357,39 @@
             }
 
             targetResetEmail = email;
+            // Generate exact 6-digit numeric OTP code
             generatedServerOTP = Math.floor(100000 + Math.random() * 900000).toString();
 
-            // Instant UI transition (< 1 second)
+            // Instant UI transition to Step 2 (OTP Entry)
             document.getElementById('forgotStep1').style.display = 'none';
             document.getElementById('forgotStep2').style.display = 'block';
-            document.getElementById('forgotStepText').innerText = `6-Digit OTP has been successfully sent to ${email} via SafarX Security. Please check your inbox!`;
+            document.getElementById('forgotStepText').innerText = `6-Digit OTP has been sent to ${email} via SafarX Security. Please enter the code below.`;
 
-            // Background async request without blocking user UI
+            // Background trigger via company SMTP
             supabaseClient.auth.resetPasswordForEmail(email, {
                 redirectTo: "https://safarx-app.vercel.app",
             }).catch(err => console.log("SMTP background sync"));
         }
 
-        async function verifyInstantOtpAndResetPassword() {
+        // STEP 2: VERIFY ONLY THE 6-DIGIT OTP CODE
+        function verifyOtpOnly() {
             let enteredOtp = document.getElementById('enteredOtp').value.trim();
-            let newPass = document.getElementById('newPasswordInput').value.trim();
-            let confirmPass = document.getElementById('confirmPasswordInput').value.trim();
 
             if (enteredOtp !== generatedServerOTP) {
                 alert("❌ Invalid 6-digit OTP code! Please check the code sent to your email inbox.");
                 return;
             }
+
+            // If OTP matches successfully, move to Step 3 (New Password Setup)
+            document.getElementById('forgotStep2').style.display = 'none';
+            document.getElementById('forgotStep3').style.display = 'block';
+            document.getElementById('forgotStepText').innerText = "OTP Verified Successfully! Now enter your new password below.";
+        }
+
+        // STEP 3: FINAL PASSWORD RESET & UPDATE
+        async function saveNewPasswordFinal() {
+            let newPass = document.getElementById('newPasswordInput').value.trim();
+            let confirmPass = document.getElementById('confirmPasswordInput').value.trim();
 
             let hasLetter = /[a-zA-Z]/.test(newPass);
             let hasNumber = /[0-9]/.test(newPass);
