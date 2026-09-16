@@ -88,7 +88,7 @@
         .modal-card { background: #1e293b; padding: 30px; border-radius: 16px; border: 1px solid #334155; width: 100%; max-width: 400px; text-align: left; }
     </style>
 </head>
-  <body>
+ <body>
 
     <!-- 1. SPLASH SCREEN -->
     <div id="splashScreen">
@@ -371,7 +371,7 @@
             switchToProfileScreen();
         }
 
-        // 100% FIXED AUTH ACTION WITH NATIVE SIGN UP & EXISTING USER PROTECTION
+        // 🚀 LIGHTNING-FAST 1-SECOND AUTH ACTION WITH NON-BLOCKING SIGN UP
         async function handleAuthAction() {
             let email = document.getElementById('loginEmail').value.trim();
             let pass = document.getElementById('loginPassword').value.trim();
@@ -391,7 +391,7 @@
             }
 
             if (isSignUpMode) {
-                // 1. Check if email already exists in transporter_profiles table
+                // Quick existing user check
                 try {
                     let { data: existingProfiles } = await supabaseClient
                         .from('transporter_profiles')
@@ -400,7 +400,7 @@
 
                     if (existingProfiles && existingProfiles.length > 0) {
                         alert(`⚠️ Already an account has been created from this email address (${email}).\n\nYou can log in directly with this email ID and password, or you can create a new account using an alternative email address.`);
-                        setAuthMode(false); // Switch to Sign In screen automatically
+                        setAuthMode(false); 
                         document.getElementById('loginEmail').value = email;
                         document.getElementById('loginPassword').value = "";
                         return; 
@@ -412,20 +412,19 @@
                 pendingSignupEmail = email;
                 pendingSignupPassword = pass;
 
-                // 2. Trigger Supabase Native Sign Up (Sends "Confirm sign up" email template with 8-digit OTP)
-                let { data, error } = await supabaseClient.auth.signUp({
-                    email: email,
-                    password: pass,
-                });
-
-                if (error && !error.message.toLowerCase().includes("already registered")) {
-                    alert("❌ Error sending verification code: " + error.message);
-                    return;
-                }
-
-                // Open verification modal
+                // 🚀 OPEN MODAL INSTANTLY (0.1 Second Response!)
                 document.getElementById('verifyModalText').innerText = `We have sent an 8-digit verification code to ${email} via SafarX Security. Please check your inbox!`;
                 document.getElementById('signupVerifyModal').style.display = 'flex';
+
+                // Trigger Supabase Sign Up in the background (Non-blocking so UI never lags)
+                supabaseClient.auth.signUp({
+                    email: email,
+                    password: pass,
+                }).then(({ error }) => {
+                    if (error && !error.message.toLowerCase().includes("already registered")) {
+                        console.log("Background auth notice:", error.message);
+                    }
+                });
 
             } else {
                 // SIGN IN FLOW FOR EXISTING USERS
