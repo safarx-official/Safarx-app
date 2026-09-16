@@ -89,7 +89,7 @@
         .modal-card { background: #1e293b; padding: 30px; border-radius: 16px; border: 1px solid #334155; width: 100%; max-width: 400px; text-align: left; }
     </style>
 </head>
- <body>
+  <body>
 
     <!-- 1. INITIAL SPLASH SCREEN -->
     <div id="splashScreen">
@@ -205,7 +205,7 @@
             <button style="background: none; border: none; color: #94a3b8; font-size: 12px; margin-top: 15px; cursor: pointer; width: 100%; text-align: center;" onclick="closeForgotModal()">Cancel</button>
         </div>
     </div>
-  <!-- 3. PROFILE SETUP FORM SCREEN -->
+ <!-- 3. PROFILE SETUP FORM SCREEN -->
     <div id="profileScreen" class="screen-box">
         <div class="card" style="max-width: 500px;">
             <button class="back-btn" onclick="backToAuthFromProfile()">← Back</button>
@@ -379,7 +379,7 @@
             </div>
         </div>
 
-        <!-- BOTTOM NAVIGATION BAR (5 Icons: Home, Categories, Plus, Parcel, Profile) -->
+        <!-- BOTTOM NAVIGATION BAR (5 Icons) -->
         <div style="display: flex; justify-content: space-around; align-items: center; background: #1e293b; border-top: 1px solid #334155; padding: 12px 10px; z-index: 10;">
             <div onclick="switchNavTab('home')" style="text-align: center; cursor: pointer; color: #3b82f6;">
                 <span style="font-size: 20px; display: block;">🏠</span>
@@ -402,7 +402,7 @@
             </div>
         </div>
     </div>
-<script>
+ <script>
         const SUPABASE_URL = "https://oczoyqkxryppdwomqbgx.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable__LpoKgOtsPR8vJWSm1DaeQ_xWa13Z_C"; 
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -489,7 +489,8 @@
             }
         }
 
-        function handleGoogleResponse(response) {
+        // 🌟 SMART GOOGLE LOGIN WITH EXISTING USER PROTECTION
+        async function handleGoogleResponse(response) {
             let base64Url = response.credential.split('.')[1];
             let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
             let jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
@@ -497,9 +498,30 @@
             }).join(''));
 
             let data = JSON.parse(jsonPayload);
-            document.getElementById('profileEmail').value = data.email;
-            document.getElementById('fullName').value = data.name;
-            document.getElementById('userAvatar').src = data.picture;
+            let email = data.email;
+            let name = data.name;
+            let picture = data.picture;
+
+            // Check if this Google user already exists in database
+            try {
+                let { data: existingProfiles } = await supabaseClient
+                    .from('transporter_profiles')
+                    .select('*')
+                    .eq('email', email);
+
+                if (existingProfiles && existingProfiles.length > 0) {
+                    // EXISTING USER: Directly open dashboard with animation!
+                    triggerDashboardSplashTransition(name, "India (Verified)");
+                    return;
+                }
+            } catch(e) {
+                console.log("DB check notice");
+            }
+
+            // NEW USER: Proceed to profile setup form
+            document.getElementById('profileEmail').value = email;
+            document.getElementById('fullName').value = name;
+            document.getElementById('userAvatar').src = picture;
 
             switchToProfileScreen();
         }
@@ -524,7 +546,6 @@
             }
 
             if (isSignUpMode) {
-                // Check if email already exists in transporter_profiles table
                 try {
                     let { data: existingProfiles } = await supabaseClient
                         .from('transporter_profiles')
@@ -558,7 +579,6 @@
                 });
 
             } else {
-                // SIGN IN FLOW FOR EXISTING USERS (Directly opens dashboard with 2-sec animation)
                 try {
                     let { data, error } = await supabaseClient.auth.signInWithPassword({
                         email: email,
@@ -572,7 +592,7 @@
                     }
 
                     let name = email.split('@')[0];
-                    triggerDashboardSplashTransition(name.charAt(0).toUpperCase() + name.slice(1), email);
+                    triggerDashboardSplashTransition(name.charAt(0).toUpperCase() + name.slice(1), "India (Verified)");
 
                 } catch (err) {
                     alert("❌ Login connection error.");
