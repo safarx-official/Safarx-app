@@ -272,7 +272,7 @@
             <button class="btn-primary" style="background-color: #ef4444;" onclick="logoutApp()">Log Out</button>
         </div>
     </div>
- <script>
+  <script>
         const SUPABASE_URL = "https://oczoyqkxryppdwomqbgx.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable__LpoKgOtsPR8vJWSm1DaeQ_xWa13Z_C"; 
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -375,7 +375,7 @@
             switchToProfileScreen();
         }
 
-        // STRICT REAL EMAIL VALIDATION & LOCAL 8-DIGIT OTP DISPATCH FOR SIGN UP
+        // SMART SIGN UP CHECK: DETECTS IF EMAIL ALREADY EXISTS IN DATABASE
         async function handleAuthAction() {
             let email = document.getElementById('loginEmail').value.trim();
             let pass = document.getElementById('loginPassword').value.trim();
@@ -395,6 +395,25 @@
             }
 
             if (isSignUpMode) {
+                // 1. Check if email already exists in database before sending OTP
+                try {
+                    let { data: existingUser } = await supabaseClient
+                        .from('transporter_profiles')
+                        .select('email')
+                        .eq('email', email)
+                        .maybeSingle();
+
+                    if (existingUser) {
+                        alert(`⚠️ Already an account has been created from this email address (${email}).\n\nYou can create a new account using an alternative email address, or please log in directly using this email and password.`);
+                        setAuthMode(false); // Switch to Sign In automatically
+                        document.getElementById('loginEmail').value = email;
+                        document.getElementById('loginPassword').value = "";
+                        return;
+                    }
+                } catch(e) {
+                    console.log("Check db error", e);
+                }
+
                 pendingSignupEmail = email;
                 pendingSignupPassword = pass;
                 generatedSignupLocalOTP = Math.floor(10000000 + Math.random() * 90000000).toString();
@@ -412,7 +431,7 @@
                 }
 
             } else {
-                // SIGN IN FLOW
+                // SIGN IN FLOW FOR EXISTING USERS
                 try {
                     let { data, error } = await supabaseClient.auth.signInWithPassword({
                         email: email,
