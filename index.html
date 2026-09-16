@@ -374,19 +374,36 @@
             }).catch(err => console.log("SMTP background sync"));
         }
 
-        // STEP 2: VERIFY EXACT 6-DIGIT OTP CODE
-        function verifyOtpOnly() {
+        // STEP 2: VERIFY OTP VIA SUPABASE CLOUD AUTHENTICATION
+        async function verifyOtpOnly() {
             let enteredOtp = document.getElementById('enteredOtp').value.trim();
 
-            if (enteredOtp !== generatedServerOTP) {
-                alert("❌ Invalid 6-digit OTP code! Please check the code sent to your email inbox.");
+            if (!enteredOtp || enteredOtp.length < 6) {
+                alert("❌ Please enter the valid OTP code received in your email!");
                 return;
             }
 
-            // Move to Step 3 (New Password Setup)
-            document.getElementById('forgotStep2').style.display = 'none';
-            document.getElementById('forgotStep3').style.display = 'block';
-            document.getElementById('forgotStepText').innerText = "OTP Verified Successfully! Now enter your new password below.";
+            try {
+                // Verify the token directly with Supabase Cloud Auth backend
+                let { data, error } = await supabaseClient.auth.verifyOtp({
+                    email: targetResetEmail,
+                    token: enteredOtp,
+                    type: 'recovery'
+                });
+
+                if (error) {
+                    alert("❌ Invalid or Expired OTP code! Please check the code in your email inbox.");
+                    return;
+                }
+
+                // If cloud verification succeeds, move to Step 3 (New Password Setup)
+                document.getElementById('forgotStep2').style.display = 'none';
+                document.getElementById('forgotStep3').style.display = 'block';
+                document.getElementById('forgotStepText').innerText = "OTP Verified Successfully! Now enter your new password below.";
+
+            } catch (err) {
+                alert("❌ Verification error occurred.");
+            }
         }
 
         // STEP 3: FINAL PASSWORD RESET & UPDATE
