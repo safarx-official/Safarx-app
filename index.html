@@ -57,7 +57,14 @@
         .btn-primary { width: 100%; background-color: #3b82f6; color: white; border: none; padding: 14px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 10px; transition: background 0.2s; }
         .btn-primary:hover { background-color: #2563eb; }
 
-        .profile-avatar { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; margin: 0 auto 15px auto; border: 2px solid #3b82f6; display: none; }
+        /* PROFILE AVATAR & UPLOADER */
+        .profile-container { position: relative; width: 80px; height: 80px; margin: 0 auto 15px auto; }
+        .profile-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #3b82f6; background: #0f172a; }
+        .upload-badge {
+            position: absolute; bottom: 0; right: 0; background: #3b82f6; color: white;
+            width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; font-size: 14px; cursor: pointer; border: 2px solid #1e293b;
+        }
     </style>
 </head>
 <body>
@@ -89,7 +96,7 @@
                 <input type="email" id="loginEmail" class="input-box" placeholder="name@example.com">
             </div>
             <div class="input-group">
-                <label>Password</label>
+                <label>Password (Min 8 chars: Letters + Numbers)</label>
                 <input type="password" id="loginPassword" class="input-box" placeholder="••••••••">
             </div>
             <button class="btn-primary" onclick="handleEmailAuth()">Continue with Email</button>
@@ -99,7 +106,12 @@
     <!-- 3. PROFILE SETUP FORM SCREEN -->
     <div id="profileScreen" class="screen-box">
         <div class="card" style="max-width: 500px;">
-            <img id="userAvatar" class="profile-avatar" src="" alt="Profile Photo">
+            <!-- Profile Picture Uploader -->
+            <div class="profile-container">
+                <img id="userAvatar" class="profile-avatar" src="https://www.w3schools.com/howto/img_avatar.png" alt="Profile Photo">
+                <label for="avatarInput" class="upload-badge" title="Change Profile Picture">+</label>
+                <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="previewAvatar(event)">
+            </div>
             <h1>Complete Your Profile</h1>
             <p>Setup your commercial transporter details</p>
 
@@ -173,7 +185,6 @@
             try {
                 google.accounts.id.prompt((notification) => {
                     if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-                        // Fallback render if one-tap is blocked by browser
                         google.accounts.id.renderButton(
                             document.getElementById('loginScreen'),
                             { theme: 'outline', size: 'large' }
@@ -196,23 +207,46 @@
             let data = JSON.parse(jsonPayload);
             document.getElementById('profileEmail').value = data.email;
             document.getElementById('fullName').value = data.name;
-            
-            let avatar = document.getElementById('userAvatar');
-            avatar.src = data.picture;
-            avatar.style.display = "block";
+            document.getElementById('userAvatar').src = data.picture;
 
             switchToProfileScreen();
         }
 
+        // Strict Email & Strong Password Validation
         function handleEmailAuth() {
             let email = document.getElementById('loginEmail').value.trim();
             let pass = document.getElementById('loginPassword').value.trim();
-            if(!email || !pass) {
-                alert("Please enter both email and password.");
+
+            // 1. Real Email Regex Check (prevents fake emails like hgfdghhgfhgg)
+            let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailRegex.test(email)) {
+                alert("❌ Please enter a valid, real email address (e.g., name@gmail.com). Fake emails are not allowed!");
                 return;
             }
+
+            // 2. Strong Password Check (Min 8 chars, must contain letters AND numbers)
+            let hasLetter = /[a-zA-Z]/.test(pass);
+            let hasNumber = /[0-9]/.test(pass);
+            if (pass.length < 8 || !hasLetter || !hasNumber) {
+                alert("❌ Password must be at least 8 characters long and contain both letters and numbers for strong security!");
+                return;
+            }
+
+            // Auto-fill profile email & auto-generate name from email prefix
             document.getElementById('profileEmail').value = email;
+            let derivedName = email.split('@')[0];
+            document.getElementById('fullName').value = derivedName.charAt(0).toUpperCase() + derivedName.slice(1);
+
             switchToProfileScreen();
+        }
+
+        // Custom Profile Picture Uploader Preview
+        function previewAvatar(event) {
+            let reader = new FileReader();
+            reader.onload = function(){
+                document.getElementById('userAvatar').src = reader.result;
+            }
+            reader.readAsDataURL(event.target.files[0]);
         }
 
         function switchToProfileScreen() {
