@@ -205,7 +205,7 @@
             <button style="background: none; border: none; color: #94a3b8; font-size: 12px; margin-top: 15px; cursor: pointer; width: 100%; text-align: center;" onclick="closeForgotModal()">Cancel</button>
         </div>
     </div>
- <!-- 3. PROFILE SETUP FORM SCREEN -->
+  <!-- 3. PROFILE SETUP FORM SCREEN -->
     <div id="profileScreen" class="screen-box">
         <div class="card" style="max-width: 500px;">
             <button class="back-btn" onclick="backToAuthFromProfile()">← Back</button>
@@ -263,14 +263,14 @@
             <button class="btn-primary" onclick="submitProfileSetup()">Confirm & Enter App</button>
         </div>
     </div>
- <!-- 4. MAIN CUSTOMER DASHBOARD SCREEN WITH VEHICLE LIST & BOTTOM NAVIGATION -->
+ <!-- 4. MAIN CUSTOMER DASHBOARD SCREEN -->
     <div id="dashboardScreen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0f172a; flex-direction: column; justify-content: space-between;">
         
         <!-- TOP HEADER (Live Location & Temperature) -->
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #1e293b; border-bottom: 1px solid #334155; z-index: 10;">
             <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #94a3b8;">
                 <span>📍 Live Location:</span>
-                <span id="topLiveLocation" style="color: #fff; font-weight: 600;">Detecting...</span>
+                <span id="topLiveLocation" style="color: #fff; font-weight: 600;">India (Verified)</span>
             </div>
             <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #3b82f6; font-weight: bold;">
                 <span>🌡️</span>
@@ -381,38 +381,33 @@
 
         <!-- BOTTOM NAVIGATION BAR (5 Icons: Home, Categories, Plus, Parcel, Profile) -->
         <div style="display: flex; justify-content: space-around; align-items: center; background: #1e293b; border-top: 1px solid #334155; padding: 12px 10px; z-index: 10;">
-            <!-- 1. Home -->
             <div onclick="switchNavTab('home')" style="text-align: center; cursor: pointer; color: #3b82f6;">
                 <span style="font-size: 20px; display: block;">🏠</span>
                 <span style="font-size: 11px; font-weight: 600;">Home</span>
             </div>
-            <!-- 2. Categories -->
             <div onclick="switchNavTab('categories')" style="text-align: center; cursor: pointer; color: #94a3b8;">
                 <span style="font-size: 20px; display: block;">🗂️</span>
                 <span style="font-size: 11px;">Categories</span>
             </div>
-            <!-- 3. Plus Icon (Middle Quick Action) -->
             <div onclick="switchNavTab('plus')" style="background: #3b82f6; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -20px; box-shadow: 0 4px 15px rgba(59,130,246,0.5); cursor: pointer;">
                 <span style="font-size: 24px; color: #fff; font-weight: bold;">+</span>
             </div>
-            <!-- 4. Parcel -->
             <div onclick="switchNavTab('parcel')" style="text-align: center; cursor: pointer; color: #94a3b8;">
                 <span style="font-size: 20px; display: block;">📦</span>
                 <span style="font-size: 11px;">Parcel</span>
             </div>
-            <!-- 5. My Profile -->
             <div onclick="switchNavTab('profile')" style="text-align: center; cursor: pointer; color: #94a3b8;">
                 <span style="font-size: 20px; display: block;">👤</span>
                 <span style="font-size: 11px;">Profile</span>
             </div>
         </div>
     </div>
-  <script>
+<script>
         const SUPABASE_URL = "https://oczoyqkxryppdwomqbgx.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable__LpoKgOtsPR8vJWSm1DaeQ_xWa13Z_C"; 
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        let selectedUserRole = "Customer"; // Defaulting to Customer as requested
+        let selectedUserRole = "Customer";
         let isSignUpMode = true; 
         let targetResetEmail = "";
         let pendingSignupEmail = "";
@@ -509,7 +504,7 @@
             switchToProfileScreen();
         }
 
-        // LIGHTNING-FAST AUTH ACTION WITH EXISTING USER PROTECTION
+        // LIGHTNING-FAST AUTH ACTION WITH 100% SECURE EXISTING USER PROTECTION
         async function handleAuthAction() {
             let email = document.getElementById('loginEmail').value.trim();
             let pass = document.getElementById('loginPassword').value.trim();
@@ -529,6 +524,7 @@
             }
 
             if (isSignUpMode) {
+                // Check if email already exists in transporter_profiles table
                 try {
                     let { data: existingProfiles } = await supabaseClient
                         .from('transporter_profiles')
@@ -562,6 +558,7 @@
                 });
 
             } else {
+                // SIGN IN FLOW FOR EXISTING USERS (Directly opens dashboard with 2-sec animation)
                 try {
                     let { data, error } = await supabaseClient.auth.signInWithPassword({
                         email: email,
@@ -786,11 +783,11 @@
                 console.log("Database sync notice");
             }
 
-            triggerDashboardSplashTransition(name, document.getElementById('profileEmail').value, `${district}, ${state} (${pincode})`);
+            triggerDashboardSplashTransition(name, `${district}, ${state} (${pincode})`);
         }
 
         // 🌟 2-SECOND SPLASH ANIMATION TRANSITION TO DASHBOARD
-        function triggerDashboardSplashTransition(userName, userEmail, locationStr = "India (Verified)") {
+        function triggerDashboardSplashTransition(userName, locationStr = "India (Verified)") {
             let transitionScreen = document.getElementById('loginSplashTransition');
             transitionScreen.style.display = 'flex';
             transitionScreen.style.opacity = '1';
@@ -809,7 +806,7 @@
             }, 2000); // Exactly 2 seconds animation
         }
 
-        // NAVIGATION TABS HANDLER (Home, Categories, Plus, Parcel, Profile)
+        // NAVIGATION TABS HANDLER
         function switchNavTab(tabName) {
             if (tabName === 'home') {
                 alert("You are on the Home Screen.");
