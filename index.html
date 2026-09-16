@@ -120,24 +120,24 @@
         </div>
     </div>
 
-    <!-- FORGOT PASSWORD & OTP MODAL -->
+    <!-- REAL SUPABASE OTP MODAL -->
     <div id="forgotModal" class="modal-overlay">
         <div class="modal-card">
-            <h2 style="color: #fff; font-size: 20px; margin-bottom: 5px;">SafarX Security - Reset Password</h2>
-            <p style="color: #94a3b8; font-size: 12px; margin-bottom: 15px;" id="forgotStepText">Enter your registered email address to receive verification OTP.</p>
+            <h2 style="color: #fff; font-size: 20px; margin-bottom: 5px;">SafarX Security - OTP Verification</h2>
+            <p style="color: #94a3b8; font-size: 12px; margin-bottom: 15px;" id="forgotStepText">Enter your email to receive a real OTP directly in your inbox.</p>
             
             <div id="forgotStep1">
                 <div class="input-group">
                     <label>Registered Email</label>
                     <input type="email" id="resetEmail" class="input-box" placeholder="name@example.com">
                 </div>
-                <button class="btn-primary" onclick="sendSafarXOTP()">Send OTP to Email</button>
+                <button class="btn-primary" onclick="sendRealSupabaseOTP()">Send Real OTP to Email</button>
             </div>
 
             <div id="forgotStep2" style="display: none;">
                 <div class="input-group">
-                    <label>Enter 4-Digit OTP Code</label>
-                    <input type="text" id="enteredOtp" class="input-box" placeholder="e.g. 5892" maxlength="4">
+                    <label>Enter OTP Code Received on Email</label>
+                    <input type="text" id="enteredOtp" class="input-box" placeholder="Enter 6-digit OTP" maxlength="6">
                 </div>
                 <div class="input-group">
                     <label>New Password (Min 8 chars: Letters + Numbers)</label>
@@ -147,7 +147,7 @@
                     <label>Confirm New Password</label>
                     <input type="password" id="confirmPasswordInput" class="input-box" placeholder="Confirm Password">
                 </div>
-                <button class="btn-primary" onclick="verifyOtpAndResetPassword()">Verify & Reset Password</button>
+                <button class="btn-primary" onclick="verifyRealSupabaseOTP()">Verify OTP & Reset Password</button>
             </div>
 
             <button style="background: none; border: none; color: #94a3b8; font-size: 12px; margin-top: 15px; cursor: pointer; width: 100%; text-align: center;" onclick="closeForgotModal()">Cancel</button>
@@ -217,7 +217,6 @@
         const SUPABASE_ANON_KEY = "sb_publishable__LpoKgOtsPR8vJWSm1DaeQ_xWa13Z_C"; 
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        let generatedSafarXOTP = "";
         let targetResetEmail = "";
 
         window.addEventListener('load', () => {
@@ -315,7 +314,7 @@
             document.getElementById('forgotModal').style.display = 'flex';
             document.getElementById('forgotStep1').style.display = 'block';
             document.getElementById('forgotStep2').style.display = 'none';
-            document.getElementById('forgotStepText').innerText = "Enter your registered email address to receive verification OTP.";
+            document.getElementById('forgotStepText').innerText = "Enter your registered email address to receive a real OTP.";
             document.getElementById('resetEmail').value = "";
         }
 
@@ -323,7 +322,7 @@
             document.getElementById('forgotModal').style.display = 'none';
         }
 
-        function sendSafarXOTP() {
+        async function sendRealSupabaseOTP() {
             let email = document.getElementById('resetEmail').value.trim();
             let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
             if (!emailRegex.test(email)) {
@@ -332,22 +331,29 @@
             }
 
             targetResetEmail = email;
-            generatedSafarXOTP = Math.floor(1000 + Math.random() * 9000).toString();
 
-            alert(`🔒 [SafarX Secure Mail Dispatch]\n\nDear Transporter,\nA verification OTP has been sent to your email (${email}).\n\nYour SafarX Security OTP is: ${generatedSafarXOTP}`);
+            let { data, error } = await supabaseClient.auth.signInWithOtp({
+                email: email,
+                options: { shouldCreateUser: false }
+            });
 
-            document.getElementById('forgotStep1').style.display = 'none';
-            document.getElementById('forgotStep2').style.display = 'block';
-            document.getElementById('forgotStepText').innerText = `OTP sent successfully to ${email}. Enter code below to create your new password.`;
+            if (error) {
+                alert("❌ Error sending OTP: " + error.message);
+            } else {
+                alert(`✅ Real OTP has been dispatched to ${email} via Supabase Mail Server. Please check your inbox!`);
+                document.getElementById('forgotStep1').style.display = 'none';
+                document.getElementById('forgotStep2').style.display = 'block';
+                document.getElementById('forgotStepText').innerText = `OTP sent to ${email}. Check your email and enter the code below.`;
+            }
         }
 
-        function verifyOtpAndResetPassword() {
-            let enteredOtp = document.getElementById('enteredOtp').value.trim();
+        async function verifyRealSupabaseOTP() {
+            let otp = document.getElementById('enteredOtp').value.trim();
             let newPass = document.getElementById('newPasswordInput').value.trim();
             let confirmPass = document.getElementById('confirmPasswordInput').value.trim();
 
-            if (enteredOtp !== generatedSafarXOTP) {
-                alert("❌ Invalid OTP code! Please check the code sent to your email.");
+            if (!otp || otp.length < 6) {
+                alert("❌ Please enter the valid 6-digit OTP received in your email!");
                 return;
             }
 
@@ -363,10 +369,33 @@
                 return;
             }
 
-            alert("🎉 Password successfully reset under SafarX Security! You can now log in with your new password.");
-            closeForgotModal();
-            document.getElementById('loginEmail').value = targetResetEmail;
-            document.getElementById('loginPassword').value = "";
+            try {
+                let { data: verifyData, error: verifyError } = await supabaseClient.auth.verifyOtp({
+                    email: targetResetEmail,
+                    token: otp,
+                    type: 'email'
+                });
+
+                if (verifyError) {
+                    alert("❌ Invalid or Expired OTP: " + verifyError.message);
+                    return;
+                }
+
+                let { error: updateError } = await supabaseClient.auth.updateUser({
+                    password: newPass
+                });
+
+                if (updateError) {
+                    alert("❌ Error updating password: " + updateError.message);
+                } else {
+                    alert("🎉 Password successfully reset! You can now log in with your new password.");
+                    closeForgotModal();
+                    document.getElementById('loginEmail').value = targetResetEmail;
+                    document.getElementById('loginPassword').value = "";
+                }
+            } catch (err) {
+                alert("❌ Error processing verification.");
+            }
         }
 
         function previewAvatar(event) {
