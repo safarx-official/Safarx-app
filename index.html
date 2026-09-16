@@ -12,12 +12,13 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #0f172a; color: #f8fafc; height: 100vh; overflow-x: hidden; }
 
-        /* SPLASH SCREEN ANIMATION */
-        #splashScreen {
+        /* SPLASH & TRANSITION SCREENS */
+        #splashScreen, #loginSplashTransition {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: #0f172a; display: flex; flex-direction: column;
             justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.6s ease;
         }
+        #loginSplashTransition { display: none; z-index: 10001; }
         
         .splash-logo-img {
             width: 140px; height: 140px; border-radius: 50%; object-fit: cover;
@@ -90,12 +91,21 @@
 </head>
  <body>
 
-    <!-- 1. SPLASH SCREEN -->
+    <!-- 1. INITIAL SPLASH SCREEN -->
     <div id="splashScreen">
         <img src="logo.jpg" alt="SafarX Logo" class="splash-logo-img">
         <div class="splash-logo-container">
             <span class="text-safar">Safar</span><span class="text-x">X</span>
         </div>
+    </div>
+
+    <!-- LOGIN TO DASHBOARD ANIMATION TRANSITION SCREEN -->
+    <div id="loginSplashTransition">
+        <img src="logo.jpg" alt="SafarX Logo" class="splash-logo-img">
+        <div class="splash-logo-container">
+            <span class="text-safar">Safar</span><span class="text-x">X</span>
+        </div>
+        <p style="color: #94a3b8; font-size: 14px; margin-top: 15px;">Loading your SafarX Customer Dashboard...</p>
     </div>
 
     <!-- 1.5 ROLE SELECTION SCREEN -->
@@ -195,8 +205,7 @@
             <button style="background: none; border: none; color: #94a3b8; font-size: 12px; margin-top: 15px; cursor: pointer; width: 100%; text-align: center;" onclick="closeForgotModal()">Cancel</button>
         </div>
     </div>
-
-    <!-- 3. PROFILE SETUP FORM SCREEN -->
+ <!-- 3. PROFILE SETUP FORM SCREEN -->
     <div id="profileScreen" class="screen-box">
         <div class="card" style="max-width: 500px;">
             <button class="back-btn" onclick="backToAuthFromProfile()">← Back</button>
@@ -254,28 +263,157 @@
             <button class="btn-primary" onclick="submitProfileSetup()">Confirm & Enter App</button>
         </div>
     </div>
-
-    <!-- 4. MAIN DASHBOARD / APP SCREEN -->
-    <div id="dashboardScreen" class="screen-box">
-        <div class="card" style="max-width: 600px;">
-            <h1 style="color: #3b82f6; margin-bottom: 10px;">Welcome to SafarX</h1>
-            <p id="dashRoleTitle" style="color: #f8fafc; font-size: 15px; margin-bottom: 20px;">Commercial Logistics & Transport Dashboard</p>
-            <div style="background: #0f172a; padding: 20px; border-radius: 12px; border: 1px solid #334155; text-align: left; margin-bottom: 20px;">
-                <p style="color: #94a3b8; font-size: 14px; margin-bottom: 8px;">👤 User: <span id="dashName" style="color: #fff; font-weight: 600;">-</span></p>
-                <p style="color: #94a3b8; font-size: 14px; margin-bottom: 8px;">💼 Role: <span id="dashRole" style="color: #3b82f6; font-weight: 600;">-</span></p>
-                <p style="color: #94a3b8; font-size: 14px; margin-bottom: 8px;">📧 Email: <span id="dashEmail" style="color: #fff; font-weight: 600;">-</span></p>
-                <p style="color: #94a3b8; font-size: 14px;">📍 Region: <span id="dashLocation" style="color: #fff; font-weight: 600;">-</span></p>
+ <!-- 4. MAIN CUSTOMER DASHBOARD SCREEN WITH VEHICLE LIST & BOTTOM NAVIGATION -->
+    <div id="dashboardScreen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0f172a; flex-direction: column; justify-content: space-between;">
+        
+        <!-- TOP HEADER (Live Location & Temperature) -->
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #1e293b; border-bottom: 1px solid #334155; z-index: 10;">
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #94a3b8;">
+                <span>📍 Live Location:</span>
+                <span id="topLiveLocation" style="color: #fff; font-weight: 600;">Detecting...</span>
             </div>
-            <button class="btn-primary" style="background-color: #ef4444;" onclick="logoutApp()">Log Out</button>
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #3b82f6; font-weight: bold;">
+                <span>🌡️</span>
+                <span id="topLiveTemp">32°C, India</span>
+            </div>
+        </div>
+
+        <!-- MAIN SCROLLABLE CONTENT AREA -->
+        <div style="flex: 1; overflow-y: auto; padding: 20px; max-width: 600px; margin: 0 auto; width: 100%;">
+            
+            <!-- Welcome Banner -->
+            <div style="background: linear-gradient(135deg, #1e293b, #0f172a); padding: 20px; border-radius: 14px; border: 1px solid #334155; margin-bottom: 20px; text-align: left;">
+                <h2 style="color: #3b82f6; font-size: 20px; margin-bottom: 4px;">Hello, <span id="dashName">-</span>! 👋</h2>
+                <p style="color: #94a3b8; font-size: 13px;">Select your commercial transport vehicle below to book a shipment instantly.</p>
+            </div>
+
+            <h3 style="color: #fff; font-size: 16px; margin-bottom: 15px; text-align: left;">📦 Select Transport Vehicle</h3>
+
+            <!-- VEHICLES LIST CONTAINER -->
+            <div style="display: flex; flex-direction: column; gap: 12px; padding-bottom: 30px;">
+                
+                <!-- 1. Two Wheeler -->
+                <div onclick="selectVehicle('Two Wheeler')" style="background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border 0.2s;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3448/3448339.png" alt="Two Wheeler" style="width: 50px; height: 50px; object-fit: contain; background: #0f172a; padding: 5px; border-radius: 8px;">
+                        <div style="text-align: left;">
+                            <h4 style="color: #fff; font-size: 15px;">Two Wheeler</h4>
+                            <p style="color: #94a3b8; font-size: 12px;">Fast parcel & document delivery (Up to 20 kg)</p>
+                        </div>
+                    </div>
+                    <span style="color: #3b82f6; font-weight: bold;">➔</span>
+                </div>
+
+                <!-- 2. E-Rickshaw -->
+                <div onclick="selectVehicle('E-Rickshaw')" style="background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border 0.2s;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2964/2964514.png" alt="E-Rickshaw" style="width: 50px; height: 50px; object-fit: contain; background: #0f172a; padding: 5px; border-radius: 8px;">
+                        <div style="text-align: left;">
+                            <h4 style="color: #fff; font-size: 15px;">E-Rickshaw</h4>
+                            <p style="color: #94a3b8; font-size: 12px;">Eco-friendly local transport (Up to 350 kg)</p>
+                        </div>
+                    </div>
+                    <span style="color: #3b82f6; font-weight: bold;">➔</span>
+                </div>
+
+                <!-- 3. Auto -->
+                <div onclick="selectVehicle('Auto')" style="background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border 0.2s;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1048/1048313.png" alt="Auto" style="width: 50px; height: 50px; object-fit: contain; background: #0f172a; padding: 5px; border-radius: 8px;">
+                        <div style="text-align: left;">
+                            <h4 style="color: #fff; font-size: 15px;">Auto</h4>
+                            <p style="color: #94a3b8; font-size: 12px;">Open body mini carrier (Up to 500 kg)</p>
+                        </div>
+                    </div>
+                    <span style="color: #3b82f6; font-weight: bold;">➔</span>
+                </div>
+
+                <!-- 4. Car -->
+                <div onclick="selectVehicle('Car')" style="background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border 0.2s;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3202/3202926.png" alt="Car" style="width: 50px; height: 50px; object-fit: contain; background: #0f172a; padding: 5px; border-radius: 8px;">
+                        <div style="text-align: left;">
+                            <h4 style="color: #fff; font-size: 15px;">Car</h4>
+                            <p style="color: #94a3b8; font-size: 12px;">Secure luggage & fragile goods (Up to 250 kg)</p>
+                        </div>
+                    </div>
+                    <span style="color: #3b82f6; font-weight: bold;">➔</span>
+                </div>
+
+                <!-- 5. 6-Wheeler -->
+                <div onclick="selectVehicle('6-Wheeler')" style="background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border 0.2s;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2964/2964514.png" alt="6-Wheeler" style="width: 50px; height: 50px; object-fit: contain; background: #0f172a; padding: 5px; border-radius: 8px;">
+                        <div style="text-align: left;">
+                            <h4 style="color: #fff; font-size: 15px;">6-Wheeler</h4>
+                            <p style="color: #94a3b8; font-size: 12px;">Medium commercial load (Up to 2.5 Tons)</p>
+                        </div>
+                    </div>
+                    <span style="color: #3b82f6; font-weight: bold;">➔</span>
+                </div>
+
+                <!-- 6. Truck -->
+                <div onclick="selectVehicle('Truck')" style="background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border 0.2s;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/741/741407.png" alt="Truck" style="width: 50px; height: 50px; object-fit: contain; background: #0f172a; padding: 5px; border-radius: 8px;">
+                        <div style="text-align: left;">
+                            <h4 style="color: #fff; font-size: 15px;">Truck</h4>
+                            <p style="color: #94a3b8; font-size: 12px;">Heavy commercial freight (Up to 5 Tons)</p>
+                        </div>
+                    </div>
+                    <span style="color: #3b82f6; font-weight: bold;">➔</span>
+                </div>
+
+                <!-- 7. Trailer Truck -->
+                <div onclick="selectVehicle('Trailer Truck')" style="background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border 0.2s;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3067/3067417.png" alt="Trailer Truck" style="width: 50px; height: 50px; object-fit: contain; background: #0f172a; padding: 5px; border-radius: 8px;">
+                        <div style="text-align: left;">
+                            <h4 style="color: #fff; font-size: 15px;">Trailer Truck</h4>
+                            <p style="color: #94a3b8; font-size: 12px;">Industrial multi-ton cargo (Up to 20+ Tons)</p>
+                        </div>
+                    </div>
+                    <span style="color: #3b82f6; font-weight: bold;">➔</span>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- BOTTOM NAVIGATION BAR (5 Icons: Home, Categories, Plus, Parcel, Profile) -->
+        <div style="display: flex; justify-content: space-around; align-items: center; background: #1e293b; border-top: 1px solid #334155; padding: 12px 10px; z-index: 10;">
+            <!-- 1. Home -->
+            <div onclick="switchNavTab('home')" style="text-align: center; cursor: pointer; color: #3b82f6;">
+                <span style="font-size: 20px; display: block;">🏠</span>
+                <span style="font-size: 11px; font-weight: 600;">Home</span>
+            </div>
+            <!-- 2. Categories -->
+            <div onclick="switchNavTab('categories')" style="text-align: center; cursor: pointer; color: #94a3b8;">
+                <span style="font-size: 20px; display: block;">🗂️</span>
+                <span style="font-size: 11px;">Categories</span>
+            </div>
+            <!-- 3. Plus Icon (Middle Quick Action) -->
+            <div onclick="switchNavTab('plus')" style="background: #3b82f6; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -20px; box-shadow: 0 4px 15px rgba(59,130,246,0.5); cursor: pointer;">
+                <span style="font-size: 24px; color: #fff; font-weight: bold;">+</span>
+            </div>
+            <!-- 4. Parcel -->
+            <div onclick="switchNavTab('parcel')" style="text-align: center; cursor: pointer; color: #94a3b8;">
+                <span style="font-size: 20px; display: block;">📦</span>
+                <span style="font-size: 11px;">Parcel</span>
+            </div>
+            <!-- 5. My Profile -->
+            <div onclick="switchNavTab('profile')" style="text-align: center; cursor: pointer; color: #94a3b8;">
+                <span style="font-size: 20px; display: block;">👤</span>
+                <span style="font-size: 11px;">Profile</span>
+            </div>
         </div>
     </div>
- <script>
+  <script>
         const SUPABASE_URL = "https://oczoyqkxryppdwomqbgx.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable__LpoKgOtsPR8vJWSm1DaeQ_xWa13Z_C"; 
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        let selectedUserRole = "Transporter";
-        let isSignUpMode = true; // DEFAULT SIGN UP FIRST
+        let selectedUserRole = "Customer"; // Defaulting to Customer as requested
+        let isSignUpMode = true; 
         let targetResetEmail = "";
         let pendingSignupEmail = "";
         let pendingSignupPassword = "";
@@ -371,7 +509,7 @@
             switchToProfileScreen();
         }
 
-        // 🚀 LIGHTNING-FAST 1-SECOND AUTH ACTION WITH NON-BLOCKING SIGN UP
+        // LIGHTNING-FAST AUTH ACTION WITH EXISTING USER PROTECTION
         async function handleAuthAction() {
             let email = document.getElementById('loginEmail').value.trim();
             let pass = document.getElementById('loginPassword').value.trim();
@@ -391,7 +529,6 @@
             }
 
             if (isSignUpMode) {
-                // Quick existing user check
                 try {
                     let { data: existingProfiles } = await supabaseClient
                         .from('transporter_profiles')
@@ -399,7 +536,7 @@
                         .eq('email', email);
 
                     if (existingProfiles && existingProfiles.length > 0) {
-                        alert(`⚠️ Already an account has been created from this email address (${email}).\n\nYou can log in directly with this email ID and password, or you can create a new account using an alternative email address.`);
+                        alert(`⚠️ Already an account has been created from this email address (${email}).\n\nYou can log in directly with this email ID and password.`);
                         setAuthMode(false); 
                         document.getElementById('loginEmail').value = email;
                         document.getElementById('loginPassword').value = "";
@@ -412,11 +549,9 @@
                 pendingSignupEmail = email;
                 pendingSignupPassword = pass;
 
-                // 🚀 OPEN MODAL INSTANTLY (0.1 Second Response!)
                 document.getElementById('verifyModalText').innerText = `We have sent an 8-digit verification code to ${email} via SafarX Security. Please check your inbox!`;
                 document.getElementById('signupVerifyModal').style.display = 'flex';
 
-                // Trigger Supabase Sign Up in the background (Non-blocking so UI never lags)
                 supabaseClient.auth.signUp({
                     email: email,
                     password: pass,
@@ -427,7 +562,6 @@
                 });
 
             } else {
-                // SIGN IN FLOW FOR EXISTING USERS
                 try {
                     let { data, error } = await supabaseClient.auth.signInWithPassword({
                         email: email,
@@ -441,14 +575,7 @@
                     }
 
                     let name = email.split('@')[0];
-                    document.getElementById('dashName').innerText = name.charAt(0).toUpperCase() + name.slice(1);
-                    document.getElementById('dashRole').innerText = selectedUserRole;
-                    document.getElementById('dashEmail').innerText = email;
-                    document.getElementById('dashLocation').innerText = "India (Verified)";
-
-                    alert("Welcome to SafarX!");
-                    document.getElementById('authScreen').style.display = 'none';
-                    document.getElementById('dashboardScreen').style.display = 'flex';
+                    triggerDashboardSplashTransition(name.charAt(0).toUpperCase() + name.slice(1), email);
 
                 } catch (err) {
                     alert("❌ Login connection error.");
@@ -478,7 +605,6 @@
                 }
 
                 document.getElementById('signupVerifyModal').style.display = 'none';
-
                 document.getElementById('profileEmail').value = pendingSignupEmail;
                 let derivedName = pendingSignupEmail.split('@')[0];
                 document.getElementById('fullName').value = derivedName.charAt(0).toUpperCase() + derivedName.slice(1);
@@ -660,23 +786,46 @@
                 console.log("Database sync notice");
             }
 
-            document.getElementById('dashName').innerText = name;
-            document.getElementById('dashRole').innerText = selectedUserRole;
-            document.getElementById('dashEmail').innerText = document.getElementById('profileEmail').value;
-            document.getElementById('dashLocation').innerText = `${district}, ${state} (${pincode})`;
-
-            alert("Welcome to SafarX!");
-            
-            document.getElementById('profileScreen').style.display = 'none';
-            document.getElementById('dashboardScreen').style.display = 'flex';
+            triggerDashboardSplashTransition(name, document.getElementById('profileEmail').value, `${district}, ${state} (${pincode})`);
         }
 
-        function logoutApp() {
-            document.getElementById('dashboardScreen').style.display = 'none';
-            document.getElementById('authScreen').style.display = 'flex';
-            document.getElementById('loginEmail').value = "";
-            document.getElementById('loginPassword').value = "";
-            setAuthMode(true);
+        // 🌟 2-SECOND SPLASH ANIMATION TRANSITION TO DASHBOARD
+        function triggerDashboardSplashTransition(userName, userEmail, locationStr = "India (Verified)") {
+            let transitionScreen = document.getElementById('loginSplashTransition');
+            transitionScreen.style.display = 'flex';
+            transitionScreen.style.opacity = '1';
+
+            document.getElementById('dashName').innerText = userName;
+            document.getElementById('topLiveLocation').innerText = locationStr;
+
+            setTimeout(() => {
+                transitionScreen.style.opacity = '0';
+                setTimeout(() => {
+                    transitionScreen.style.display = 'none';
+                    document.getElementById('authScreen').style.display = 'none';
+                    document.getElementById('profileScreen').style.display = 'none';
+                    document.getElementById('dashboardScreen').style.display = 'flex';
+                }, 600);
+            }, 2000); // Exactly 2 seconds animation
+        }
+
+        // NAVIGATION TABS HANDLER (Home, Categories, Plus, Parcel, Profile)
+        function switchNavTab(tabName) {
+            if (tabName === 'home') {
+                alert("You are on the Home Screen.");
+            } else if (tabName === 'categories') {
+                alert("📂 Categories: Commercial Load Categories & Bulk Freight.");
+            } else if (tabName === 'plus') {
+                alert("➕ Quick Action: Post a new shipment requirement instantly!");
+            } else if (tabName === 'parcel') {
+                alert("📦 Parcel Tracking: Active bookings & shipment status.");
+            } else if (tabName === 'profile') {
+                alert("👤 My Profile & Account Settings.");
+            }
+        }
+
+        function selectVehicle(vehicleType) {
+            alert(`Selected Vehicle: ${vehicleType}. Proceeding to pickup & drop location setup!`);
         }
     </script>
 </body>
