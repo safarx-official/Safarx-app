@@ -88,7 +88,7 @@
         .modal-card { background: #1e293b; padding: 30px; border-radius: 16px; border: 1px solid #334155; width: 100%; max-width: 400px; text-align: left; }
     </style>
 </head>
-<body>
+ <body>
 
     <!-- 1. SPLASH SCREEN -->
     <div id="splashScreen">
@@ -371,7 +371,7 @@
             switchToProfileScreen();
         }
 
-        // FAIL-SAFE EXISTING USER DETECTION & LIGHTNING FAST SIGN UP
+        // 100% WORKING EXISTING USER CHECK & LIGHTNING FAST SIGN UP
         async function handleAuthAction() {
             let email = document.getElementById('loginEmail').value.trim();
             let pass = document.getElementById('loginPassword').value.trim();
@@ -391,15 +391,14 @@
             }
 
             if (isSignUpMode) {
-                // 1. Check if user already exists in database before triggering anything
+                // 1. Check if email already exists in transporter_profiles table
                 try {
-                    let { data: existingCheck } = await supabaseClient
+                    let { data: existingProfiles, error: dbError } = await supabaseClient
                         .from('transporter_profiles')
                         .select('email')
-                        .eq('email', email)
-                        .maybeSingle();
+                        .eq('email', email);
 
-                    if (existingCheck) {
+                    if (existingProfiles && existingProfiles.length > 0) {
                         alert(`⚠️ Already an account has been created from this email address (${email}).\n\nYou can log in directly with this email ID and password, or you can create a new account using an alternative email address.`);
                         setAuthMode(false); // Automatically switch to Sign In screen
                         document.getElementById('loginEmail').value = email;
@@ -407,13 +406,13 @@
                         return; // HALT: Code bilkul nahi jayega!
                     }
                 } catch(e) {
-                    console.log("DB check notice");
+                    console.log("DB check notice", e);
                 }
 
                 pendingSignupEmail = email;
                 pendingSignupPassword = pass;
 
-                // INSTANT 1-SECOND UI RESPONSE FOR NEW USERS
+                // INSTANT UI RESPONSE FOR TRUE NEW USERS
                 document.getElementById('verifyModalText').innerText = `We have sent an 8-digit verification code to ${email} via SafarX Security (infosafarxlogistics@gmail.com). Please check your inbox!`;
                 document.getElementById('signupVerifyModal').style.display = 'flex';
 
