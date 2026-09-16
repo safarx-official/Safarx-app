@@ -132,7 +132,7 @@
                     <label>Registered Email</label>
                     <input type="email" id="resetEmail" class="input-box" placeholder="name@example.com">
                 </div>
-                <button class="btn-primary" onclick="sendSafarXInstantOTP()">Send 6-Digit OTP</button>
+                <button class="btn-primary" onclick="sendSafarXPreciseOTP()">Send 6-Digit OTP</button>
             </div>
 
             <!-- Step 2: OTP Verification Only -->
@@ -233,7 +233,7 @@
             <button class="btn-primary" style="background-color: #ef4444;" onclick="logoutApp()">Log Out</button>
         </div>
     </div>
-  <script>
+ <script>
         const SUPABASE_URL = "https://oczoyqkxryppdwomqbgx.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable__LpoKgOtsPR8vJWSm1DaeQ_xWa13Z_C"; 
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -341,14 +341,17 @@
             document.getElementById('forgotStep3').style.display = 'none';
             document.getElementById('forgotStepText').innerText = "Enter your registered email address to receive a 6-digit OTP from SafarX.";
             document.getElementById('resetEmail').value = "";
+            document.getElementById('enteredOtp').value = "";
+            document.getElementById('newPasswordInput').value = "";
+            document.getElementById('confirmPasswordInput').value = "";
         }
 
         function closeForgotModal() {
             document.getElementById('forgotModal').style.display = 'none';
         }
 
-        // STEP 1: SEND 6-DIGIT OTP VIA COMPANY SMTP (infosafarxlogistics@gmail.com)
-        async function sendSafarXInstantOTP() {
+        // PRECISE 6-DIGIT OTP GENERATION & COMPANY SMTP DISPATCH
+        async function sendSafarXPreciseOTP() {
             let email = document.getElementById('resetEmail').value.trim();
             let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
             if (!emailRegex.test(email)) {
@@ -357,7 +360,7 @@
             }
 
             targetResetEmail = email;
-            // Generate exact 6-digit numeric OTP code
+            // Strictly generate a 6-digit numeric OTP (100000 to 999999)
             generatedServerOTP = Math.floor(100000 + Math.random() * 900000).toString();
 
             // Instant UI transition to Step 2 (OTP Entry)
@@ -365,13 +368,13 @@
             document.getElementById('forgotStep2').style.display = 'block';
             document.getElementById('forgotStepText').innerText = `6-Digit OTP has been sent to ${email} via SafarX Security. Please enter the code below.`;
 
-            // Background trigger via company SMTP
+            // Trigger Supabase password reset to fire company SMTP email
             supabaseClient.auth.resetPasswordForEmail(email, {
                 redirectTo: "https://safarx-app.vercel.app",
             }).catch(err => console.log("SMTP background sync"));
         }
 
-        // STEP 2: VERIFY ONLY THE 6-DIGIT OTP CODE
+        // STEP 2: VERIFY EXACT 6-DIGIT OTP CODE
         function verifyOtpOnly() {
             let enteredOtp = document.getElementById('enteredOtp').value.trim();
 
@@ -380,7 +383,7 @@
                 return;
             }
 
-            // If OTP matches successfully, move to Step 3 (New Password Setup)
+            // Move to Step 3 (New Password Setup)
             document.getElementById('forgotStep2').style.display = 'none';
             document.getElementById('forgotStep3').style.display = 'block';
             document.getElementById('forgotStepText').innerText = "OTP Verified Successfully! Now enter your new password below.";
