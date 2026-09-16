@@ -35,7 +35,7 @@
 
         /* SCREENS */
         .screen-box { display: none; justify-content: center; align-items: center; min-height: 100vh; background-color: #0f172a; padding: 20px; }
-        .card { background-color: #1e293b; padding: 35px; border-radius: 16px; border: 1px solid #334155; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .card { background-color: #1e293b; padding: 35px; border-radius: 16px; border: 1px solid #334155; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; }
         .card h1 { font-size: 24px; color: #ffffff; margin-bottom: 5px; }
         .card p { color: #94a3b8; font-size: 13px; margin-bottom: 20px; }
 
@@ -61,6 +61,14 @@
 
         .forgot-link { display: block; text-align: right; font-size: 12px; color: #3b82f6; margin-top: -6px; margin-bottom: 15px; cursor: pointer; text-decoration: none; }
         .forgot-link:hover { text-decoration: underline; }
+
+        /* BACK NAVIGATION BUTTON */
+        .back-btn {
+            position: absolute; top: 20px; left: 20px; background: none; border: none;
+            color: #94a3b8; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 5px;
+            transition: color 0.2s;
+        }
+        .back-btn:hover { color: #ffffff; }
 
         /* PROFILE AVATAR & UPLOADER */
         .profile-container { position: relative; width: 80px; height: 80px; margin: 0 auto 15px auto; }
@@ -134,7 +142,10 @@
     <!-- 3. PROFILE SETUP FORM SCREEN -->
     <div id="profileScreen" class="screen-box">
         <div class="card" style="max-width: 500px;">
-            <div class="profile-container">
+            <!-- Back to Login Navigation Button -->
+            <button class="back-btn" onclick="backToLogin()">← Back to Login</button>
+
+            <div class="profile-container" style="margin-top: 10px;">
                 <img id="userAvatar" class="profile-avatar" src="https://www.w3schools.com/howto/img_avatar.png" alt="Profile Photo">
                 <label for="avatarInput" class="upload-badge" title="Change Profile Picture">+</label>
                 <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="previewAvatar(event)">
@@ -189,9 +200,8 @@
     </div>
 
     <script>
-        // Supabase Secure Initialization with your project details
         const SUPABASE_URL = "https://oczoyqkxryppdwomqbgx.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable__LpokGotsPR8vJWSm1DaeQ_xWa13..."; // Your live publishable key
+        const SUPABASE_ANON_KEY = "sb_publishable__LpokGotsPR8vJWSm1DaeQ_xWa13..."; 
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         window.addEventListener('load', () => {
@@ -241,7 +251,6 @@
             switchToProfileScreen();
         }
 
-        // Secure Email & Encrypted Password Authentication via Supabase Auth
         async function handleEmailAuth() {
             let email = document.getElementById('loginEmail').value.trim();
             let pass = document.getElementById('loginPassword').value.trim();
@@ -259,7 +268,6 @@
                 return;
             }
 
-            // Real Secure Supabase Sign Up / Sign In Flow
             try {
                 let { data, error } = await supabaseClient.auth.signUp({
                     email: email,
@@ -267,7 +275,6 @@
                 });
 
                 if (error) {
-                    // If user already exists, try signing in securely
                     let { data: loginData, error: loginError } = await supabaseClient.auth.signInWithPassword({
                         email: email,
                         password: pass,
@@ -288,7 +295,6 @@
             }
         }
 
-        /* SECURE SUPABASE PASSWORD RESET */
         function openForgotModal() {
             document.getElementById('forgotModal').style.display = 'flex';
         }
@@ -330,6 +336,12 @@
             document.getElementById('profileScreen').style.display = 'flex';
         }
 
+        // Back to Login Functionality
+        function backToLogin() {
+            document.getElementById('profileScreen').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'flex';
+        }
+
         async function fetchLocationByPincode(pincode) {
             if (pincode.length === 6) {
                 try {
@@ -369,7 +381,6 @@
                 return;
             }
 
-            // Secure Database Insertion into Supabase Table
             try {
                 let userEmail = document.getElementById('profileEmail').value;
                 let { error } = await supabaseClient
@@ -377,7 +388,6 @@
                     .insert([{ full_name: name, email: userEmail, pincode: pincode, address: address, mobile: mobile }]);
 
                 if (error) {
-                    // If table needs creation, we still let them through successfully for the demo
                     console.log("Table info notice:", error.message);
                 }
             } catch(e) {
