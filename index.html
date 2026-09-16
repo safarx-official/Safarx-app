@@ -126,7 +126,6 @@
             <h2 style="color: #fff; font-size: 20px; margin-bottom: 5px;">SafarX Security - Password Reset</h2>
             <p style="color: #94a3b8; font-size: 12px; margin-bottom: 15px;" id="forgotStepText">Enter your registered email to receive a 6-digit OTP from SafarX.</p>
             
-            <!-- Step 1: Email Input -->
             <div id="forgotStep1">
                 <div class="input-group">
                     <label>Registered Email</label>
@@ -135,7 +134,6 @@
                 <button class="btn-primary" onclick="sendSafarXAutoOTP()">Send 6-Digit OTP</button>
             </div>
 
-            <!-- Step 2: OTP Verification & New Password Setup -->
             <div id="forgotStep2" style="display: none;">
                 <div class="input-group">
                     <label>Enter 6-Digit OTP Code</label>
@@ -228,7 +226,7 @@
             <button class="btn-primary" style="background-color: #ef4444;" onclick="logoutApp()">Log Out</button>
         </div>
     </div>
-  <script>
+ <script>
         const SUPABASE_URL = "https://oczoyqkxryppdwomqbgx.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable__LpoKgOtsPR8vJWSm1DaeQ_xWa13Z_C"; 
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -341,7 +339,7 @@
             document.getElementById('forgotModal').style.display = 'none';
         }
 
-        // AUTO-GENERATED 6-DIGIT OTP DISPATCH VIA COMPANY SMTP (infosafarxlogistics@gmail.com)
+        // CLEAN PROFESSIONAL OTP DISPATCH (No code preview in alert)
         async function sendSafarXAutoOTP() {
             let email = document.getElementById('resetEmail').value.trim();
             let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -351,11 +349,9 @@
             }
 
             targetResetEmail = email;
-            // Auto-generate 6-digit secure numeric OTP
             generatedServerOTP = Math.floor(100000 + Math.random() * 900000).toString();
 
             try {
-                // Trigger Supabase password reset which uses our company SMTP to dispatch the custom 6-digit code
                 let { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
                     redirectTo: "https://safarx-app.vercel.app",
                 });
@@ -365,8 +361,8 @@
                     return;
                 }
 
-                // Professional dispatch success message with code preview for seamless enterprise testing
-                alert(`✅ 6-Digit Verification OTP has been dispatched to ${email} via SafarX Security (infosafarxlogistics@gmail.com).\n\n🔒 Generated OTP Code: ${generatedServerOTP}`);
+                // Clean professional alert showing only that OTP has been sent to user's email
+                alert(`✅ 6-Digit verification OTP has been dispatched to ${email} via SafarX Security (infosafarxlogistics@gmail.com). Please check your inbox!`);
 
                 document.getElementById('forgotStep1').style.display = 'none';
                 document.getElementById('forgotStep2').style.display = 'block';
