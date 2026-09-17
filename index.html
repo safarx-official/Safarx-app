@@ -1238,7 +1238,7 @@
             window.localStorage.setItem('safarx_saved_addresses', JSON.stringify(savedAddrs));
             renderSavedAddresses();
         }
- // GLOBAL MULTILINGUAL TRANSLATION ENGINE (Supports World Languages)
+// GLOBAL MULTILINGUAL TRANSLATION ENGINE (Supports World Languages & Syncs UI)
         function openLanguageModal() {
             document.getElementById('languageModal').style.display = 'flex';
         }
@@ -1324,6 +1324,46 @@
                     privSec: "गोपनीयता आणि सुरक्षा", privCenter: "🔒 प्रायव्हसी सेंटर", manageDev: "📱 डिव्हाइस व्यवस्थापित करा",
                     activeSess: "सक्रिय सत्र ➔", faqTerms: "प्रश्न आणि अटी", faq: "❓ वारંवार विचारले जाणारे प्रश्न", terms: "📄 नियम आणि धोरणे",
                     logout: "बाहेर पडा (Log out)", langDisplay: "मराठी ➔"
+                },
+                'pa': {
+                    home: "ਹੋਮ", cat: "ਸ਼੍ਰੇਣੀਆਂ", parcel: "ਪਾਰਸਲ", account: "ਆਈਡੀ",
+                    welcomeSub: "ਝੱਟਪਟ ਬੁੱਕ ਕਰਨ ਲਈ ਹੇਠਾਂ ਆਪਣਾ ਵਾਹਨ ਜਾਂ ਡਿਲਿਵਰੀ ਵਿਕਲਪ ਚੁਣੋ।",
+                    selectTrans: "📦 ਵਾਹਨ ਅਤੇ ਡਿਲਿਵਰੀ ਚੁਣੋ",
+                    quickTitle: "⚡ ਕਵਿੱਕ ਡ੍ਰਾਪ", quickSub: "ਛੋਟੇ ਪਾਰਸਲ, ਟਿਫ਼ਨ, ਚਾਰਜਰ ਅਤੇ ਚਾਬੀਆਂ ਲਈ",
+                    twoWheelerTitle: "ਦੋ ਪਹੀਆ ਵਾਹਨ", twoWheelerSub: "ਤੇਜ਼ ਮੋਟਰਸਾਈਕਲ ਡਿਲਿਵਰੀ (20 ਕਿਲੋ ਤੱਕ)",
+                    eRickTitle: "ਈ-ਰਿਕਸ਼ਾ", eRickSub: "ਵਾਤਾਵਰਣ-ਅਨੁਕੂਲ ਲੋਕਲ ਟ੍ਰਾਂਸਪੋਰਟ (350 ਕਿਲੋ ਤੱਕ)",
+                    autoTitle: "ਆਟੋ", autoSub: "ਓਪਨ ਬੌਡੀ ਮਿਨੀ ਕੈਰੀਅਰ (500 ਕਿਲੋ ਤੱਕ)",
+                    carTitle: "ਕਾਰ", carSub: "ਸੁਰੱਖਿਅਤ ਸਮਾਨ ਅਤੇ ਨਾਜ਼ੁਕ ਵਸਤੂਆਂ (250 ਕਿਲੋ ਤੱਕ)",
+                    wheelTitle: "6-ਪਹੀਆ ਵਾਹਨ", wheelSub: "ਮੱਧਮ ਕਮਰਸ਼ੀਅਲ ਲੋਡ (2.5 ਟਨ ਤੱਕ)",
+                    truckTitle: "ਟਰੱਕ", truckSub: "ਭਾਰੀ ਕਮਰਸ਼ੀਅਲ ਫ੍ਰੇਟ (5 ਟਨ ਤੱਕ)",
+                    trailerTitle: "ਟਰੇਲਰ ਟਰੱਕ", trailerSub: "ਉਦਯੋਗਿਕ ਮਲਟੀ-ਟਨ ਕਾਰਗੋ (20+ ਟਨ ਤੱਕ)",
+                    help: "🎧 ਮਦਦ", superCoin: "ਤੁਹਾਡਾ ਸੁਪਰਕੋਇਨ ਬੈਲੇਂਸ", superCoinSub: "ਸਫ਼ਰਐਕਸ ਪਲੱਸ ਨਾਲ ਵਾਧੂ ਇਨਾਮ",
+                    orders: "ਆਰਡਰ", wishlist: "ਵਿਸ਼ਲਿਸਟ", profSet: "ਪ੍ਰੋਫਾਈਲ ਸੈਟਿੰਗ", editProf: "👤 ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਿਤ ਕਰੋ",
+                    savedAddr: "📍 ਸੁਰੱਖਿਅਤ ਪਤੇ", changeLang: "🌐 ਭਾਸ਼ਾ ਬਦلو", payWallets: "ਪੇਮੈਂਟ ਅਤੇ ਵਾਲਿਟ",
+                    giftCard: "🎁 ਤਹਫ਼ਾ ਕਾਰਡ", addGift: "ਕਾਰਡ ਜੋੜੋ ➔", savedPay: "💳 ਸੁਰੱਖਿਅਤ ਪੇਮੈਂਟ ਤਰੀਕੇ",
+                    privSec: "ਪ੍ਰਾਈਵੇਸੀ ਅਤੇ ਸੁਰੱਖਿਆ", privCenter: "🔒 ਪ੍ਰਾਈਵੇਸੀ ਸੈਂਟਰ", manageDev: "📱 ਡਿਵਾਈਸ ਪ੍ਰਬੰਧਨ",
+                    activeSess: "ਐਕਟਿਵ ਸੈਸ਼ਨ ➔", faqTerms: "ਸਵਾਲ ਅਤੇ ਸ਼ਰਤਾਂ", faq: "❓ ਆਮ ਸਵਾਲ", terms: "📄 ਨਿਯਮ ਅਤੇ ਸ਼ਰਤਾਂ",
+                    logout: "ਲੌਗ ਆਉਟ", langDisplay: "ਪੰਜਾਬੀ ➔"
+                },
+                'te': {
+                    home: "హోమ్", cat: "వర్గాలు", parcel: "పార్శిల్", account: "ఖాతా",
+                    welcomeSub: "తక్షణమే బుక్ చేయడానికి కింద మీ రవాణా లేదా డెలివరీ ఎంపికను ఎంచుకోండి.",
+                    selectTrans: "📦 రవాణా & డెలివరీని ఎంచుకోండి",
+                    quickTitle: "⚡ క్విక్ డ్రాప్", quickSub: "చిన్న పార్శిల్స్, టిఫిన్, ఛార్జర్ & కీస్ కోసం",
+                    twoWheelerTitle: "టూ వీలర్", twoWheelerSub: "ఫాస్ట్ మోటార్ సైకిల్ డెలివరీ (20 కిలోల వరకు)",
+                    eRickTitle: "ఇ-రిక్షా", eRickSub: "పర్యావరణ అనుకూల లోకల్ రవాణా (350 కిలోల వరకు)",
+                    autoTitle: "ఆటో", autoSub: "ఓపెన్ బాడీ మినీ క్యారియర్ (500 కిలోల వరకు)",
+                    carTitle: "కార్", carSub: "సురక్షిత సామాను & పెళుసైన వస్తువులు (250 కిలోల వరకు)",
+                    wheelTitle: "6-వీలర్", wheelSub: "మధ్యస్థ కమర్షియల్ లోడ్ (2.5 టన్నుల వరకు)",
+                    truckTitle: "ట్రక్", truckSub: "భారీ కమర్షియల్ ఫ్రైట్ (5 టన్నుల వరకు)",
+                    trailerTitle: "ట్రైలర్ ట్రక్", trailerSub: "పారిశ్రామిక మల్టీ-టన్ కార్గో (20+ టన్నుల వరకు)",
+                    help: "🎧 సహాయం", superCoin: "మీ సూపర్ కాయిన్ బ్యాలెన్స్", superCoinSub: "సఫర్‌ఎక్స్ ప్లస్‌తో అదనపు రివార్డులు",
+                    orders: "ఆర్డర్లు", wishlist: "విష్‌లిస్ట్", profSet: "ప్రొఫైల్ సెట్టింగ్‌లు", editProf: "👤 ప్రొఫైల్‌ను సవరించండి",
+                    savedAddr: "📍 సేవ్ చేసిన చిరునామాలు", changeLang: "🌐 భాష మార్చండి", payWallets: "చెల్లింపులు & వాలెట్లు",
+                    giftCard: "🎁 గిఫ్ట్ కార్డ్", addGift: "గిఫ్ట్ కార్డ్ జోడించండి ➔", savedPay: "💳 సేవ్ చేసిన చెల్లింపు పద్ధతులు",
+                    privSec: "గోప్యత & భద్రత", privCenter: "🔒 ప్రైవసీ సెంటర్", manageDev: "📱 పరికరాల నిర్వహణ",
+                    activeSess: "యాక్టివ్ సెషన్ ➔", faqTerms: "ప్రశ్నలు & షరతులు", faq: "❓ ప్రశ్నలు", terms: "📄 నిబంధనలు & విధానాలు",
+                    logout: "లాగ్ అవుట్", langDisplay: "తెలుగు ➔"
                 }
             };
 
@@ -1379,6 +1419,10 @@
             } catch(e) {}
 
             window.localStorage.setItem('safarx_app_lang', langCode);
+            // Sync dropdown value if changed externally
+            let dropdown = document.getElementById('worldLanguageSelect');
+            if(dropdown) dropdown.value = langCode;
+
             if (showAlert) {
                 alert(`✅ Language switched successfully! Platform updated.`);
             }
@@ -1472,16 +1516,18 @@
             }
         }
 
+        // Professional vehicle selection without annoying alert popup
         function selectVehicle(vehicleType) {
             let savedAddrs = JSON.parse(window.localStorage.getItem('safarx_saved_addresses') || '[]');
-            let addressPrompt = "";
             if(savedAddrs.length > 0) {
-                let addrsText = savedAddrs.map((a, i) => `${i+1}. ${a.name} - ${a.address} (${a.phone})`).join('\n');
-                addressPrompt = `\n\nSelect from your Saved Addresses:\n${addrsText}`;
+                // Open saved address quick picker for seamless delivery booking
+                openSavedAddressesModal();
             } else {
-                addressPrompt = `\n\n(Tip: You can add and save multiple state addresses in your Account -> Saved Addresses)`;
+                // If no address saved yet, prompt to add one smoothly
+                if(confirm(`Selected Fleet: ${vehicleType}.\n\nYou haven't saved any pickup/drop hub yet. Would you like to add your saved address now for fast dispatch?`)) {
+                    openSavedAddressesModal();
+                }
             }
-            alert(`Selected Delivery Option: ${vehicleType}.${addressPrompt}\n\nProceeding to pickup & drop location setup!`);
         }
     </script>
 </body>
