@@ -12,7 +12,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #0f172a; color: #f8fafc; height: 100vh; overflow-x: hidden; }
 
-      /* SPLASH & TRANSITION SCREENS */
+        /* SPLASH & TRANSITION SCREENS */
         #splashScreen, #loginSplashTransition {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: #0f172a; display: flex; flex-direction: column;
@@ -89,11 +89,11 @@
         .modal-card { background: #1e293b; padding: 30px; border-radius: 16px; border: 1px solid #334155; width: 100%; max-width: 400px; text-align: left; }
     </style>
 </head>
-  <body>
+ <body>
 
     <!-- 1. INITIAL SPLASH SCREEN -->
     <div id="splashScreen">
-        <img src="logo.jpg" alt="SafarX Logo" class="splash-logo-img">
+        <img src="logo1.jpg" alt="SafarX Logo" class="splash-logo-img">
         <div class="splash-logo-container">
             <span class="text-safar">Safar</span><span class="text-x">X</span>
         </div>
@@ -101,7 +101,7 @@
 
     <!-- LOGIN TO DASHBOARD ANIMATION TRANSITION SCREEN -->
     <div id="loginSplashTransition">
-        <img src="logo.jpg" alt="SafarX Logo" class="splash-logo-img">
+        <img src="logo1.jpg" alt="SafarX Logo" class="splash-logo-img">
         <div class="splash-logo-container">
             <span class="text-safar">Safar</span><span class="text-x">X</span>
         </div>
@@ -205,7 +205,7 @@
             <button style="background: none; border: none; color: #94a3b8; font-size: 12px; margin-top: 15px; cursor: pointer; width: 100%; text-align: center;" onclick="closeForgotModal()">Cancel</button>
         </div>
     </div>
- <!-- 3. PROFILE SETUP FORM SCREEN -->
+  <!-- 3. PROFILE SETUP FORM SCREEN -->
     <div id="profileScreen" class="screen-box">
         <div class="card" style="max-width: 500px;">
             <button class="back-btn" onclick="backToAuthFromProfile()">← Back</button>
@@ -263,7 +263,7 @@
             <button class="btn-primary" onclick="submitProfileSetup()">Confirm & Enter App</button>
         </div>
     </div>
- <!-- 4. MAIN CUSTOMER DASHBOARD SCREEN -->
+  <!-- 4. MAIN CUSTOMER DASHBOARD SCREEN -->
     <div id="dashboardScreen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0f172a; flex-direction: column; justify-content: space-between;">
         
         <!-- TOP HEADER (Live Location & Temperature) -->
@@ -402,7 +402,7 @@
             </div>
         </div>
     </div>
- <script>
+  <script>
         const SUPABASE_URL = "https://oczoyqkxryppdwomqbgx.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable__LpoKgOtsPR8vJWSm1DaeQ_xWa13Z_C"; 
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -489,7 +489,6 @@
             }
         }
 
-        // 🌟 SMART GOOGLE LOGIN WITH EXISTING USER PROTECTION
         async function handleGoogleResponse(response) {
             let base64Url = response.credential.split('.')[1];
             let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -502,7 +501,6 @@
             let name = data.name;
             let picture = data.picture;
 
-            // Check if this Google user already exists in database
             try {
                 let { data: existingProfiles } = await supabaseClient
                     .from('transporter_profiles')
@@ -510,7 +508,6 @@
                     .eq('email', email);
 
                 if (existingProfiles && existingProfiles.length > 0) {
-                    // EXISTING USER: Directly open dashboard with animation!
                     triggerDashboardSplashTransition(name, "India (Verified)");
                     return;
                 }
@@ -518,7 +515,6 @@
                 console.log("DB check notice");
             }
 
-            // NEW USER: Proceed to profile setup form
             document.getElementById('profileEmail').value = email;
             document.getElementById('fullName').value = name;
             document.getElementById('userAvatar').src = picture;
@@ -526,7 +522,6 @@
             switchToProfileScreen();
         }
 
-        // LIGHTNING-FAST AUTH ACTION WITH 100% SECURE EXISTING USER PROTECTION
         async function handleAuthAction() {
             let email = document.getElementById('loginEmail').value.trim();
             let pass = document.getElementById('loginPassword').value.trim();
@@ -600,7 +595,6 @@
             }
         }
 
-        // CONFIRM SIGN UP EXACT 8-DIGIT OTP MATCH
         async function confirmSignupOtpAndProceed() {
             let enteredOtp = document.getElementById('signupOtpInput').value.trim();
 
@@ -806,7 +800,6 @@
             triggerDashboardSplashTransition(name, `${district}, ${state} (${pincode})`);
         }
 
-        // 🌟 2-SECOND SPLASH ANIMATION TRANSITION TO DASHBOARD
         function triggerDashboardSplashTransition(userName, locationStr = "India (Verified)") {
             let transitionScreen = document.getElementById('loginSplashTransition');
             transitionScreen.style.display = 'flex';
@@ -823,10 +816,9 @@
                     document.getElementById('profileScreen').style.display = 'none';
                     document.getElementById('dashboardScreen').style.display = 'flex';
                 }, 600);
-            }, 2000); // Exactly 2 seconds animation
+            }, 2000);
         }
 
-        // NAVIGATION TABS HANDLER
         function switchNavTab(tabName) {
             if (tabName === 'home') {
                 alert("You are on the Home Screen.");
