@@ -659,7 +659,7 @@
                         document.getElementById('roleScreen').style.display = 'flex';
                     }, 600);
                 }
-            }, 2500);
+            }, 1000);
 
             try {
                 google.accounts.id.initialize({
@@ -1013,21 +1013,21 @@
             }, 1800);
         }
 
-        // Exact Device Hardware Model Detection with Unique Session Registry
+        // Real-Time Hardware & Model Detection for Active Sessions
         async function registerCloudDeviceSession(email) {
             let ua = navigator.userAgent;
-            let deviceName = "Desktop / Laptop Terminal";
+            let deviceName = "Desktop / Laptop PC";
             let osInfo = "Windows / macOS Secure Node";
 
             if (/android/i.test(ua)) {
                 let match = ua.match(/;\s([^;]+)\sBuild\//);
-                deviceName = match ? match[1] : "Android Mobile Device";
+                deviceName = match ? match[1] : "Android Mobile Phone";
                 osInfo = "Android OS • Mobile Browser";
             } else if (/iphone|ipad|ipod/i.test(ua)) {
                 deviceName = "Apple iPhone / iOS Device";
                 osInfo = "iOS • Mobile Safari";
             } else if (/windows/i.test(ua)) {
-                deviceName = "Windows PC / Laptop";
+                deviceName = "Windows PC / Desktop";
                 osInfo = "Windows NT • Desktop Node";
             } else if (/macintosh|mac os x/i.test(ua)) {
                 deviceName = "Apple Mac / MacBook";
@@ -1037,9 +1037,11 @@
             let globalSessions = JSON.parse(window.localStorage.getItem('safarx_global_sessions') || '{}');
             if (!globalSessions[email]) globalSessions[email] = [];
 
-            let sessionId = deviceName + " - " + osInfo + " (" + Math.random().toString(36.substring(2, 7)) + ")";
+            let sessionKey = deviceName + " (" + osInfo + ")";
+            let existingIdx = globalSessions[email].findIndex(s => s.key === sessionKey);
+            
             let sessionObj = {
-                id: sessionId,
+                key: sessionKey,
                 name: deviceName,
                 os: osInfo,
                 user: email,
@@ -1047,10 +1049,11 @@
                 location: document.getElementById('topLiveLocation').innerText || "Kota, Rajasthan"
             };
 
-            globalSessions[email].push(sessionObj);
-            // Keep only latest 5 active sessions
-            if (globalSessions[email].length > 5) globalSessions[email].shift();
-
+            if (existingIdx >= 0) {
+                globalSessions[email][existingIdx] = sessionObj;
+            } else {
+                globalSessions[email].push(sessionObj);
+            }
             window.localStorage.setItem('safarx_global_sessions', JSON.stringify(globalSessions));
         }
 
