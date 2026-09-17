@@ -1013,32 +1013,38 @@
             }, 1800);
         }
 
+        // Exact Device Hardware Model Detection for Cloud Active Sessions
         async function registerCloudDeviceSession(email) {
             let ua = navigator.userAgent;
-            let deviceName = "Desktop / Laptop Terminal";
-            let osInfo = "Windows / macOS Secure Node";
+            let deviceName = "Desktop / Laptop Browser";
+            let osInfo = "Windows / macOS Node";
 
             if (/android/i.test(ua)) {
-                deviceName = "Android Mobile Device";
+                let match = ua.match(/;\s([^;]+)\sBuild\//);
+                deviceName = match ? match[1] : "Android Mobile Device";
                 osInfo = "Android OS • Mobile Browser";
             } else if (/iphone|ipad|ipod/i.test(ua)) {
-                deviceName = "Apple iOS Device";
-                osInfo = "iOS • Mobile Safari / App Bridge";
-            } else if (/mobile/i.test(ua)) {
-                deviceName = "Mobile Smartphone";
-                osInfo = "Mobile Web Terminal";
+                deviceName = "Apple iPhone / iOS Device";
+                osInfo = "iOS • Mobile Safari";
+            } else if (/windows/i.test(ua)) {
+                deviceName = "Windows PC / Laptop";
+                osInfo = "Windows NT • Desktop Node";
+            } else if (/macintosh|mac os x/i.test(ua)) {
+                deviceName = "Apple Mac / MacBook";
+                osInfo = "macOS • Desktop Node";
             }
 
             let globalSessions = JSON.parse(window.localStorage.getItem('safarx_global_sessions') || '{}');
             if (!globalSessions[email]) globalSessions[email] = [];
 
-            let sessionKey = deviceName + " (" + osInfo + ")";
+            let sessionKey = deviceName + " (" + email + ")";
             let existingIdx = globalSessions[email].findIndex(s => s.key === sessionKey);
             
             let sessionObj = {
                 key: sessionKey,
                 name: deviceName,
                 os: osInfo,
+                user: email,
                 loginTime: new Date().toLocaleString(),
                 location: document.getElementById('topLiveLocation').innerText || "Kota, Rajasthan"
             };
@@ -1434,7 +1440,7 @@
                     truckTitle: "ਟਰੱਕ", truckSub: "ਭਾਰੀ ਕਮਰਸ਼ੀਅਲ ਫ੍ਰੇਟ (5 ਟਨ ਤੱਕ)",
                     trailerTitle: "ਟਰੇਲਰ ਟਰੱਕ", trailerSub: "ਉਦਯੋਗਿਕ ਮਲਟੀ-ਟਨ ਕਾਰਗੋ (20+ ਟਨ ਤੱਕ)",
                     xCoin: "ਤੁਹਾਡਾ ਐਕਸ-ਕੋਇਨ ਬੈਲੇਂਸ", xCoinSub: "ਸਫ਼ਰਐਕਸ ਨਾਲ ਵਿਸ਼ੇਸ਼ ਇਨਾਮ ਅਤੇ ਛੋਟ",
-                    orders: "ਆਰਡਰ ਅਤੇ ਸ਼ਿਪਮੈਂਟ", gstInv: "ਜੀਐਸਟੀ ਇਨਵੌਇਸ", profSet: "ਪ੍ਰੋਫਾਈਲ ਸੈਟਿੰਗ", editProf: "👤 ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਿਤ ਕਰੋ",
+                    orders: "ਆਰਡਰ અને ਸ਼ਿਪਮੈਂਟ", gstInv: "ਜੀਐਸਟੀ ਇਨਵੌਇਸ", profSet: "ਪ੍ਰੋਫਾਈल ਸੈਟਿੰਗ", editProf: "👤 ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਿਤ ਕਰੋ",
                     savedAddr: "📍 ਸੁਰੱਖਿਅਤ ਪਤੇ", changeLang: "🌐 ਭਾਸ਼ਾ ਬਦਲੋ",
                     privSec: "ਪ੍ਰਾਈਵੇਸੀ ਅਤੇ ਸੁਰੱਖਿਆ", privCenter: "🔒 ਪ੍ਰਾਈਵੇਸੀ ਸੈਂਟਰ", manageDev: "📱 ਡਿਵਾਈਸ ਪ੍ਰਬੰਧਨ",
                     logout: "ਲੌਗ ਆਉਟ", langDisplay: "ਪੰਜਾਬੀ ➔"
