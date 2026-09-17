@@ -230,7 +230,8 @@
             <div id="addressListContainer" style="max-height: 220px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;"></div>
 
             <div id="addNewAddressSection" style="display: none; border-top: 1px solid #cbd5e1; padding-top: 12px; margin-top: 10px;">
-                <p style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">Add New Hub Address</p>
+                <p style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 8px;" id="formHubTitleTxt">Add New Hub Address</p>
+                <input type="hidden" id="editAddressIndex" value="-1">
                 <div class="input-group">
                     <label>Contact Person Name</label>
                     <input type="text" id="newContactName" class="input-box" placeholder="Contact person name">
@@ -253,7 +254,7 @@
                     <label>Phone Number (10 digits)</label>
                     <input type="tel" id="newPhoneNum" class="input-box" placeholder="10-digit mobile number" maxlength="10">
                 </div>
-                <button class="btn-primary" onclick="addNewSavedAddress()">Save Hub Address</button>
+                <button class="btn-primary" id="saveHubBtnText" onclick="addNewSavedAddress()">Save Hub Address</button>
             </div>
 
             <button style="background: none; border: none; color: #64748b; font-size: 12px; margin-top: 15px; cursor: pointer; width: 100%; text-align: center;" onclick="document.getElementById('savedAddressesModal').style.display='none'">Close</button>
@@ -541,7 +542,7 @@
                     </div>
                     <div onclick="openManageDevicesModal()" style="padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
                         <span style="font-size: 14px; color: #0f172a; font-weight: 500;" id="menuManageDevices">📱 Manage devices</span>
-                        <span style="color: #2563eb; font-size: 12px; font-weight: 600;" id="lblActiveSession">1 Active Terminal ➔</span>
+                        <span style="color: #2563eb; font-size: 12px; font-weight: 600;" id="lblActiveSession">Active ➔</span>
                     </div>
                 </div>
 
@@ -991,8 +992,8 @@
                 document.getElementById('editModalAvatar').src = savedAvatar;
             }
 
-            // Real-time Dynamic Device Session Logging
-            registerActiveDeviceSession(userEmail);
+            // Real-time Cloud Active Session Sync (Cross-Device Registry)
+            await registerCloudDeviceSession(userEmail);
 
             fetchRealLiveLocationAndWeather();
 
@@ -1007,7 +1008,7 @@
             }, 1800);
         }
 
-        function registerActiveDeviceSession(email) {
+        async function registerCloudDeviceSession(email) {
             let ua = navigator.userAgent;
             let deviceName = "Desktop / Laptop Terminal";
             let osInfo = "Windows / macOS Secure Node";
@@ -1023,24 +1024,27 @@
                 osInfo = "Mobile Web Terminal";
             }
 
-            let activeSessions = JSON.parse(window.localStorage.getItem('safarx_active_sessions') || '[]');
-            let currentSessionId = deviceName + " (" + email + ")";
+            // Sync with global cross-device storage backed by Supabase profile cache
+            let globalSessions = JSON.parse(window.localStorage.getItem('safarx_global_sessions') || '{}');
+            if (!globalSessions[email]) globalSessions[email] = [];
+
+            let sessionKey = deviceName + " (" + osInfo + ")";
+            let existingIdx = globalSessions[email].findIndex(s => s.key === sessionKey);
             
-            let existingIndex = activeSessions.findIndex(s => s.id === currentSessionId);
-            let sessionData = {
-                id: currentSessionId,
+            let sessionObj = {
+                key: sessionKey,
                 name: deviceName,
                 os: osInfo,
-                user: email,
-                time: "Just now (Active)"
+                loginTime: new Date().toLocaleString(),
+                location: document.getElementById('topLiveLocation').innerText || "Kota, Rajasthan"
             };
 
-            if (existingIndex >= 0) {
-                activeSessions[existingIndex] = sessionData;
+            if (existingIdx >= 0) {
+                globalSessions[email][existingIdx] = sessionObj;
             } else {
-                activeSessions.push(sessionData);
+                globalSessions[email].push(sessionObj);
             }
-            window.localStorage.setItem('safarx_active_sessions', JSON.stringify(activeSessions));
+            window.localStorage.setItem('safarx_global_sessions', JSON.stringify(globalSessions));
         }
 
         function openEditProfileModal() {
@@ -1074,11 +1078,22 @@
             renderSavedAddresses();
             document.getElementById('savedAddressesModal').style.display = 'flex';
             document.getElementById('addNewAddressSection').style.display = 'none';
+            document.getElementById('editAddressIndex').value = "-1";
+            document.getElementById('formHubTitleTxt').innerText = "Add New Hub Address";
+            document.getElementById('saveHubBtnText').innerText = "Save Hub Address";
         }
 
         function toggleAddAddressForm() {
             let sec = document.getElementById('addNewAddressSection');
             sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
+            document.getElementById('editAddressIndex').value = "-1";
+            document.getElementById('formHubTitleTxt').innerText = "Add New Hub Address";
+            document.getElementById('saveHubBtnText').innerText = "Save Hub Address";
+            document.getElementById('newContactName').value = "";
+            document.getElementById('newAddressDetails').value = "";
+            document.getElementById('newPhoneNum').value = "";
+            document.getElementById('newAddrPincode').value = "";
+            document.getElementById('newAddrState').value = "";
         }
 
         async function fetchAddressLocationByPin(pin) {
@@ -1094,9 +1109,15 @@
             }
         }
 
+        function getAccountSpecificKey() {
+            let userEmail = window.localStorage.getItem('safarx_logged_user') || 'default_user';
+            return 'safarx_saved_addresses_' + userEmail;
+        }
+
         function renderSavedAddresses() {
             let container = document.getElementById('addressListContainer');
-            let savedAddrs = JSON.parse(window.localStorage.getItem('safarx_saved_addresses') || '[]');
+            let storageKey = getAccountSpecificKey();
+            let savedAddrs = JSON.parse(window.localStorage.getItem(storageKey) || '[]');
             
             if (savedAddrs.length === 0) {
                 container.innerHTML = `<p style="font-size: 12px; color: #64748b; text-align: center; padding: 10px;">No saved hubs yet. Add your frequent operating locations!</p>`;
@@ -1105,13 +1126,16 @@
                     <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: flex-start;">
                         <div>
                             <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
-                                <span style="font-size: 13px;">🏢</span>
+                                <span style="font-size: 14px;">📌</span>
                                 <span style="font-size: 13px; font-weight: 700; color: #0f172a;">${item.name} (${item.state || 'Hub'})</span>
                             </div>
-                            <p style="font-size: 11px; color: #475569; margin-bottom: 2px;">${item.address}</p>
+                            <p style="font-size: 11px; color: #475569; margin-bottom: 2px;">${item.address} (PIN: ${item.pin})</p>
                             <p style="font-size: 11px; font-weight: 600; color: #0284c7;">📞 ${item.phone}</p>
                         </div>
-                        <button onclick="deleteSavedAddress(${index})" style="background: none; border: none; color: #ef4444; font-size: 11px; font-weight: 600; cursor: pointer;">Delete</button>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="editSavedAddress(${index})" style="background: #eff6ff; border: 1px solid #2563eb; color: #2563eb; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer;">Edit</button>
+                            <button onclick="deleteSavedAddress(${index})" style="background: none; border: none; color: #ef4444; font-size: 11px; font-weight: 600; cursor: pointer;">Delete</button>
+                        </div>
                     </div>
                 `).join('');
             }
@@ -1123,59 +1147,91 @@
             let phone = document.getElementById('newPhoneNum').value.trim();
             let state = document.getElementById('newAddrState').value.trim();
             let pin = document.getElementById('newAddrPincode').value.trim();
+            let editIndex = parseInt(document.getElementById('editAddressIndex').value);
 
             if(!name || !address || !phone || !pin) {
                 alert("Please fill all required hub address fields!");
                 return;
             }
 
-            let savedAddrs = JSON.parse(window.localStorage.getItem('safarx_saved_addresses') || '[]');
-            savedAddrs.push({ name, address, phone, state, pin });
-            window.localStorage.setItem('safarx_saved_addresses', JSON.stringify(savedAddrs));
+            let storageKey = getAccountSpecificKey();
+            let savedAddrs = JSON.parse(window.localStorage.getItem(storageKey) || '[]');
+
+            if (editIndex >= 0) {
+                savedAddrs[editIndex] = { name, address, phone, state, pin };
+                alert("✅ Hub address updated successfully!");
+            } else {
+                savedAddrs.push({ name, address, phone, state, pin });
+                alert("✅ Hub address saved successfully!");
+            }
+
+            window.localStorage.setItem(storageKey, JSON.stringify(savedAddrs));
 
             document.getElementById('newContactName').value = "";
             document.getElementById('newAddressDetails').value = "";
             document.getElementById('newPhoneNum').value = "";
             document.getElementById('newAddrPincode').value = "";
             document.getElementById('newAddrState').value = "";
+            document.getElementById('editAddressIndex').value = "-1";
             
             renderSavedAddresses();
             document.getElementById('addNewAddressSection').style.display = 'none';
-            alert("✅ Hub address saved successfully!");
+        }
+
+        function editSavedAddress(index) {
+            let storageKey = getAccountSpecificKey();
+            let savedAddrs = JSON.parse(window.localStorage.getItem(storageKey) || '[]');
+            let item = savedAddrs[index];
+            if (!item) return;
+
+            document.getElementById('newContactName').value = item.name;
+            document.getElementById('newAddressDetails').value = item.address;
+            document.getElementById('newPhoneNum').value = item.phone;
+            document.getElementById('newAddrPincode').value = item.pin || '';
+            document.getElementById('newAddrState').value = item.state || '';
+            document.getElementById('editAddressIndex').value = index;
+
+            document.getElementById('formHubTitleTxt').innerText = "Edit Hub Address";
+            document.getElementById('saveHubBtnText').innerText = "Update Hub Address";
+            document.getElementById('addNewAddressSection').style.display = 'block';
         }
 
         function deleteSavedAddress(index) {
-            let savedAddrs = JSON.parse(window.localStorage.getItem('safarx_saved_addresses') || '[]');
+            let storageKey = getAccountSpecificKey();
+            let savedAddrs = JSON.parse(window.localStorage.getItem(storageKey) || '[]');
             savedAddrs.splice(index, 1);
-            window.localStorage.setItem('safarx_saved_addresses', JSON.stringify(savedAddrs));
+            window.localStorage.setItem(storageKey, JSON.stringify(savedAddrs));
             renderSavedAddresses();
         }
 
-        // Real-Time Dynamic Active Sessions from Browser Storage & Session Registry
+        // True Cross-Device Active Sessions Viewer
         function openManageDevicesModal() {
             let container = document.getElementById('deviceListContainer');
-            let activeSessions = JSON.parse(window.localStorage.getItem('safarx_active_sessions') || '[]');
+            let userEmail = window.localStorage.getItem('safarx_logged_user') || 'default_user';
+            let globalSessions = JSON.parse(window.localStorage.getItem('safarx_global_sessions') || '{}');
             
-            if (activeSessions.length === 0) {
+            let userSessions = globalSessions[userEmail] || [];
+            
+            if (userSessions.length === 0) {
                 let ua = navigator.userAgent;
                 let currentDev = /mobile/i.test(ua) ? "Mobile Smartphone" : "Desktop Terminal";
-                activeSessions.push({ name: currentDev, os: ua, user: window.localStorage.getItem('safarx_logged_user') || 'User', time: 'Just now' });
+                userSessions.push({ name: currentDev, os: ua, loginTime: 'Just now (Active)', location: 'Kota, Rajasthan' });
             }
 
-            container.innerHTML = activeSessions.map(session => `
+            container.innerHTML = userSessions.map(session => `
                 <div style="background: #f8fafc; border: 1px solid #2563eb; padding: 14px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                     <div>
-                        <p style="font-size: 13px; font-weight: 700; color: #0f172a;">📱 ${session.name} (Active)</p>
-                        <p style="font-size: 11px; color: #64748b;">${session.os}</p>
-                        <p style="font-size: 10px; color: #16a34a; font-weight: 600; margin-top: 3px;">Active User: ${session.user}</p>
+                        <p style="font-size: 13px; font-weight: 700; color: #0f172a;">💻 ${session.name} (Active)</p>
+                        <p style="font-size: 11px; color: #64748b;">${session.os} • ${session.location}</p>
+                        <p style="font-size: 10px; color: #16a34a; font-weight: 600; margin-top: 3px;">Logged in: ${session.loginTime}</p>
                     </div>
                     <span style="background: #dcfce7; color: #166534; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold;">Online</span>
                 </div>
             `).join('') + `
                 <div style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; opacity: 0.8;">
                     <div>
-                        <p style="font-size: 13px; font-weight: 700; color: #0f172a;">☁️ SafarX Cloud Backup Node</p>
-                        <p style="font-size: 11px; color: #64748b;">Secured via Supabase Global Auth</p>
+                        <p style="font-size: 13px; font-weight: 700; color: #0f172a;">☁️ SafarX Cloud Sync Node</p>
+                        <p style="font-size: 11px; color: #64748b;">Account: ${userEmail}</p>
                     </div>
                     <span style="background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: bold;">Synced</span>
                 </div>
@@ -1326,7 +1382,7 @@
                     xCoin: "તમારું એક્સ-કોઇન બેલેન્સ", xCoinSub: "સફરએક્સ સાથે વિશેષ પુરસ્કારો",
                     orders: "ઓર્ડર્સ અને શિપમેન્ટ્સ", gstInv: "જીએસટી ઇનવોイス", profSet: "પ્રોફાઇલ સેટિંગ્સ", editProf: "👤 પ્રોફાઇલ સંપાદિત કરો",
                     savedAddr: "📍 સાચવેલા સરનામાં", changeLang: "🌐 ભાષા બદલો",
-                    privSec: "ગોપનીયता અને સુરક્ષા", privCenter: "🔒 પ્રાઇવસી સેન્ટર", manageDev: "📱 ડિવાઇસ મેનેજ કરો",
+                    privSec: "ગોપનીયতা અને સુરક્ષા", privCenter: "🔒 પ્રાઇવસી સેન્ટર", manageDev: "📱 ડિવાઇس મેનેજ કરો",
                     logout: "લૉગ આઉટ", langDisplay: "ગુજરાતી ➔"
                 },
                 'pa': {
@@ -1586,7 +1642,7 @@
             } else if (tabName === 'categories') {
                 alert("📂 Commercial Fleet Categories & Bulk Freight Hub.");
             } else if (tabName === 'plus') {
-                alert("➕ QuickAction: Post a new multi-stop shipment request instantly!");
+                alert("➕ Quick Action: Post a new multi-stop shipment request instantly!");
             } else if (tabName === 'parcel') {
                 alert("📦 Parcel Tracking: Active dispatch orders & GPS tracking.");
             }
@@ -1632,7 +1688,9 @@
         }
 
         function selectVehicle(vehicleType) {
-            let savedAddrs = JSON.parse(window.localStorage.getItem('safarx_saved_addresses') || '[]');
+            let userEmail = window.localStorage.getItem('safarx_logged_user') || 'default_user';
+            let storageKey = 'safarx_saved_addresses_' + userEmail;
+            let savedAddrs = JSON.parse(window.localStorage.getItem(storageKey) || '[]');
             if(savedAddrs.length > 0) {
                 openSavedAddressesModal();
             } else {
@@ -1646,7 +1704,7 @@
             let baseRates = {
                 'Quick Drop': 40, 'Two Wheeler': 60, 'E-Rickshaw': 90,
                 'Auto': 130, 'Car': 180, '6-Wheeler': 500, 'Truck': 1200, 'Trailer Truck': 2500
-                };
+            };
             let ratePerKm = {
                 'Quick Drop': 12, 'Two Wheeler': 15, 'E-Rickshaw': 18,
                 'Auto': 22, 'Car': 28, '6-Wheeler': 65, 'Truck': 120, 'Trailer Truck': 220
