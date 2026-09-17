@@ -959,6 +959,9 @@
 
             window.localStorage.setItem('safarx_logged_user', email);
             window.localStorage.setItem('safarx_logged_name', name);
+            window.localStorage.setItem('safarx_user_pincode_' + email, pincode);
+            window.localStorage.setItem('safarx_user_address_' + email, address);
+            window.localStorage.setItem('safarx_user_mobile_' + email, mobile);
 
             try {
                 await supabaseClient.from('transporter_profiles').insert([{ full_name: name, email: email, pincode: pincode, address: address, mobile: mobile, role: selectedUserRole }]);
@@ -975,10 +978,14 @@
             try {
                 let { data: dbProf } = await supabaseClient.from('transporter_profiles').select('*').eq('email', userEmail);
                 if (dbProf && dbProf.length > 0) {
-                    if(dbProf[0].full_name) {
-                        userName = dbProf[0].full_name;
+                    let p = dbProf[0];
+                    if(p.full_name) {
+                        userName = p.full_name;
                         window.localStorage.setItem('safarx_logged_name', userName);
                     }
+                    if(p.pincode) window.localStorage.setItem('safarx_user_pincode_' + userEmail, p.pincode);
+                    if(p.address) window.localStorage.setItem('safarx_user_address_' + userEmail, p.address);
+                    if(p.mobile) window.localStorage.setItem('safarx_user_mobile_' + userEmail, p.mobile);
                 }
             } catch(e) {}
 
@@ -992,9 +999,7 @@
                 document.getElementById('editModalAvatar').src = savedAvatar;
             }
 
-            // Real-time Cloud Active Session Sync (Cross-Device Registry)
             await registerCloudDeviceSession(userEmail);
-
             fetchRealLiveLocationAndWeather();
 
             setTimeout(() => {
@@ -1024,7 +1029,6 @@
                 osInfo = "Mobile Web Terminal";
             }
 
-            // Sync with global cross-device storage backed by Supabase profile cache
             let globalSessions = JSON.parse(window.localStorage.getItem('safarx_global_sessions') || '{}');
             if (!globalSessions[email]) globalSessions[email] = [];
 
@@ -1047,9 +1051,40 @@
             window.localStorage.setItem('safarx_global_sessions', JSON.stringify(globalSessions));
         }
 
-        function openEditProfileModal() {
+        async function openEditProfileModal() {
             let currentName = document.getElementById('profileTabName').innerText;
+            let userEmail = window.localStorage.getItem('safarx_logged_user');
+
             document.getElementById('editFullName').value = currentName !== "Hey, User" ? currentName : "";
+            document.getElementById('editPincode').value = window.localStorage.getItem('safarx_user_pincode_' + userEmail) || "";
+            document.getElementById('editAddress').value = window.localStorage.getItem('safarx_user_address_' + userEmail) || "";
+            document.getElementById('editMobile').value = window.localStorage.getItem('safarx_user_mobile_' + userEmail) || "";
+
+            try {
+                let { data: dbProf } = await supabaseClient.from('transporter_profiles').select('*').eq('email', userEmail);
+                if (dbProf && dbProf.length > 0) {
+                    let p = dbProf[0];
+                    if(p.full_name) document.getElementById('editFullName').value = p.full_name;
+                    if(p.pincode) {
+                        document.getElementById('editPincode').value = p.pincode;
+                        window.localStorage.setItem('safarx_user_pincode_' + userEmail, p.pincode);
+                    }
+                    if(p.address) {
+                        document.getElementById('editAddress').value = p.address;
+                        window.localStorage.setItem('safarx_user_address_' + userEmail, p.address);
+                    }
+                    if(p.mobile) {
+                        document.getElementById('editMobile').value = p.mobile;
+                        window.localStorage.setItem('safarx_user_mobile_' + userEmail, p.mobile);
+                    }
+                }
+            } catch(e) {}
+
+            let savedAvatar = window.localStorage.getItem('safarx_logged_avatar');
+            if (savedAvatar) {
+                document.getElementById('editModalAvatar').src = savedAvatar;
+            }
+
             document.getElementById('editProfileModal').style.display = 'flex';
         }
 
@@ -1065,12 +1100,15 @@
             document.getElementById('profileTabName').innerText = newName;
             document.getElementById('dashName').innerText = newName;
             window.localStorage.setItem('safarx_logged_name', newName);
+            window.localStorage.setItem('safarx_user_pincode_' + userEmail, newPin);
+            window.localStorage.setItem('safarx_user_address_' + userEmail, newAddr);
+            window.localStorage.setItem('safarx_user_mobile_' + userEmail, newMob);
 
             try {
                 await supabaseClient.from('transporter_profiles').update({ full_name: newName, pincode: newPin, address: newAddr, mobile: newMob }).eq('email', userEmail);
             } catch(e) {}
 
-            alert("✅ Profile updated and synced globally!");
+            alert("✅ Profile updated and synced globally across your devices!");
             document.getElementById('editProfileModal').style.display = 'none';
         }
 
@@ -1204,12 +1242,10 @@
             renderSavedAddresses();
         }
 
-        // True Cross-Device Active Sessions Viewer
         function openManageDevicesModal() {
             let container = document.getElementById('deviceListContainer');
             let userEmail = window.localStorage.getItem('safarx_logged_user') || 'default_user';
             let globalSessions = JSON.parse(window.localStorage.getItem('safarx_global_sessions') || '{}');
-            
             let userSessions = globalSessions[userEmail] || [];
             
             if (userSessions.length === 0) {
@@ -1221,7 +1257,7 @@
             container.innerHTML = userSessions.map(session => `
                 <div style="background: #f8fafc; border: 1px solid #2563eb; padding: 14px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                     <div>
-                        <p style="font-size: 13px; font-weight: 700; color: #0f172a;">💻 ${session.name} (Active)</p>
+                        <p style="font-size: 13px; font-weight: 700; color: #0f172a;">📱 ${session.name} (Active)</p>
                         <p style="font-size: 11px; color: #64748b;">${session.os} • ${session.location}</p>
                         <p style="font-size: 10px; color: #16a34a; font-weight: 600; margin-top: 3px;">Logged in: ${session.loginTime}</p>
                     </div>
@@ -1382,7 +1418,7 @@
                     xCoin: "તમારું એક્સ-કોઇન બેલેન્સ", xCoinSub: "સફરએક્સ સાથે વિશેષ પુરસ્કારો",
                     orders: "ઓર્ડર્સ અને શિપમેન્ટ્સ", gstInv: "જીએસટી ઇનવોイス", profSet: "પ્રોફાઇલ સેટિંગ્સ", editProf: "👤 પ્રોફાઇલ સંપાદિત કરો",
                     savedAddr: "📍 સાચવેલા સરનામાં", changeLang: "🌐 ભાષા બદલો",
-                    privSec: "ગોપનીયতা અને સુરક્ષા", privCenter: "🔒 પ્રાઇવસી સેન્ટર", manageDev: "📱 ડિવાઇس મેનેજ કરો",
+                    privSec: "ગોપનીયता અને સુરક્ષા", privCenter: "🔒 પ્રાઇવસી સેન્ટર", manageDev: "📱 ડિવાઇસ મેનેજ કરો",
                     logout: "લૉગ આઉટ", langDisplay: "ગુજરાતી ➔"
                 },
                 'pa': {
@@ -1533,7 +1569,7 @@
                     home: "Início", cat: "Categorias", parcel: "Pacote", account: "Conta",
                     welcomeSub: "Selecione sua opção de transporte ou entrega abaixo.",
                     selectTrans: "📦 Seleccione a Frota de Transporte",
-                    quickTitle: "⚡ Entrega Rápida", quickSub: "Entregador local instantâneo para pequenos pacotes",
+                    quickTitle: "⚡ Entrega Rápida", quickSub: "Entregador local instantáneo para pequenos pacotes",
                     twoWheelerTitle: "Duas Rodas", twoWheelerSub: "Entrega rápida de moto (Até 20 kg)",
                     eRickTitle: "E-Rickshaw", eRickSub: "Transporte local ecológico (Até 350 kg)",
                     autoTitle: "Auto", autoSub: "Mini veículo de carga (Até 500 kg)",
