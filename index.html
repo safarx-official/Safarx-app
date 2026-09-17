@@ -415,15 +415,36 @@
         </div>
     </div>
 <script>
-        const SUPABASE_URL = "https://oczoyqkxryppdwomqbgx.supabase.co";
+       const SUPABASE_URL = "https://oczoyqkxryppdwomqbgx.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable__LpoKgOtsPR8vJWSm1DaeQ_xWa13Z_C"; 
         
-        // PERSISTENT 30-DAY SESSION STORAGE CONFIGURATION
+        // FOOLPROOF MOBILE & DESKTOP PERSISTENT STORAGE WRAPPER
+        const mobileCompatibleStorage = {
+            getItem: (key) => {
+                try {
+                    return window.localStorage.getItem(key) || window.sessionStorage.getItem(key);
+                } catch (e) { return null; }
+            },
+            setItem: (key, value) => {
+                try {
+                    window.localStorage.setItem(key, value);
+                    window.sessionStorage.setItem(key, value);
+                } catch (e) {}
+            },
+            removeItem: (key) => {
+                try {
+                    window.localStorage.removeItem(key);
+                    window.sessionStorage.removeItem(key);
+                } catch (e) {}
+            }
+        };
+
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
             auth: {
                 persistSession: true,
                 autoRefreshToken: true,
-                storage: window.localStorage
+                storage: mobileCompatibleStorage,
+                detectSessionInUrl: true
             }
         });
 
