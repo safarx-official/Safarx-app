@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #0f172a; color: #f8fafc; height: 100vh; overflow-x: hidden; }
+        body { background-color: #f1f5f9; color: #1e293b; height: 100vh; overflow-x: hidden; }
 
         /* SPLASH & TRANSITION SCREENS (EXACT CENTER & CLEAN LOGO MATCH) */
         #splashScreen, #loginSplashTransition {
@@ -36,58 +36,58 @@
         @keyframes pulseLogo { 0% { transform: scale(1); } 100% { transform: scale(1.05); } }
 
         /* SCREENS */
-        .screen-box { display: none; justify-content: center; align-items: center; min-height: 100vh; background-color: #0f172a; padding: 20px; }
-        .card { background-color: #1e293b; padding: 35px; border-radius: 16px; border: 1px solid #334155; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; }
-        .card h1 { font-size: 24px; color: #ffffff; margin-bottom: 5px; }
-        .card p { color: #94a3b8; font-size: 13px; margin-bottom: 20px; }
+        .screen-box { display: none; justify-content: center; align-items: center; min-height: 100vh; background-color: #f1f5f9; padding: 20px; }
+        .card { background-color: #ffffff; padding: 35px; border-radius: 16px; border: 1px solid #cbd5e1; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.08); position: relative; }
+        .card h1 { font-size: 24px; color: #0f172a; margin-bottom: 5px; }
+        .card p { color: #64748b; font-size: 13px; margin-bottom: 20px; }
 
         .btn-google {
-            width: 100%; background-color: #ffffff; color: #1e2124; border: none; padding: 14px;
+            width: 100%; background-color: #ffffff; color: #1e2124; border: 1px solid #cbd5e1; padding: 14px;
             font-size: 15px; font-weight: 600; border-radius: 8px; cursor: pointer; display: flex;
             align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; transition: background 0.2s;
         }
-        .btn-google:hover { background-color: #f1f5f9; }
+        .btn-google:hover { background-color: #f8fafc; }
         
-        .divider { display: flex; align-items: center; text-align: center; color: #64748b; font-size: 12px; margin: 15px 0; }
-        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #334155; }
+        .divider { display: flex; align-items: center; text-align: center; color: #94a3b8; font-size: 12px; margin: 15px 0; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #cbd5e1; }
         .divider::before { margin-right: .5em; }
         .divider::after { margin-left: .5em; }
 
         .input-group { text-align: left; margin-bottom: 12px; }
-        .input-group label { font-size: 12px; color: #94a3b8; display: block; margin-bottom: 4px; }
-        .input-box { width: 100%; padding: 12px; background-color: #0f172a; border: 1px solid #334155; color: #ffffff; border-radius: 8px; font-size: 14px; outline: none; }
-        .input-box:focus { border-color: #3b82f6; }
+        .input-group label { font-size: 12px; color: #475569; display: block; margin-bottom: 4px; font-weight: 600; }
+        .input-box { width: 100%; padding: 12px; background-color: #f8fafc; border: 1px solid #cbd5e1; color: #0f172a; border-radius: 8px; font-size: 14px; outline: none; }
+        .input-box:focus { border-color: #2563eb; background-color: #ffffff; }
         
-        .btn-primary { width: 100%; background-color: #3b82f6; color: white; border: none; padding: 14px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 10px; transition: background 0.2s; }
-        .btn-primary:hover { background-color: #2563eb; }
+        .btn-primary { width: 100%; background-color: #2563eb; color: white; border: none; padding: 14px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 10px; transition: background 0.2s; }
+        .btn-primary:hover { background-color: #1d4ed8; }
 
-        .role-btn { width: 100%; background-color: #0f172a; color: white; border: 1px solid #334155; padding: 16px; font-size: 16px; font-weight: 600; border-radius: 10px; cursor: pointer; margin-bottom: 15px; transition: all 0.2s; text-align: left; display: flex; justify-content: space-between; align-items: center; }
-        .role-btn:hover { border-color: #3b82f6; background-color: #1e293b; }
+        .role-btn { width: 100%; background-color: #f8fafc; color: #0f172a; border: 1px solid #cbd5e1; padding: 16px; font-size: 16px; font-weight: 600; border-radius: 10px; cursor: pointer; margin-bottom: 15px; transition: all 0.2s; text-align: left; display: flex; justify-content: space-between; align-items: center; }
+        .role-btn:hover { border-color: #2563eb; background-color: #eff6ff; }
 
-        .auth-switch { font-size: 12px; color: #94a3b8; margin-top: 15px; cursor: pointer; }
-        .auth-switch span { color: #3b82f6; font-weight: 600; }
+        .auth-switch { font-size: 12px; color: #64748b; margin-top: 15px; cursor: pointer; }
+        .auth-switch span { color: #2563eb; font-weight: 600; }
         .auth-switch span:hover { text-decoration: underline; }
 
-        .forgot-link { display: block; text-align: right; font-size: 12px; color: #3b82f6; margin-top: -6px; margin-bottom: 15px; cursor: pointer; text-decoration: none; }
+        .forgot-link { display: block; text-align: right; font-size: 12px; color: #2563eb; margin-top: -6px; margin-bottom: 15px; cursor: pointer; text-decoration: none; }
         .forgot-link:hover { text-decoration: underline; }
 
         .back-btn {
             position: absolute; top: 20px; left: 20px; background: none; border: none;
-            color: #94a3b8; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 5px;
+            color: #64748b; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 5px;
             transition: color 0.2s;
         }
-        .back-btn:hover { color: #ffffff; }
+        .back-btn:hover { color: #0f172a; }
 
         .profile-container { position: relative; width: 80px; height: 80px; margin: 0 auto 15px auto; }
-        .profile-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #3b82f6; background: #0f172a; }
+        .profile-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #2563eb; background: #f1f5f9; }
         .upload-badge {
-            position: absolute; bottom: 0; right: 0; background: #3b82f6; color: white;
+            position: absolute; bottom: 0; right: 0; background: #2563eb; color: white;
             width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center;
-            justify-content: center; font-size: 14px; cursor: pointer; border: 2px solid #1e293b;
+            justify-content: center; font-size: 14px; cursor: pointer; border: 2px solid #ffffff;
         }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 10000; padding: 20px; }
-        .modal-card { background: #1e293b; padding: 30px; border-radius: 16px; border: 1px solid #334155; width: 100%; max-width: 400px; text-align: left; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 10000; padding: 20px; }
+        .modal-card { background: #ffffff; padding: 30px; border-radius: 16px; border: 1px solid #cbd5e1; width: 100%; max-width: 400px; text-align: left; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
     </style>
 </head>
  <body>
@@ -156,23 +156,23 @@
  <!-- SIGN UP 8-DIGIT OTP VERIFICATION MODAL -->
     <div id="signupVerifyModal" class="modal-overlay">
         <div class="modal-card">
-            <h2 style="color: #fff; font-size: 20px; margin-bottom: 5px;">SafarX Email Verification</h2>
-            <p style="color: #94a3b8; font-size: 12px; margin-bottom: 15px;" id="verifyModalText">We have sent an 8-digit verification code to your email via SafarX Security. Enter it below.</p>
+            <h2 style="color: #0f172a; font-size: 20px; margin-bottom: 5px;">SafarX Email Verification</h2>
+            <p style="color: #64748b; font-size: 12px; margin-bottom: 15px;" id="verifyModalText">We have sent an 8-digit verification code to your email via SafarX Security. Enter it below.</p>
             
             <div class="input-group">
                 <label>Enter 8-Digit Verification Code</label>
                 <input type="text" id="signupOtpInput" class="input-box" placeholder="Enter 8-digit code" maxlength="8">
             </div>
             <button class="btn-primary" onclick="confirmSignupOtpAndProceed()">Verify Code & Complete Profile</button>
-            <button style="background: none; border: none; color: #94a3b8; font-size: 12px; margin-top: 15px; cursor: pointer; width: 100%; text-align: center;" onclick="document.getElementById('signupVerifyModal').style.display='none'">Cancel</button>
+            <button style="background: none; border: none; color: #64748b; font-size: 12px; margin-top: 15px; cursor: pointer; width: 100%; text-align: center;" onclick="document.getElementById('signupVerifyModal').style.display='none'">Cancel</button>
         </div>
     </div>
 
     <!-- SAFARX FORGOT PASSWORD MODAL -->
     <div id="forgotModal" class="modal-overlay">
         <div class="modal-card">
-            <h2 style="color: #fff; font-size: 20px; margin-bottom: 5px;">SafarX Security - Password Reset</h2>
-            <p style="color: #94a3b8; font-size: 12px; margin-bottom: 15px;" id="forgotStepText">Enter your registered email to receive an 8-digit verification code from SafarX.</p>
+            <h2 style="color: #0f172a; font-size: 20px; margin-bottom: 5px;">SafarX Security - Password Reset</h2>
+            <p style="color: #64748b; font-size: 12px; margin-bottom: 15px;" id="forgotStepText">Enter your registered email to receive an 8-digit verification code from SafarX.</p>
             
             <div id="forgotStep1">
                 <div class="input-group">
@@ -202,7 +202,7 @@
                 <button class="btn-primary" onclick="saveNewPasswordFinal()">Reset Password</button>
             </div>
 
-            <button style="background: none; border: none; color: #94a3b8; font-size: 12px; margin-top: 15px; cursor: pointer; width: 100%; text-align: center;" onclick="closeForgotModal()">Cancel</button>
+            <button style="background: none; border: none; color: #64748b; font-size: 12px; margin-top: 15px; cursor: pointer; width: 100%; text-align: center;" onclick="closeForgotModal()">Cancel</button>
         </div>
     </div>
 
@@ -264,16 +264,16 @@
             <button class="btn-primary" onclick="submitProfileSetup()">Confirm & Enter App</button>
         </div>
     </div>
- <!-- 4. MAIN CUSTOMER DASHBOARD SCREEN -->
-    <div id="dashboardScreen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0f172a; flex-direction: column; justify-content: space-between;">
+<!-- 4. MAIN CUSTOMER DASHBOARD SCREEN -->
+    <div id="dashboardScreen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f1f5f9; flex-direction: column; justify-content: space-between;">
         
         <!-- TOP HEADER (Live Real-Time GPS Location & Real Temperature) -->
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #1e293b; border-bottom: 1px solid #334155; z-index: 10;">
-            <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #94a3b8;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #ffffff; border-bottom: 1px solid #cbd5e1; z-index: 10; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #475569;">
                 <span>📍 Live GPS:</span>
-                <span id="topLiveLocation" style="color: #fff; font-weight: 600;">Detecting exact location...</span>
+                <span id="topLiveLocation" style="color: #0f172a; font-weight: 600;">Detecting exact location...</span>
             </div>
-            <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #3b82f6; font-weight: bold;">
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #2563eb; font-weight: bold;">
                 <span>🌡️</span>
                 <span id="topLiveTemp">--°C</span>
             </div>
@@ -283,126 +283,138 @@
         <div style="flex: 1; overflow-y: auto; padding: 20px; max-width: 600px; margin: 0 auto; width: 100%;">
             
             <!-- Welcome Banner -->
-            <div style="background: linear-gradient(135deg, #1e293b, #0f172a); padding: 20px; border-radius: 14px; border: 1px solid #334155; margin-bottom: 20px; text-align: left;">
-                <h2 style="color: #3b82f6; font-size: 20px; margin-bottom: 4px;">Hello, <span id="dashName">-</span>! 👋</h2>
-                <p style="color: #94a3b8; font-size: 13px;">Select your commercial transport vehicle below to book a shipment instantly.</p>
+            <div style="background: linear-gradient(135deg, #ffffff, #eff6ff); padding: 20px; border-radius: 14px; border: 1px solid #cbd5e1; margin-bottom: 20px; text-align: left; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                <h2 style="color: #2563eb; font-size: 20px; margin-bottom: 4px;">Hello, <span id="dashName">-</span>! 👋</h2>
+                <p style="color: #64748b; font-size: 13px;">Select your transport or delivery option below to book instantly.</p>
             </div>
 
-            <h3 style="color: #fff; font-size: 16px; margin-bottom: 15px; text-align: left;">📦 Select Transport Vehicle</h3>
- <!-- VEHICLES LIST CONTAINER -->
+            <h3 style="color: #0f172a; font-size: 16px; margin-bottom: 15px; text-align: left; font-weight: 700;">📦 Select Transport & Delivery</h3>
+<!-- VEHICLES & QUICK DROP LIST CONTAINER -->
             <div style="display: flex; flex-direction: column; gap: 12px; padding-bottom: 30px;">
                 
-                <!-- 1. Two Wheeler -->
-                <div onclick="selectVehicle('Two Wheeler')" style="background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border 0.2s;">
+                <!-- 0. QUICK DROP (Tiffin, Charger, Keys & Essentials) -->
+                <div onclick="selectVehicle('Quick Drop')" style="background: #ffffff; border: 1px solid #2563eb; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 4px 12px rgba(37,99,235,0.1); transition: transform 0.1s;">
                     <div style="display: flex; align-items: center; gap: 15px;">
-                        <img src="https://cdn-icons-png.flaticon.com/512/3448/3448339.png" alt="Two Wheeler" style="width: 50px; height: 50px; object-fit: contain; background: #0f172a; padding: 5px; border-radius: 8px;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3500/3500833.png" alt="Quick Drop" style="width: 50px; height: 50px; object-fit: contain; background: #eff6ff; padding: 6px; border-radius: 10px;">
                         <div style="text-align: left;">
-                            <h4 style="color: #fff; font-size: 15px;">Two Wheeler</h4>
-                            <p style="color: #94a3b8; font-size: 12px;">Fast parcel & document delivery (Up to 20 kg)</p>
+                            <h4 style="color: #0f172a; font-size: 15px; font-weight: 700;">⚡ Quick Drop (Tiffin & Essentials)</h4>
+                            <p style="color: #64748b; font-size: 12px;">Instant local runner for tiffin, charger, keys & documents</p>
                         </div>
                     </div>
-                    <span style="color: #3b82f6; font-weight: bold;">➔</span>
+                    <span style="color: #2563eb; font-weight: bold; font-size: 18px;">➔</span>
+                </div>
+
+                <!-- 1. Two Wheeler -->
+                <div onclick="selectVehicle('Two Wheeler')" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3448/3448339.png" alt="Two Wheeler" style="width: 50px; height: 50px; object-fit: contain; background: #f8fafc; padding: 6px; border-radius: 10px;">
+                        <div style="text-align: left;">
+                            <h4 style="color: #0f172a; font-size: 15px; font-weight: 700;">Two Wheeler</h4>
+                            <p style="color: #64748b; font-size: 12px;">Fast parcel & document delivery (Up to 20 kg)</p>
+                        </div>
+                    </div>
+                    <span style="color: #2563eb; font-weight: bold; font-size: 18px;">➔</span>
                 </div>
 
                 <!-- 2. E-Rickshaw -->
-                <div onclick="selectVehicle('E-Rickshaw')" style="background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border 0.2s;">
+                <div onclick="selectVehicle('E-Rickshaw')" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
                     <div style="display: flex; align-items: center; gap: 15px;">
-                        <img src="https://cdn-icons-png.flaticon.com/512/2964/2964514.png" alt="E-Rickshaw" style="width: 50px; height: 50px; object-fit: contain; background: #0f172a; padding: 5px; border-radius: 8px;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3198/3198424.png" alt="E-Rickshaw" style="width: 50px; height: 50px; object-fit: contain; background: #f8fafc; padding: 6px; border-radius: 10px;">
                         <div style="text-align: left;">
-                            <h4 style="color: #fff; font-size: 15px;">E-Rickshaw</h4>
-                            <p style="color: #94a3b8; font-size: 12px;">Eco-friendly local transport (Up to 350 kg)</p>
+                            <h4 style="color: #0f172a; font-size: 15px; font-weight: 700;">E-Rickshaw</h4>
+                            <p style="color: #64748b; font-size: 12px;">Eco-friendly local transport (Up to 350 kg)</p>
                         </div>
                     </div>
-                    <span style="color: #3b82f6; font-weight: bold;">➔</span>
+                    <span style="color: #2563eb; font-weight: bold; font-size: 18px;">➔</span>
                 </div>
 
                 <!-- 3. Auto -->
-                <div onclick="selectVehicle('Auto')" style="background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border 0.2s;">
+                <div onclick="selectVehicle('Auto')" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
                     <div style="display: flex; align-items: center; gap: 15px;">
-                        <img src="https://cdn-icons-png.flaticon.com/512/1048/1048313.png" alt="Auto" style="width: 50px; height: 50px; object-fit: contain; background: #0f172a; padding: 5px; border-radius: 8px;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1048/1048313.png" alt="Auto" style="width: 50px; height: 50px; object-fit: contain; background: #f8fafc; padding: 6px; border-radius: 10px;">
                         <div style="text-align: left;">
-                            <h4 style="color: #fff; font-size: 15px;">Auto</h4>
-                            <p style="color: #94a3b8; font-size: 12px;">Open body mini carrier (Up to 500 kg)</p>
+                            <h4 style="color: #0f172a; font-size: 15px; font-weight: 700;">Auto</h4>
+                            <p style="color: #64748b; font-size: 12px;">Open body mini carrier (Up to 500 kg)</p>
                         </div>
                     </div>
-                    <span style="color: #3b82f6; font-weight: bold;">➔</span>
+                    <span style="color: #2563eb; font-weight: bold; font-size: 18px;">➔</span>
                 </div>
 
                 <!-- 4. Car -->
-                <div onclick="selectVehicle('Car')" style="background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border 0.2s;">
+                <div onclick="selectVehicle('Car')" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
                     <div style="display: flex; align-items: center; gap: 15px;">
-                        <img src="https://cdn-icons-png.flaticon.com/512/3202/3202926.png" alt="Car" style="width: 50px; height: 50px; object-fit: contain; background: #0f172a; padding: 5px; border-radius: 8px;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3202/3202926.png" alt="Car" style="width: 50px; height: 50px; object-fit: contain; background: #f8fafc; padding: 6px; border-radius: 10px;">
                         <div style="text-align: left;">
-                            <h4 style="color: #fff; font-size: 15px;">Car</h4>
-                            <p style="color: #94a3b8; font-size: 12px;">Secure luggage & fragile goods (Up to 250 kg)</p>
+                            <h4 style="color: #0f172a; font-size: 15px; font-weight: 700;">Car</h4>
+                            <p style="color: #64748b; font-size: 12px;">Secure luggage & fragile goods (Up to 250 kg)</p>
                         </div>
                     </div>
-                    <span style="color: #3b82f6; font-weight: bold;">➔</span>
+                    <span style="color: #2563eb; font-weight: bold; font-size: 18px;">➔</span>
                 </div>
 
                 <!-- 5. 6-Wheeler -->
-                <div onclick="selectVehicle('6-Wheeler')" style="background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border 0.2s;">
+                <div onclick="selectVehicle('6-Wheeler')" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
                     <div style="display: flex; align-items: center; gap: 15px;">
-                        <img src="https://cdn-icons-png.flaticon.com/512/2964/2964514.png" alt="6-Wheeler" style="width: 50px; height: 50px; object-fit: contain; background: #0f172a; padding: 5px; border-radius: 8px;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2964/2964514.png" alt="6-Wheeler" style="width: 50px; height: 50px; object-fit: contain; background: #f8fafc; padding: 6px; border-radius: 10px;">
                         <div style="text-align: left;">
-                            <h4 style="color: #fff; font-size: 15px;">6-Wheeler</h4>
-                            <p style="color: #94a3b8; font-size: 12px;">Medium commercial load (Up to 2.5 Tons)</p>
+                            <h4 style="color: #0f172a; font-size: 15px; font-weight: 700;">6-Wheeler</h4>
+                            <p style="color: #64748b; font-size: 12px;">Medium commercial load (Up to 2.5 Tons)</p>
                         </div>
                     </div>
-                    <span style="color: #3b82f6; font-weight: bold;">➔</span>
+                    <span style="color: #2563eb; font-weight: bold; font-size: 18px;">➔</span>
                 </div>
 
                 <!-- 6. Truck -->
-                <div onclick="selectVehicle('Truck')" style="background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border 0.2s;">
+                <div onclick="selectVehicle('Truck')" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
                     <div style="display: flex; align-items: center; gap: 15px;">
-                        <img src="https://cdn-icons-png.flaticon.com/512/741/741407.png" alt="Truck" style="width: 50px; height: 50px; object-fit: contain; background: #0f172a; padding: 5px; border-radius: 8px;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/741/741407.png" alt="Truck" style="width: 50px; height: 50px; object-fit: contain; background: #f8fafc; padding: 6px; border-radius: 10px;">
                         <div style="text-align: left;">
-                            <h4 style="color: #fff; font-size: 15px;">Truck</h4>
-                            <p style="color: #94a3b8; font-size: 12px;">Heavy commercial freight (Up to 5 Tons)</p>
+                            <h4 style="color: #0f172a; font-size: 15px; font-weight: 700;">Truck</h4>
+                            <p style="color: #64748b; font-size: 12px;">Heavy commercial freight (Up to 5 Tons)</p>
                         </div>
                     </div>
-                    <span style="color: #3b82f6; font-weight: bold;">➔</span>
+                    <span style="color: #2563eb; font-weight: bold; font-size: 18px;">➔</span>
                 </div>
 
                 <!-- 7. Trailer Truck -->
-                <div onclick="selectVehicle('Trailer Truck')" style="background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border 0.2s;">
+                <div onclick="selectVehicle('Trailer Truck')" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
                     <div style="display: flex; align-items: center; gap: 15px;">
-                        <img src="https://cdn-icons-png.flaticon.com/512/3067/3067417.png" alt="Trailer Truck" style="width: 50px; height: 50px; object-fit: contain; background: #0f172a; padding: 5px; border-radius: 8px;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3067/3067417.png" alt="Trailer Truck" style="width: 50px; height: 50px; object-fit: contain; background: #f8fafc; padding: 6px; border-radius: 10px;">
                         <div style="text-align: left;">
-                            <h4 style="color: #fff; font-size: 15px;">Trailer Truck</h4>
-                            <p style="color: #94a3b8; font-size: 12px;">Industrial multi-ton cargo (Up to 20+ Tons)</p>
+                            <h4 style="color: #0f172a; font-size: 15px; font-weight: 700;">Trailer Truck</h4>
+                            <p style="color: #64748b; font-size: 12px;">Industrial multi-ton cargo (Up to 20+ Tons)</p>
                         </div>
                     </div>
-                    <span style="color: #3b82f6; font-weight: bold;">➔</span>
+                    <span style="color: #2563eb; font-weight: bold; font-size: 18px;">➔</span>
                 </div>
 
             </div>
         </div>
 
         <!-- BOTTOM NAVIGATION BAR (5 Icons) -->
-        <div style="display: flex; justify-content: space-around; align-items: center; background: #1e293b; border-top: 1px solid #334155; padding: 12px 10px; z-index: 10;">
-            <div onclick="switchNavTab('home')" style="text-align: center; cursor: pointer; color: #3b82f6;">
+        <div style="display: flex; justify-content: space-around; align-items: center; background: #ffffff; border-top: 1px solid #cbd5e1; padding: 12px 10px; z-index: 10; box-shadow: 0 -2px 5px rgba(0,0,0,0.05);">
+            <div onclick="switchNavTab('home')" style="text-align: center; cursor: pointer; color: #2563eb;">
                 <span style="font-size: 20px; display: block;">🏠</span>
-                <span style="font-size: 11px; font-weight: 600;">Home</span>
+                <span style="font-size: 11px; font-weight: 700;">Home</span>
             </div>
-            <div onclick="switchNavTab('categories')" style="text-align: center; cursor: pointer; color: #94a3b8;">
+            <div onclick="switchNavTab('categories')" style="text-align: center; cursor: pointer; color: #64748b;">
                 <span style="font-size: 20px; display: block;">🗂️</span>
                 <span style="font-size: 11px;">Categories</span>
             </div>
-            <div onclick="switchNavTab('plus')" style="background: #3b82f6; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -20px; box-shadow: 0 4px 15px rgba(59,130,246,0.5); cursor: pointer;">
+            <div onclick="switchNavTab('plus')" style="background: #2563eb; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -20px; box-shadow: 0 4px 15px rgba(37,99,235,0.4); cursor: pointer;">
                 <span style="font-size: 24px; color: #fff; font-weight: bold;">+</span>
             </div>
-            <div onclick="switchNavTab('parcel')" style="text-align: center; cursor: pointer; color: #94a3b8;">
+            <div onclick="switchNavTab('parcel')" style="text-align: center; cursor: pointer; color: #64748b;">
                 <span style="font-size: 20px; display: block;">📦</span>
                 <span style="font-size: 11px;">Parcel</span>
             </div>
-            <div onclick="switchNavTab('profile')" style="text-align: center; cursor: pointer; color: #94a3b8;">
+            <div onclick="switchNavTab('profile')" style="text-align: center; cursor: pointer; color: #64748b;">
                 <span style="font-size: 20px; display: block;">👤</span>
                 <span style="font-size: 11px;">Profile</span>
             </div>
         </div>
     </div>
- <script>
+<script>
         const SUPABASE_URL = "https://oczoyqkxryppdwomqbgx.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable__LpoKgOtsPR8vJWSm1DaeQ_xWa13Z_C"; 
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -594,7 +606,7 @@
                 }
             }
         }
- async function confirmSignupOtpAndProceed() {
+async function confirmSignupOtpAndProceed() {
             let enteredOtp = document.getElementById('signupOtpInput').value.trim();
 
             if (!enteredOtp || enteredOtp.length < 8) {
@@ -818,8 +830,7 @@ async function fetchLocationByPincode(pincode) {
                 }, 600);
             }, 2000);
         }
-
-        // REAL LIVE GPS & WEATHER ENGINE
+// REAL LIVE GPS & WEATHER ENGINE
         function fetchRealLiveLocationAndWeather() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(async (position) => {
@@ -871,7 +882,7 @@ async function fetchLocationByPincode(pincode) {
         }
 
         function selectVehicle(vehicleType) {
-            alert(`Selected Vehicle: ${vehicleType}. Proceeding to pickup & drop location setup!`);
+            alert(`Selected Delivery Option: ${vehicleType}. Proceeding to pickup & drop location setup!`);
         }
     </script>
 </body>
