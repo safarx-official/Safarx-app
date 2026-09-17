@@ -991,6 +991,9 @@
                 document.getElementById('editModalAvatar').src = savedAvatar;
             }
 
+            // Real-time Dynamic Device Session Logging
+            registerActiveDeviceSession(userEmail);
+
             fetchRealLiveLocationAndWeather();
 
             setTimeout(() => {
@@ -1002,6 +1005,42 @@
                     document.getElementById('dashboardScreen').style.display = 'flex';
                 }, 600);
             }, 1800);
+        }
+
+        function registerActiveDeviceSession(email) {
+            let ua = navigator.userAgent;
+            let deviceName = "Desktop / Laptop Terminal";
+            let osInfo = "Windows / macOS Secure Node";
+
+            if (/android/i.test(ua)) {
+                deviceName = "Android Mobile Device";
+                osInfo = "Android OS • Mobile Browser";
+            } else if (/iphone|ipad|ipod/i.test(ua)) {
+                deviceName = "Apple iOS Device";
+                osInfo = "iOS • Mobile Safari / App Bridge";
+            } else if (/mobile/i.test(ua)) {
+                deviceName = "Mobile Smartphone";
+                osInfo = "Mobile Web Terminal";
+            }
+
+            let activeSessions = JSON.parse(window.localStorage.getItem('safarx_active_sessions') || '[]');
+            let currentSessionId = deviceName + " (" + email + ")";
+            
+            let existingIndex = activeSessions.findIndex(s => s.id === currentSessionId);
+            let sessionData = {
+                id: currentSessionId,
+                name: deviceName,
+                os: osInfo,
+                user: email,
+                time: "Just now (Active)"
+            };
+
+            if (existingIndex >= 0) {
+                activeSessions[existingIndex] = sessionData;
+            } else {
+                activeSessions.push(sessionData);
+            }
+            window.localStorage.setItem('safarx_active_sessions', JSON.stringify(activeSessions));
         }
 
         function openEditProfileModal() {
@@ -1112,44 +1151,31 @@
             renderSavedAddresses();
         }
 
-        // Real Dynamic Device Detection for "Manage Devices"
+        // Real-Time Dynamic Active Sessions from Browser Storage & Session Registry
         function openManageDevicesModal() {
             let container = document.getElementById('deviceListContainer');
-            let userEmail = window.localStorage.getItem('safarx_logged_user') || 'Authorized User';
+            let activeSessions = JSON.parse(window.localStorage.getItem('safarx_active_sessions') || '[]');
             
-            let ua = navigator.userAgent;
-            let deviceName = "Desktop / Laptop Terminal";
-            let deviceIcon = "💻";
-            let osInfo = "Windows / macOS Secure Node";
-
-            if (/android/i.test(ua)) {
-                deviceName = "Android Mobile Device";
-                deviceIcon = "📱";
-                osInfo = "Android OS • Mobile Browser";
-            } else if (/iphone|ipad|ipod/i.test(ua)) {
-                deviceName = "Apple iOS Device";
-                deviceIcon = "📱";
-                osInfo = "iOS • Mobile Safari / App Bridge";
-            } else if (/mobile/i.test(ua)) {
-                deviceName = "Mobile Smartphone";
-                deviceIcon = "📱";
-                osInfo = "Mobile Web Terminal";
+            if (activeSessions.length === 0) {
+                let ua = navigator.userAgent;
+                let currentDev = /mobile/i.test(ua) ? "Mobile Smartphone" : "Desktop Terminal";
+                activeSessions.push({ name: currentDev, os: ua, user: window.localStorage.getItem('safarx_logged_user') || 'User', time: 'Just now' });
             }
 
-            container.innerHTML = `
-                <div style="background: #f8fafc; border: 1px solid #2563eb; padding: 14px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
+            container.innerHTML = activeSessions.map(session => `
+                <div style="background: #f8fafc; border: 1px solid #2563eb; padding: 14px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                     <div>
-                        <p style="font-size: 13px; font-weight: 700; color: #0f172a;">${deviceIcon} ${deviceName} (Current Active)</p>
-                        <p style="font-size: 11px; color: #64748b;">${osInfo}</p>
-                        <p style="font-size: 10px; color: #16a34a; font-weight: 600; margin-top: 3px;">Active Session: ${userEmail}</p>
+                        <p style="font-size: 13px; font-weight: 700; color: #0f172a;">📱 ${session.name} (Active)</p>
+                        <p style="font-size: 11px; color: #64748b;">${session.os}</p>
+                        <p style="font-size: 10px; color: #16a34a; font-weight: 600; margin-top: 3px;">Active User: ${session.user}</p>
                     </div>
                     <span style="background: #dcfce7; color: #166534; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold;">Online</span>
                 </div>
+            `).join('') + `
                 <div style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; opacity: 0.8;">
                     <div>
                         <p style="font-size: 13px; font-weight: 700; color: #0f172a;">☁️ SafarX Cloud Backup Node</p>
                         <p style="font-size: 11px; color: #64748b;">Secured via Supabase Global Auth</p>
-                        <p style="font-size: 10px; color: #64748b; margin-top: 2px;">Synced across all terminals</p>
                     </div>
                     <span style="background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: bold;">Synced</span>
                 </div>
@@ -1300,7 +1326,7 @@
                     xCoin: "તમારું એક્સ-કોઇન બેલેન્સ", xCoinSub: "સફરએક્સ સાથે વિશેષ પુરસ્કારો",
                     orders: "ઓર્ડર્સ અને શિપમેન્ટ્સ", gstInv: "જીએસટી ઇનવોイス", profSet: "પ્રોફાઇલ સેટિંગ્સ", editProf: "👤 પ્રોફાઇલ સંપાદિત કરો",
                     savedAddr: "📍 સાચવેલા સરનામાં", changeLang: "🌐 ભાષા બદલો",
-                    privSec: "ગોપનીયতা અને સુરક્ષા", privCenter: "🔒 પ્રાઇવસી સેન્ટર", manageDev: "📱 ડિવાઇસ મેનેજ કરો",
+                    privSec: "ગોપનીયता અને સુરક્ષા", privCenter: "🔒 પ્રાઇવસી સેન્ટર", manageDev: "📱 ડિવાઇસ મેનેજ કરો",
                     logout: "લૉગ આઉટ", langDisplay: "ગુજરાતી ➔"
                 },
                 'pa': {
@@ -1450,7 +1476,7 @@
                 'pt': {
                     home: "Início", cat: "Categorias", parcel: "Pacote", account: "Conta",
                     welcomeSub: "Selecione sua opção de transporte ou entrega abaixo.",
-                    selectTrans: "📦 Selecione a Frota de Transporte",
+                    selectTrans: "📦 Seleccione a Frota de Transporte",
                     quickTitle: "⚡ Entrega Rápida", quickSub: "Entregador local instantâneo para pequenos pacotes",
                     twoWheelerTitle: "Duas Rodas", twoWheelerSub: "Entrega rápida de moto (Até 20 kg)",
                     eRickTitle: "E-Rickshaw", eRickSub: "Transporte local ecológico (Até 350 kg)",
@@ -1479,9 +1505,9 @@
                 if(document.getElementById('vehERickTitle')) document.getElementById('vehERickTitle').innerText = t.eRickTitle;
                 if(document.getElementById('vehERickSub')) document.getElementById('vehERickSub').innerText = t.eRickSub;
                 if(document.getElementById('vehAutoTitle')) document.getElementById('vehAutoTitle').innerText = t.autoTitle;
-                if(document.getElementById('vehAutoSub')) document.getElementById('vehAutoSub').innerText = t.autoSub;
+                if(document.getElementById('vehAutoSub')) document.getElementById('vehAutoSub').innerText = t.vehAutoSub;
                 if(document.getElementById('vehCarTitle')) document.getElementById('vehCarTitle').innerText = t.carTitle;
-                if(document.getElementById('vehCarSub')) document.getElementById('vehCarSub').innerText = t.carSub;
+                if(document.getElementById('vehCarSub')) document.getElementById('vehCarSub').innerText = t.vehCarSub;
                 if(document.getElementById('veh6WheelTitle')) document.getElementById('veh6WheelTitle').innerText = t.wheelTitle;
                 if(document.getElementById('veh6WheelSub')) document.getElementById('veh6WheelSub').innerText = t.wheelSub;
                 if(document.getElementById('vehTruckTitle')) document.getElementById('vehTruckTitle').innerText = t.truckTitle;
@@ -1560,7 +1586,7 @@
             } else if (tabName === 'categories') {
                 alert("📂 Commercial Fleet Categories & Bulk Freight Hub.");
             } else if (tabName === 'plus') {
-                alert("➕ Quick Action: Post a new multi-stop shipment request instantly!");
+                alert("➕ QuickAction: Post a new multi-stop shipment request instantly!");
             } else if (tabName === 'parcel') {
                 alert("📦 Parcel Tracking: Active dispatch orders & GPS tracking.");
             }
@@ -1620,7 +1646,7 @@
             let baseRates = {
                 'Quick Drop': 40, 'Two Wheeler': 60, 'E-Rickshaw': 90,
                 'Auto': 130, 'Car': 180, '6-Wheeler': 500, 'Truck': 1200, 'Trailer Truck': 2500
-            };
+                };
             let ratePerKm = {
                 'Quick Drop': 12, 'Two Wheeler': 15, 'E-Rickshaw': 18,
                 'Auto': 22, 'Car': 28, '6-Wheeler': 65, 'Truck': 120, 'Trailer Truck': 220
