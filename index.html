@@ -433,8 +433,10 @@
         let pendingSignupEmail = "";
         let pendingSignupPassword = "";
 
-        window.addEventListener('load', async () => {
-            // Check if user has an active persistent session (stored for up to 30 days)
+       window.addEventListener('load', async () => {
+            let splash = document.getElementById('splashScreen');
+            
+            // 1. Check if 30-day persistent session exists in local storage
             try {
                 let { data: { session } } = await supabaseClient.auth.getSession();
                 if (session && session.user) {
@@ -442,22 +444,22 @@
                     let userName = userEmail.split('@')[0];
                     userName = userName.charAt(0).toUpperCase() + userName.slice(1);
                     
-                    let splash = document.getElementById('splashScreen');
                     if (splash) {
                         splash.style.opacity = '0';
                         setTimeout(() => { 
                             splash.style.display = 'none'; 
+                            // Direct jump to dashboard without asking for login for up to 30 days
                             triggerDashboardSplashTransition(userName);
                         }, 600);
                     }
-                    return;
+                    return; // Stop here, do not show login screen!
                 }
             } catch(e) {
-                console.log("Session check notice");
+                console.log("Session restore notice");
             }
 
+            // 2. If no session found, proceed to normal splash & role screen
             setTimeout(() => {
-                let splash = document.getElementById('splashScreen');
                 if (splash) {
                     splash.style.opacity = '0';
                     setTimeout(() => { 
