@@ -35,8 +35,7 @@
         .card { background-color: #ffffff; padding: 35px; border-radius: 16px; border: 1px solid #cbd5e1; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.08); position: relative; }
         .card h1 { font-size: 24px; color: #0f172a; margin-bottom: 5px; }
         .card p { color: #64748b; font-size: 13px; margin-bottom: 20px; }
-
-        .btn-google {
+ .btn-google {
             width: 100%; background-color: #ffffff; color: #1e2124; border: 1px solid #cbd5e1; padding: 14px;
             font-size: 15px; font-weight: 600; border-radius: 8px; cursor: pointer; display: flex;
             align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; transition: background 0.2s;
@@ -63,8 +62,7 @@
         .auth-switch span { color: #2563eb; font-weight: 600; }
         .forgot-link { display: block; text-align: right; font-size: 12px; color: #2563eb; margin-top: -6px; margin-bottom: 15px; cursor: pointer; text-decoration: none; }
         .back-btn { position: absolute; top: 20px; left: 20px; background: none; border: none; color: #64748b; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
-
-        .profile-container { position: relative; width: 80px; height: 80px; margin: 0 auto 15px auto; }
+ .profile-container { position: relative; width: 80px; height: 80px; margin: 0 auto 15px auto; }
         .profile-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #2563eb; background: #f1f5f9; }
         .upload-badge {
             position: absolute; bottom: 0; right: 0; background: #2563eb; color: white;
@@ -76,7 +74,7 @@
         .modal-card { background: #ffffff; padding: 30px; border-radius: 16px; border: 1px solid #cbd5e1; width: 100%; max-width: 420px; text-align: left; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); max-height: 90vh; overflow-y: auto; }
     </style>
 </head>
-  <body>
+ <body>
     <div id="splashScreen">
         <img src="logo1.jpg" alt="SafarX Logo" class="splash-logo-img">
         <div class="splash-logo-container">
@@ -104,7 +102,7 @@
             </button>
         </div>
     </div>
-  <div id="authScreen" class="screen-box">
+ <div id="authScreen" class="screen-box">
         <div class="card">
             <button class="back-btn" onclick="backToRoleScreen()">← Back</button>
             <h1 id="authTitle">SafarX Sign Up</h1>
@@ -133,7 +131,7 @@
             </div>
         </div>
     </div>
-  <div id="signupVerifyModal" class="modal-overlay">
+<div id="signupVerifyModal" class="modal-overlay">
         <div class="modal-card">
             <h2 style="color: #0f172a; font-size: 20px; margin-bottom: 5px;">SafarX Enterprise Verification</h2>
             <p style="color: #64748b; font-size: 12px; margin-bottom: 15px;" id="verifyModalText">Enter the 8-digit security verification code sent to your email.</p>
@@ -215,7 +213,7 @@
             <button style="background: none; border: none; color: #64748b; font-size: 12px; margin-top: 15px; cursor: pointer; width: 100%; text-align: center;" onclick="document.getElementById('editProfileModal').style.display='none'">Cancel</button>
         </div>
     </div>
-  <div id="savedAddressesModal" class="modal-overlay">
+ <div id="savedAddressesModal" class="modal-overlay">
         <div class="modal-card" style="max-width: 480px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                 <h2 style="color: #0f172a; font-size: 20px;">Saved Hubs & Addresses</h2>
@@ -286,21 +284,17 @@
             <button class="btn-primary" id="langConfirmBtn" onclick="confirmAndApplyLanguage()">Confirm Language</button>
         </div>
     </div>
- <!-- MANAGE DEVICES SECURITY MODAL -->
-    <div id="manageDevicesModal" class="modal-overlay">
+  <div id="manageDevicesModal" class="modal-overlay">
         <div class="modal-card" style="max-width: 440px;">
             <h2 style="color: #0f172a; font-size: 20px; margin-bottom: 5px;">Active Security & Devices</h2>
             <p style="color: #64748b; font-size: 12px; margin-bottom: 15px;">Monitor all active sessions across your authorized enterprise terminals.</p>
             
-            <div id="deviceListContainer" style="display: flex; flex-direction: column; gap: 10px; max-height: 250px; overflow-y: auto; margin-bottom: 15px;">
-                <!-- Populated dynamically -->
-            </div>
+            <div id="deviceListContainer" style="display: flex; flex-direction: column; gap: 10px; max-height: 250px; overflow-y: auto; margin-bottom: 15px;"></div>
 
             <button class="btn-primary" onclick="document.getElementById('manageDevicesModal').style.display='none'">Close Security Hub</button>
         </div>
     </div>
 
-    <!-- PRIVACY CENTER MODAL -->
     <div id="privacyCenterModal" class="modal-overlay">
         <div class="modal-card" style="max-width: 440px;">
             <h2 style="color: #0f172a; font-size: 20px; margin-bottom: 5px;">SafarX Privacy Center</h2>
@@ -361,9 +355,9 @@
             <button class="btn-primary" onclick="submitProfileSetup()">Confirm & Enter App</button>
         </div>
     </div>
-  <div id="dashboardScreen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f1f5f9; flex-direction: column; justify-content: space-between;">
+ <div id="dashboardScreen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f1f5f9; flex-direction: column; justify-content: space-between;">
         
-        <!-- TOP HEADER: Current Location & Temperature -->
+        <!-- TOP HEADER -->
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #ffffff; border-bottom: 1px solid #cbd5e1; z-index: 10; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
             <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #475569;">
                 <span>📍 Current Location:</span>
@@ -377,14 +371,13 @@
 
         <div style="flex: 1; overflow-y: auto; padding: 20px; max-width: 600px; margin: 0 auto; width: 100%;">
             
-            <!-- TAB 1: HOME TAB -->
             <div id="tabContentHome" class="tab-pane">
                 <div style="background: linear-gradient(135deg, #ffffff, #eff6ff); padding: 20px; border-radius: 14px; border: 1px solid #cbd5e1; margin-bottom: 20px; text-align: left; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
                     <h2 style="color: #2563eb; font-size: 20px; margin-bottom: 4px;">Hello, <span id="dashName">-</span>! 👋</h2>
                     <p style="color: #64748b; font-size: 13px;" id="welcomeSubHeader">Select your transport or delivery option below for instant booking.</p>
                 </div>
 
-                <h3 style="color: #0f172a; font-size: 16px; margin-bottom: 15px; text-align: left; font-weight: 700;" id="selectTransportHeader">📦 Select Transport & Delivery Fleet</h3>
+                <h3 style="color: #0f172a; font-size: 16px; margin-bottom: 15px; text-align: left; font-weight: 700;" id="selectTransportHeader">📦 Select Transport & Delivery Fleet</h3> 
  <div style="display: flex; flex-direction: column; gap: 12px; padding-bottom: 30px;">
                     
                     <div onclick="selectVehicle('Quick Drop')" style="background: #ffffff; border: 1px solid #2563eb; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 4px 12px rgba(37,99,235,0.1); position: relative;">
@@ -490,10 +483,11 @@
                             <p style="color: #64748b; font-size: 12px;" id="profileTabEmail">user@domain.com</p>
                         </div>
                     </div>
-                    <button onclick="openSosModal()" style="background: #fef2f2; border: 1px solid #ef4444; padding: 8px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; color: #dc2626;">🚨 SOS</button>
+                    <!-- Replaced SOS with Help Button as requested -->
+                    <button onclick="alert('🎧 SafarX 24/7 Enterprise Help & Support Center:\n\nFor assistance with dispatch, shipments, or corporate queries, email support@safarx.app')" style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; color: #2563eb;" id="helpBtnTxt">🎧 Help</button>
                 </div>
 
-                <!-- X-Coins Balance Box (Replaced SuperCoins) -->
+                <!-- X-Coins Balance Box -->
                 <div style="background: #ffffff; padding: 15px 20px; border-radius: 12px; border: 1px solid #cbd5e1; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <span style="font-size: 20px;">🪙</span>
@@ -531,7 +525,7 @@
                         <span style="color: #2563eb; font-size: 12px; font-weight: 600;" id="currentLangDisplay">English ➔</span>
                     </div>
                 </div>
-  <h4 style="color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; margin-left: 5px;" id="secPrivacy">Privacy & Security</h4>
+ <h4 style="color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; margin-left: 5px;" id="secPrivacy">Privacy & Security</h4>
                 <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; margin-bottom: 20px; overflow: hidden;">
                     <div onclick="openPrivacyCenterModal()" style="padding: 14px 16px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
                         <span style="font-size: 14px; color: #0f172a; font-weight: 500;" id="menuPrivacyCenter">🔒 Privacy center</span>
@@ -665,7 +659,7 @@
                 });
             } catch(e) {}
         });
-  function selectRole(role) {
+ function selectRole(role) {
             selectedUserRole = role;
             document.getElementById('roleScreen').style.display = 'none';
             document.getElementById('authScreen').style.display = 'flex';
@@ -821,7 +815,7 @@
                 }
             }
         }
- async function confirmSignupOtpAndProceed() {
+async function confirmSignupOtpAndProceed() {
             let enteredOtp = document.getElementById('signupOtpInput').value.trim();
 
             if (!enteredOtp || enteredOtp.length < 8) {
@@ -965,7 +959,6 @@
             transitionScreen.style.display = 'flex';
             transitionScreen.style.opacity = '1';
 
-            // CROSS-DEVICE SYNC: Fetch Supabase profile data if local cache is empty
             try {
                 let { data: dbProf } = await supabaseClient.from('transporter_profiles').select('*').eq('email', userEmail);
                 if (dbProf && dbProf.length > 0) {
@@ -1105,8 +1098,7 @@
             window.localStorage.setItem('safarx_saved_addresses', JSON.stringify(savedAddrs));
             renderSavedAddresses();
         }
-  // MANAGE DEVICES DETAIL VIEW
-        function openManageDevicesModal() {
+function openManageDevicesModal() {
             let container = document.getElementById('deviceListContainer');
             let userEmail = window.localStorage.getItem('safarx_logged_user') || 'Terminal User';
             
@@ -1135,14 +1127,10 @@
             document.getElementById('privacyCenterModal').style.display = 'flex';
         }
 
-        function openSosModal() {
-            alert("🚨 SafarX Emergency Dispatch Activated!\n\nConnecting you directly with the 24/7 Global Command & Security Control Room.");
-        }
-
         function openGstInvoiceModal() {
             alert("🧾 GST Invoicing Hub:\n\nAll B2B commercial shipment tax invoices with HSN codes and digital signatures are generated here automatically.");
         }
-  function openLanguageModal() {
+ function openLanguageModal() {
             document.getElementById('languageModal').style.display = 'flex';
         }
 
@@ -1190,27 +1178,63 @@
                     privSec: "गोपनीयता और सुरक्षा", privCenter: "🔒 प्राइवेसी सेंटर", manageDev: "📱 डिवाइस मैनेज करें",
                     logout: "लॉग आउट", langDisplay: "हिंदी ➔"
                 },
-                'pa': {
-                    home: "ਹੋਮ", cat: "ਸ਼੍ਰੇਣੀਆਂ", parcel: "ਪਾਰਸਲ", account: "ਆਈਡੀ",
-                    welcomeSub: "ਝੱਟਪਟ ਬੁੱਕ ਕਰਨ ਲਈ ਹੇਠਾਂ ਆਪਣਾ ਵਾਹਨ ਜਾਂ ਡਿਲਿਵਰੀ ਵਿਕਲਪ ਚੁਣੋ।",
-                    selectTrans: "📦 ਵਾਹਨ ਅਤੇ ਡਿਲਿਵਰੀ ਚੁਣੋ",
-                    quickTitle: "⚡ ਕਵਿੱਕ ਡ੍ਰਾਪ", quickSub: "ਛੋਟੇ ਪਾਰਸਲ, ਦਸਤਾਵੇਜ਼ਾਂ ਅਤੇ ਚਾਬੀਆਂ ਲਈ",
-                    twoWheelerTitle: "ਦੋ ਪਹੀਆ ਵਾਹਨ", twoWheelerSub: "ਤੇਜ਼ ਮੋਟਰਸਾਈਕਲ ਡਿਲਿਵਰੀ (20 ਕਿਲੋ ਤੱਕ)",
-                    eRickTitle: "ਈ-ਰਿਕਸ਼ਾ", eRickSub: "ਵਾਤਾਵਰਣ-ਅਨੁਕੂਲ ਲੋਕਲ ਟ੍ਰਾਂਸਪੋਰਟ (350 ਕਿਲੋ ਤੱਕ)",
-                    autoTitle: "ਆਟੋ", autoSub: "ਓਪਨ ਬੌਡੀ ਮਿਨੀ ਕੈਰੀਅਰ (500 ਕਿਲੋ ਤੱਕ)",
-                    carTitle: "ਕਾਰ", carSub: "ਸੁਰੱਖਿਅਤ ਸਮਾਨ ਅਤੇ ਨਾਜ਼ੁਕ ਵਸਤੂਆਂ (250 ਕਿਲੋ ਤੱਕ)",
-                    wheelTitle: "6-ਪਹੀਆ ਵਾਹਨ", wheelSub: "ਮੱਧਮ ਕਮਰਸ਼ੀਅਲ ਲੋਡ (2.5 ਟਨ ਤੱਕ)",
-                    truckTitle: "ਟਰੱਕ", truckSub: "ਭਾਰੀ ਕਮਰਸ਼ੀਅਲ ਫ੍ਰੇਟ (5 ਟਨ ਤੱਕ)",
-                    trailerTitle: "ਟਰੇਲਰ ਟਰੱਕ", trailerSub: "ਉਦਯੋਗਿਕ ਮਲਟੀ-ਟਨ ਕਾਰਗੋ (20+ ਟਨ ਤੱਕ)",
-                    xCoin: "ਤੁਹਾਡਾ ਐਕਸ-ਕੋਇਨ ਬੈਲੇਂਸ", xCoinSub: "ਸਫ਼ਰਐਕਸ ਨਾਲ ਵਿਸ਼ੇਸ਼ ਇਨਾਮ ਅਤੇ ਛੋਟ",
-                    orders: "ਆਰਡਰ ਅਤੇ ਸ਼ਿਪਮੈਂਟ", gstInv: "ਜੀਐਸਟੀ ਇਨਵੌਇਸ", profSet: "ਪ੍ਰੋਫਾਈਲ ਸੈਟਿੰਗ", editProf: "👤 ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਿਤ ਕਰੋ",
-                    savedAddr: "📍 ਸੁਰੱਖਿਅਤ ਪਤੇ", changeLang: "🌐 ਭਾਸ਼ਾ ਬਦلو",
-                    privSec: "ਪ੍ਰਾਈਵੇਸੀ ਅਤੇ ਸੁਰੱਖਿਆ", privCenter: "🔒 ਪ੍ਰਾਈਵੇਸੀ ਸੈਂਟਰ", manageDev: "📱 ਡਿਵਾਈਸ ਪ੍ਰਬੰਧਨ",
-                    logout: "ਲੌਗ ਆਉਟ", langDisplay: "ਪੰਜਾਬੀ ➔"
+'bn': {
+                    home: "হোম", cat: "বিভাগ", parcel: "পার্সেল", account: "অ্যাকাউন্ট",
+                    welcomeSub: "তাত্ক্ষণিক বুকিংয়ের জন্য নিচের পরিবহন বা ডেলিভারি বিকল্পটি বেছে নিন।",
+                    selectTrans: "📦 পরিবহন এবং ডেলিভারি ফ্লিট নির্বাচন করুন",
+                    quickTitle: "⚡ কুইক ড্রপ", quickSub: "ছোট পার্সেল, নথি এবং চাবির জন্য ইনস্ট্যান্ট লোকাল রানার",
+                    twoWheelerTitle: "টু হুইলার", twoWheelerSub: "ফাস্ট মোটরসাইকেল পার্সেল ডেলিভারি (২০ কেজি পর্যন্ত)",
+                    eRickTitle: "ই-রিকশা", eRickSub: "পরিবেশবান্ধব লোকাল পরিবহন (৩৫০ কেজি পর্যন্ত)",
+                    autoTitle: "অটো", autoSub: "ওপেন বডি মিনি ক্যারেয়ার (৫০০ কেজি পর্যন্ত)",
+                    carTitle: "কার", carSub: "নিরাপদ ল্যাগেজ এবং ভঙ্গুর পণ্য (২৫০ কেজি পর্যন্ত)",
+                    wheelTitle: "৬-হুইলার", wheelSub: "মাঝারি কমার্শিয়াল লোড (২.৫ টন পর্যন্ত)",
+                    truckTitle: "ট্রাক", truckSub: "ভারী কমার্শিয়াল ফ্রেট (৫ টন পর্যন্ত)",
+                    trailerTitle: "ট্রেলার ট্রাক", trailerSub: "শিল্প কার্গো (২০+ টন পর্যন্ত)",
+                    xCoin: "আপনার এক্স-কয়েন ব্যালেন্স", xCoinSub: "সফরএক্স এর সাথে একচেটিয়া পুরস্কার",
+                    orders: "অর্ডার এবং চালান", gstInv: "জিএসটি চালান", profSet: "প্রোফাইল সেটিংস", editProf: "👤 প্রোফাইল সম্পাদনা করুন",
+                    savedAddr: "📍 সংরক্ষিত ঠিকানা", changeLang: "🌐 ভাষা পরিবর্তন করুন",
+                    privSec: "গোপনীয়তা এবং সুরক্ষা", privCenter: "🔒 প্রাইভেসি সেন্টার", manageDev: "📱 ডিভাইস পরিচালনা",
+                    logout: "লগ আউট", langDisplay: "বাংলা ➔"
+                },
+                'mr': {
+                    home: "होम", cat: "श्रेण्या", parcel: "पार्सल", account: "खाते",
+                    welcomeSub: "त्वरित बुकिंगसाठी खालील ट्रान्सपोर्ट किंवा डिलिव्हरी पर्याय निवडा.",
+                    selectTrans: "📦 वाहतूक आणि वितरण फ्लीट निवडा",
+                    quickTitle: "⚡ क्विक ड्रॉप", quickSub: "लहान पार्सल, कागदपत्रे आणि किल्ल्यांसाठी इन्स्टंट लोकल रनर",
+                    twoWheelerTitle: "टू व्हीलर", twoWheelerSub: "जलद मोटारसायकल पार्सल डिलिव्हरी (२० किलो पर्यंत)",
+                    eRickTitle: "ई-रिक्षा", eRickSub: "पर्यावरणपूरक लोकल वाहतूक (३५० किलो पर्यंत)",
+                    autoTitle: "ऑटो", autoSub: "ओपन बॉडी मिनी कॅरियर (५०० किलो पर्यंत)",
+                    carTitle: "कार", carSub: "सुरक्षित सामान आणि नाजूक वस्तू (२५० किलो पर्यंत)",
+                    wheelTitle: "६-व्हीलर", wheelSub: "मध्यम व्यावसायिक भार (२.५ टन पर्यंत)",
+                    truckTitle: "ट्रक", truckSub: "जड व्यावसायिक मालवाहतूक (५ टन पर्यंत)",
+                    trailerTitle: "ट्रेलर ट्रक", trailerSub: "औद्योगिक मालवाहतूक (२०+ टन पर्यंत)",
+                    xCoin: "तुमचे एक्स-कोइन शिल्लक", xCoinSub: "सफरएक्स सह विशेष बक्षिसे",
+                    orders: "ऑर्डर्स आणि शिपमेंट्स", gstInv: "जीएसटी इनव्हॉइस", profSet: "प्रोफाइल सेटिंग्ज", editProf: "👤 प्रोफाइल संपादित करा",
+                    savedAddr: "📍 जतन केलेले पत्ते", changeLang: "🌐 भाषा बदल",
+                    privSec: "गोपनीयता आणि सुरक्षा", privCenter: "🔒 प्रायव्हसी सेंटर", manageDev: "📱 डिव्हाइस व्यवस्थापित करा",
+                    logout: "बाहेर पडा", langDisplay: "मराठी ➔"
+                },
+                'ta': {
+                    home: "முகப்பு", cat: "வகைகள்", parcel: "பார்சல்", account: "கணக்கு",
+                    welcomeSub: "உடனடி முன்பதிவுக்கு கீழே உள்ள போக்குவரத்து அல்லது விநியோக விருப்பத்தைத் தேர்ந்தெடுக்கவும்.",
+                    selectTrans: "📦 போக்குவரத்து & விநியோகப் படையைத் தேர்ந்தெடுக்கவும்",
+                    quickTitle: "⚡ விரைவு டிராப்", quickSub: "சிறிய பார்சல்கள், ஆவணங்கள் மற்றும் சாவிகளுக்கான உடனடி ரன்னர்",
+                    twoWheelerTitle: "இரு சக்கர வாகனம்", twoWheelerSub: "விரைவு மோட்டார் சைக்கிள் பார்சல் விநியோகம் (20 கிலோ வரை)",
+                    eRickTitle: "மின்-ரிக்சா", eRickSub: "சுற்றுச்சூழலுக்கு உகந்த உள்ளூர் போக்குவரத்து (350 கிலோ வரை)",
+                    autoTitle: "ஆட்டோ", autoSub: "திறந்த உடல் மினி கேரியர் (500 கிலோ வரை)",
+                    carTitle: "கார்", carSub: "பாதுகாப்பான சாமான்கள் & உடைய பொருட்கள் (250 கிலோ வரை)",
+                    wheelTitle: "6-வீலர்", wheelSub: "நடுத்தர வணிகச் சுமை (2.5 டன்கள் வரை)",
+                    truckTitle: "லாரி", truckSub: "கனரக வணிக சரக்கு (5 டன்கள் வரை)",
+                    trailerTitle: "டிரெய்லர் லாரி", trailerSub: "தொழில்துறை சரக்கு (20+ டன்கள் வரை)",
+                    xCoin: "உங்கள் எக்ஸ்-காயின் இருப்பு", xCoinSub: "பிரத்யேக சலுகைகள் மற்றும் தள்ளுபடிகள்",
+                    orders: "ஆர்டர்கள் & ஏற்றுமதிகள்", gstInv: "GST இன்வாய்ஸ்கள்", profSet: "சுயவிவர அமைப்புகள்", editProf: "👤 சுயவிவரத்தைத் திருத்து",
+                    savedAddr: "📍 சேமிக்கப்பட்ட முகவரிகள்", changeLang: "🌐 மொழியை மாற்றுக",
+                    privSec: "தனியுரிமை & பாதுகாப்பு", privCenter: "🔒 தனியுரிமை மையம்", manageDev: "📱 சாதனங்களை நிர்வகி",
+                    logout: "வெளியேறு", langDisplay: "தமிழ் ➔"
                 },
                 'te': {
                     home: "హోమ్", cat: "వర్గాలు", parcel: "పార్శిల్", account: "ఖాతా",
-                    welcomeSub: "తక్షణమే బుక్ చేయడానికి కింద మీ రవాణా లేదా డెలివరీ ఎంపికను ఎంచుకోండి.",
+                    welcomeSub: "తక్షణ బుకింగ్ కోసం కింద మీ రవాణా లేదా డెలివరీ ఎంపికను ఎంచుకోండి.",
                     selectTrans: "📦 రవాణా & డెలివరీ ఫ्लीटను ఎంచుకోండి",
                     quickTitle: "⚡ క్విక్ డ్రాప్", quickSub: "చిన్న పార్శిల్స్, పత్రాలు & కీస్ కోసం",
                     twoWheelerTitle: "టూ వీలర్", twoWheelerSub: "ఫాస్ట్ మోటార్ సైకిల్ డెలివరీ (20 కిలోల వరకు)",
@@ -1225,10 +1249,189 @@
                     savedAddr: "📍 సేవ్ చేసిన చిరునామాలు", changeLang: "🌐 భాష మార్చండి",
                     privSec: "గోప్యత & భద్రత", privCenter: "🔒 ప్రైవసీ సెంటర్", manageDev: "📱 పరికరాల నిర్వహణ",
                     logout: "లాగ్ అవుట్", langDisplay: "తెలుగు ➔"
+                },
+ 'gu': {
+                    home: "હોમ", cat: "કેટેગરીઝ", parcel: "પાર્સલ", account: "એકાઉન્ટ",
+                    welcomeSub: "ત્વરિત બુકિંગ માટે નીચે તમારું વાહન અથવા ડિલિવરી વિકલ્પ પસંદ કરો.",
+                    selectTrans: "📦 પરિવહન અને ડિલિવરી ફ્લીટ પસંદ કરો",
+                    quickTitle: "⚡ ક્વિક ડ્રોપ", quickSub: "નાના પાર્સલ, દસ્તાવેજો અને ચાવીઓ માટે",
+                    twoWheelerTitle: "ટૂ વ્હીલર", twoWheelerSub: "ઝડપી મોટરસાઇકલ ડિલિવરી (૨૦ કિલો સુધી)",
+                    eRickTitle: "ઇ-રિક્ષા", eRickSub: "પર્યાવરણ અનુકૂળ સ્થાનિક પરિવહન (૩૫૦ કિલો સુધી)",
+                    autoTitle: "ઓટો", autoSub: "ઓપન બોડી મિની કેરિયર (૫૦૦ કિલો સુધી)",
+                    carTitle: "કાર", carSub: "સુરક્ષિત સામાન અને નાજુક ચીજવસ્તુઓ (૨૫૦ કિલો સુધી)",
+                    wheelTitle: "૬-વ્હીલર", wheelSub: "મધ્યમ વ્યાપારી ભાર (૨.૫ ટન સુધી)",
+                    truckTitle: "ટ્રક", truckSub: "ભારે વ્યાપારી નૂર (૫ ટન સુધી)",
+                    trailerTitle: "ટ્રેલર ટ્રક", trailerSub: "ઔદ્યોગિક કાર્ગો (૨૦+ ટન સુધી)",
+                    xCoin: "તમારું એક્સ-કોઇન બેલેન્સ", xCoinSub: "સફરએક્સ સાથે વિશેષ પુરસ્કારો",
+                    orders: "ઓર્ડર્સ અને શિપમેન્ટ્સ", gstInv: "જીએસટી ઇનવોイス", profSet: "પ્રોફાઇલ સેટિંગ્સ", editProf: "👤 પ્રોફાઇલ સંપાદિત કરો",
+                    savedAddr: "📍 સાચવેલા સરનામાં", changeLang: "🌐 ભાષા બદલો",
+                    privSec: "ગોપનીયતા અને સુરક્ષા", privCenter: "🔒 પ્રાઇવસી સેન્ટર", manageDev: "📱 ડિવાઇસ મેનેજ કરો",
+                    logout: "લૉગ આઉટ", langDisplay: "ગુજરાતી ➔"
+                },
+                'pa': {
+                    home: "ਹੋਮ", cat: "ਸ਼੍ਰੇਣੀਆਂ", parcel: "ਪਾਰਸਲ", account: "ਆਈਡੀ",
+                    welcomeSub: "ਝੱਟਪਟ ਬੁੱਕ ਕਰਨ ਲਈ ਹੇਠਾਂ ਆਪਣਾ ਵਾਹਨ ਜਾਂ ਡਿਲਿਵਰੀ ਵਿਕਲਪ ਚੁਣੋ।",
+                    selectTrans: "📦 ਵਾਹਨ ਅਤੇ ਡਿਲਿਵਰੀ ਚੁਣੋ",
+                    quickTitle: "⚡ ਕਵਿੱਕ ਡ੍ਰਾਪ", quickSub: "ਛੋਟੇ ਪਾਰਸਲ, ਦਸਤਾਵੇਜ਼ਾਂ ਅਤੇ ਚਾਬੀਆਂ ਲਈ",
+                    twoWheelerTitle: "ਦੋ ਪਹੀਆ ਵਾਹਨ", twoWheelerSub: "ਤੇਜ਼ ਮੋਟਰਸਾਈਕਲ ਡਿਲਿਵਰੀ (20 ਕਿਲੋ ਤੱਕ)",
+                    eRickTitle: "ਈ-ਰਿਕਸ਼ਾ", eRickSub: "ਵਾਤਾਵਰਣ-ਅਨੁਕੂਲ ਲੋਕਲ ਟ੍ਰਾਂਸਪੋਰਟ (350 ਕਿਲੋ ਤੱਕ)",
+                    autoTitle: "ਆਟੋ", autoSub: "ਓਪਨ ਬੌਡੀ ਮਿਨੀ ਕੈਰੀਅਰ (500 ਕਿਲੋ ਤੱਕ)",
+                    carTitle: "ਕਾਰ", carSub: "ਸੁਰੱਖਿਅਤ ਸਮਾਨ ਅਤੇ ਨਾਜ਼ੁਕ ਵਸਤੂਆਂ (250 ਕਿਲੋ ਤੱਕ)",
+                    wheelTitle: "6-ਪਹੀਆ ਵਾਹਨ", wheelSub: "ਮੱਧਮ ਕਮਰਸ਼ੀਅਲ ਲੋਡ (2.5 ਟਨ ਤੱਕ)",
+                    truckTitle: "ਟਰੱਕ", truckSub: "ਭਾਰੀ ਕਮਰਸ਼ੀਅਲ ਫ੍ਰੇਟ (5 ਟਨ ਤੱਕ)",
+                    trailerTitle: "ਟਰੇਲਰ ਟਰੱਕ", trailerSub: "ਉਦਯੋਗਿਕ ਮਲਟੀ-ਟਨ ਕਾਰਗੋ (20+ ਟਨ ਤੱਕ)",
+                    xCoin: "ਤੁਹਾਡਾ ਐਕਸ-ਕੋਇਨ ਬੈਲੇਂਸ", xCoinSub: "ਸਫ਼ਰਐਕਸ ਨਾਲ ਵਿਸ਼ੇਸ਼ ਇਨਾਮ ਅਤੇ ਛੋਟ",
+                    orders: "ਆਰਡਰ ਅਤੇ ਸ਼ਿਪਮੈਂਟ", gstInv: "ਜੀਐਸਟੀ ਇਨਵੌਇਸ", profSet: "ਪ੍ਰੋਫਾਈਲ ਸੈਟਿੰਗ", editProf: "👤 ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਿਤ ਕਰੋ",
+                    savedAddr: "📍 ਸੁਰੱਖਿਅਤ ਪਤੇ", changeLang: "🌐 ਭਾਸ਼ਾ ਬਦਲੋ",
+                    privSec: "ਪ੍ਰਾਈਵੇਸੀ ਅਤੇ ਸੁਰੱਖਿਆ", privCenter: "🔒 ਪ੍ਰਾਈਵੇਸੀ ਸੈਂਟਰ", manageDev: "📱 ਡਿਵਾਈਸ ਪ੍ਰਬੰਧਨ",
+                    logout: "ਲੌਗ ਆਉਟ", langDisplay: "ਪੰਜਾਬੀ ➔"
+                },
+                'ar': {
+                    home: "الرئيسية", cat: "الفئات", parcel: "الطرد", account: "الحساب",
+                    welcomeSub: "اختر خيار النقل أو التوصيل أدناه للحجز الفوري.",
+                    selectTrans: "📦 اختر أسطول النقل والتوصيل",
+                    quickTitle: "⚡ توصيل سريع", quickSub: "للطرود الصغيرة المستعجلة والمستندات",
+                    twoWheelerTitle: "دراجة نارية", twoWheelerSub: "توصيل سريع للطرود (حتى 20 كجم)",
+                    eRickTitle: "عربة كهربائية", eRickSub: "نقل محلي صديق للبيئة (حتى 350 كجم)",
+                    autoTitle: "توك توك / أوتو", autoSub: "ناقل خفيف (حتى 500 كجم)",
+                    carTitle: "سيارة", carSub: "أمتعة آمنة وبضائع حساسة (حتى 250 كجم)",
+                    wheelTitle: "شاحنة 6 عجلات", wheelSub: "حمولة تجارية متوسطة (حتى 2.5 طن)",
+                    truckTitle: "شاحنة نقل", wheelSub: "شحن تجاري ثقيل (حتى 5 طن)",
+                    trailerTitle: "شاحنة مقطورة", trailerSub: "شحن صناعي ضخم (حتى 20+ طن)",
+                    xCoin: "رصيد عملات X", xCoinSub: "مکافآت حصرية وتخفيضات الشحن",
+                    orders: "الطلبات والشحنات", gstInv: "فواتير ضريبة القيمة المضافة", profSet: "إعدادات الحساب", editProf: "👤 تعديل الملف الشخصي",
+                    savedAddr: "📍 العناوين المحفوظة", changeLang: "🌐 تغيير اللغة",
+                    privSec: "الخصوصية والأمان", privCenter: "🔒 مركز الخصوصية", manageDev: "📱 إدارة الأجهزة",
+                    logout: "تسجيل الخروج", langDisplay: "العربية ➔"
+                },
+                'es': {
+                    home: "Inicio", cat: "Categorías", parcel: "Paquete", account: "Cuenta",
+                    welcomeSub: "Seleccione su opción de transporte o entrega a continuación.",
+                    selectTrans: "📦 Seleccione Flota de Transporte y Entrega",
+                    quickTitle: "⚡ Entrega Rápida", quickSub: "Mensajero local instantáneo para paquetes y llaves",
+                    twoWheelerTitle: "Dos Ruedas", twoWheelerSub: "Entrega rápida en moto (Hasta 20 kg)",
+                    eRickTitle: "E-Rickshaw", eRickSub: "Transporte local ecológico (Hasta 350 kg)",
+                    autoTitle: "Auto", autoSub: "Minicarrier de carrocería abierta (Hasta 500 kg)",
+                    carTitle: "Coche", carSub: "Equipaje seguro y frágil (Hasta 250 kg)",
+                    wheelTitle: "6 Ruedas", wheelSub: "Carga comercial mediana (Hasta 2.5 Toneladas)",
+                    truckTitle: "Camión", wheelSub: "Carga comercial pesada (Hasta 5 Toneladas)",
+                    trailerTitle: "Tráiler", trailerSub: "Carga industrial de varias toneladas (Hasta 20+ Toneladas)",
+                    xCoin: "Tu Saldo X-Coins", xCoinSub: "Recompensas exclusivas y descuentos",
+                    orders: "Pedidos y Envíos", gstInv: "Facturas GST", profSet: "Configuración de Perfil", editProf: "👤 Editar perfil",
+                    savedAddr: "📍 Direcciones guardadas", changeLang: "🌐 Cambiar idioma",
+                    privSec: "Privacidad y Seguridad", privCenter: "🔒 Centro de Privacidad", manageDev: "📱 Administrar dispositivos",
+                    logout: "Cerrar sesión", langDisplay: "Español ➔"
+                },
+                'fr': {
+                    home: "Accueil", cat: "Catégories", parcel: "Colis", account: "Compte",
+                    welcomeSub: "Sélectionnez votre option de transport ou de livraison ci-dessous.",
+                    selectTrans: "📦 Sélectionnez la Flotte de Transport",
+                    quickTitle: "⚡ Dépôt Rapide", quickSub: "Messager local instantané pour petits colis et clés",
+                    twoWheelerTitle: "Deux Roues", twoWheelerSub: "Livraison rapide en moto (Jusqu'à 20 kg)",
+                    eRickTitle: "E-Rickshaw", eRickSub: "Transport local écologique (Jusqu'à 350 kg)",
+                    autoTitle: "Auto", autoSub: "Mini-transporteur ouvert (Jusqu'à 500 kg)",
+                    carTitle: "Voiture", carSub: "Bagages sécurisés (Jusqu'à 250 kg)",
+                    wheelTitle: "6 Roues", wheelSub: "Charge commerciale moyenne (Jusqu'à 2.5 Tonnes)",
+                    truckTitle: "Camion", truckSub: "Fret commercial lourd (Jusqu'à 5 Tonnes)",
+                    trailerTitle: "Camion Remorque", trailerSub: "Cargaison industrielle (Jusqu'à 20+ Tonnes)",
+                    xCoin: "Votre Solde X-Coins", xCoinSub: "Récompenses exclusives et réductions",
+                    orders: "Commandes & Expéditions", gstInv: "Factures GST", profSet: "Paramètres du Profil", editProf: "👤 Modifier le profil",
+                    savedAddr: "📍 Adresses enregistrées", changeLang: "🌐 Changer de langue",
+                    privSec: "Confidentialité & Sécurité", privCenter: "🔒 Centre de Confidentialité", manageDev: "📱 Gérer les appareils",
+                    logout: "Se déconnecter", langDisplay: "Français ➔"
+                },
+                'de': {
+                    home: "Startseite", cat: "Kategorien", parcel: "Paket", account: "Konto",
+                    welcomeSub: "Wählen Sie unten Ihre Transport- oder Lieferoption aus.",
+                    selectTrans: "📦 Transport- & Lieferflotte auswählen",
+                    quickTitle: "⚡ Schnellversand", quickSub: "Sofortiger lokaler Kurier für kleine Pakete",
+                    twoWheelerTitle: "Zweirad", twoWheelerSub: "Schnelle Motorradlieferung (Bis zu 20 kg)",
+                    eRickTitle: "E-Rikscha", eRickSub: "Umweltfreundlicher lokaler Transport (Bis zu 350 kg)",
+                    autoTitle: "Auto", autoSub: "Offener Minicarrier (Bis zu 500 kg)",
+                    carTitle: "Auto (PKW)", carSub: "Sicheres Gepäck (Bis zu 250 kg)",
+                    wheelTitle: "6-Rad LKW", wheelSub: "Mittlere gewerbliche Ladung (Bis zu 2.5 Tonnen)",
+                    truckTitle: "LKW", truckSub: "Schwere gewerbliche Fracht (Bis zu 5 Tonnen)",
+                    trailerTitle: "Sattelschlepper", trailerSub: "Industrielle Großfracht (Bis zu 20+ Tonnen)",
+                    xCoin: "Ihr X-Coins Guthaben", xCoinSub: "Exklusive Belohnungen & Rabatte",
+                    orders: "Bestellungen & Sendungen", gstInv: "GST-Rechnungen", profSet: "Profileinstellungen", editProf: "👤 Profil bearbeiten",
+                    savedAddr: "📍 Gespeicherte Adressen", changeLang: "🌐 Sprache ändern",
+                    privSec: "Datenschutz & Sicherheit", privCenter: "🔒 Datenschutz-Center", manageDev: "📱 Geräte verwalten",
+                    logout: "Abmelden", langDisplay: "Deutsch ➔"
+                },
+                'ja': {
+                    home: "ホーム", cat: "カテゴリ", parcel: "荷物", account: "アカウント",
+                    welcomeSub: "以下の輸送または配送オプションを選択してください。",
+                    selectTrans: "📦 輸送・配送フリートを選択",
+                    quickTitle: "⚡ クイックドロップ", quickSub: "小物・書類のインスタント配達",
+                    twoWheelerTitle: "二輪車", twoWheelerSub: "バイク高速配達（20kgまで）",
+                    eRickTitle: "Eリクシャー", eRickSub: "エコフレンドリーな地域輸送（350kgまで）",
+                    autoTitle: "オート", autoSub: "オープンボディミニキャリア（500kgまで）",
+                    carTitle: "乗用車", carSub: "安全な荷物配送（250kgまで）",
+                    wheelTitle: "6輪トラック", wheelSub: "中型商用貨物（2.5トンまで）",
+                    truckTitle: "トラック", truckSub: "大型商用貨物（5トンまで）",
+                    trailerTitle: "トレーラー", trailerSub: "産業用重量貨物（20トン以上）",
+                    xCoin: "Xコイン残高", xCoinSub: "限定特典と割引",
+                    orders: "注文・出荷", gstInv: "GST請求書", profSet: "プロフィール設定", editProf: "👤 プロフィール編集",
+                    savedAddr: "📍 保存済み住所", changeLang: "🌐 言語変更",
+                    privSec: "プライバシーとセキュリティ", privCenter: "🔒 プライバシーセンター", manageDev: "📱 デバイス管理",
+                    logout: "ログアウト", langDisplay: "日本語 ➔"
+                },
+                'zh': {
+                    home: "首页", cat: "分类", parcel: "包裹", account: "账户",
+                    welcomeSub: "在下方选择您的运输或配送选项即可立即预订。",
+                    selectTrans: "📦 选择运输与配送车队",
+                    quickTitle: "⚡ 极速闪送", quickSub: "小型包裹及文件的即时同城配送",
+                    twoWheelerTitle: "两轮摩托", twoWheelerSub: "快速摩托车包裹配送（最高20公斤）",
+                    eRickTitle: "电动三轮车", eRickSub: "环保同城运输（最高350公斤）",
+                    autoTitle: "机动三轮", autoSub: "开放式微型货运车（最高500公斤）",
+                    carTitle: "轿车", carSub: "安全行李与易碎物品（最高250公斤）",
+                    wheelTitle: "6轮货车", wheelSub: "中型商业货物（最高2.5吨）",
+                    truckTitle: "卡车", truckSub: "重型商业货运（最高5吨）",
+                    trailerTitle: "拖挂大卡车", trailerSub: "工业多吨位货物（最高20+吨）",
+                    xCoin: "您的 X-Coins 余额", xCoinSub: "SafarX 专属奖励与运费折扣",
+                    orders: "订单与货运", gstInv: "GST 发票", profSet: "个人资料设置", editProf: "👤 编辑个人资料",
+                    savedAddr: "📍 保存的地址", changeLang: "🌐 更改语言",
+                    privSec: "隐私与安全", privCenter: "🔒 隐私中心", manageDev: "📱 管理设备",
+                    logout: "退出登录", langDisplay: "中文 ➔"
+                },
+                'ru': {
+                    home: "Главная", cat: "Категории", parcel: "Посылка", account: "Аккаунт",
+                    welcomeSub: "Выберите способ транспортировки или доставки ниже.",
+                    selectTrans: "📦 Выберите транспортный парк",
+                    quickTitle: "⚡ Быстрая доставка", quickSub: "Срочный курьер для мелких посылок и документов",
+                    twoWheelerTitle: "Мотоцикл", twoWheelerSub: "Быстрая доставка посылок (до 20 кг)",
+                    eRickTitle: "Электро-рикша", eRickSub: "Экологичный транспорт (до 350 кг)",
+                    autoTitle: "Мотороллер", autoSub: "Легковой грузовой транспорт (до 500 кг)",
+                    carTitle: "Автомобиль", autoSub: "Надежная перевозка багажа (до 250 кг)",
+                    wheelTitle: "6-колесный грузовик", wheelSub: "Средний коммерческий груз (до 2.5 тонн)",
+                    truckTitle: "Грузовик", truckSub: "Тяжелые коммерческие грузы (до 5 тонн)",
+                    trailerTitle: "Фура / Тягач", trailerSub: "Крупнотоннажный промышленный груз (до 20+ тонн)",
+                    xCoin: "Ваш баланс X-Coins", xCoinSub: "Эксклюзивные бонусы и скидки",
+                    orders: "Заказы и отправления", gstInv: "GST Счета", profSet: "Настройки профиля", editProf: "👤 Изменить профиль",
+                    savedAddr: "📍 Сохраненные адреса", changeLang: "🌐 Изменить язык",
+                    privSec: "Конфиденциальность и безопасность", privCenter: "🔒 Центр конфиденциальности", manageDev: "📱 Управление устройствами",
+                    logout: "Выйти", langDisplay: "Русский ➔"
+                },
+                'pt': {
+                    home: "Início", cat: "Categorias", parcel: "Pacote", account: "Conta",
+                    welcomeSub: "Selecione sua opção de transporte ou entrega abaixo.",
+                    selectTrans: "📦 Selecione a Frota de Transporte",
+                    quickTitle: "⚡ Entrega Rápida", quickSub: "Entregador local instantâneo para pequenos pacotes",
+                    twoWheelerTitle: "Duas Rodas", twoWheelerSub: "Entrega rápida de moto (Até 20 kg)",
+                    eRickTitle: "E-Rickshaw", eRickSub: "Transporte local ecológico (Até 350 kg)",
+                    autoTitle: "Auto", autoSub: "Mini veículo de carga (Até 500 kg)",
+                    carTitle: "Carro", carSub: "Bagagem segura e frágil (Até 250 kg)",
+                    wheelTitle: "6 Rodas", wheelSub: "Carga comercial média (Até 2.5 Toneladas)",
+                    truckTitle: "Caminhão", truckSub: "Frete comercial pesado (Até 5 Toneladas)",
+                    trailerTitle: "Carreta / Trailer", trailerSub: "Carga industrial pesada (Até 20+ Toneladas)",
+                    xCoin: "Seu Saldo X-Coins", xCoinSub: "Recompensas exclusivas e descontos",
+                    orders: "Pedidos e Remessas", gstInv: "Faturas GST", profSet: "Configurações de Perfil", editProf: "👤 Editar perfil",
+                    savedAddr: "📍 Endereços salvos", changeLang: "🌐 Mudar idioma",
+                    privSec: "Privacidad e Segurança", privCenter: "🔒 Central de Privacidade", manageDev: "📱 Gerenciar dispositivos",
+                    logout: "Sair", langDisplay: "Português ➔"
                 }
             };
-
-            let t = translations[langCode] || translations['en'];
+ let t = translations[langCode] || translations['en'];
 
             try {
                 if(document.getElementById('welcomeSubHeader')) document.getElementById('welcomeSubHeader').innerText = t.welcomeSub;
@@ -1278,7 +1481,7 @@
                 alert(`✅ Language switched successfully! Platform updated.`);
             }
         }
-  async function handleUserLogOut() {
+ async function handleUserLogOut() {
             if (confirm("Are you sure you want to log out of SafarX?")) {
                 try { await supabaseClient.auth.signOut(); } catch(e) {}
                 
@@ -1325,8 +1528,7 @@
                 alert("📦 Parcel Tracking: Active dispatch orders & GPS tracking.");
             }
         }
-  // DYNAMIC CURRENT LOCATION TRACKER (Auto-updates on user movement)
-        function fetchRealLiveLocationAndWeather() {
+ function fetchRealLiveLocationAndWeather() {
             if (navigator.geolocation) {
                 navigator.geolocation.watchPosition(async (position) => {
                     let lat = position.coords.latitude;
@@ -1359,8 +1561,7 @@
                 document.getElementById('topLiveLocation').innerText = "Geolocation Not Supported";
             }
         }
- // PROFESSIONAL FLEET BOOKING FLOW (No annoying alerts)
-        function selectVehicle(vehicleType) {
+ function selectVehicle(vehicleType) {
             let savedAddrs = JSON.parse(window.localStorage.getItem('safarx_saved_addresses') || '[]');
             if(savedAddrs.length > 0) {
                 openSavedAddressesModal();
@@ -1370,12 +1571,157 @@
                 }
             }
         }
-    </script>
-</body>
-</html> 
-<!-- SAFARX GLOBAL LOGISTICS DISPATCH ENGINE EXTENSION -->
-    <script>
-        // Advanced Route Optimization & Fare Estimator Helper
+
+        function openSavedAddressesModal() {
+            renderSavedAddresses();
+            document.getElementById('savedAddressesModal').style.display = 'flex';
+            document.getElementById('addNewAddressSection').style.display = 'none';
+        }
+
+        function toggleAddAddressForm() {
+            let sec = document.getElementById('addNewAddressSection');
+            sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
+        }
+
+        async function fetchAddressLocationByPin(pin) {
+            if(pin.length === 6) {
+                try {
+                    let res = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
+                    let json = await res.json();
+                    if(json[0].Status === "Success") {
+                        let po = json[0].PostOffice[0];
+                        document.getElementById('newAddrState').value = `${po.District}, ${po.State}`;
+                    }
+                } catch(e) {}
+            }
+        }
+
+        function renderSavedAddresses() {
+            let container = document.getElementById('addressListContainer');
+            let savedAddrs = JSON.parse(window.localStorage.getItem('safarx_saved_addresses') || '[]');
+            
+            if (savedAddrs.length === 0) {
+                container.innerHTML = `<p style="font-size: 12px; color: #64748b; text-align: center; padding: 10px;">No saved hubs yet. Add your frequent operating locations!</p>`;
+            } else {
+                container.innerHTML = savedAddrs.map((item, index) => `
+                    <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
+                                <span style="font-size: 13px;">🏢</span>
+                                <span style="font-size: 13px; font-weight: 700; color: #0f172a;">${item.name} (${item.state || 'Hub'})</span>
+                            </div>
+                            <p style="font-size: 11px; color: #475569; margin-bottom: 2px;">${item.address}</p>
+                            <p style="font-size: 11px; font-weight: 600; color: #0284c7;">📞 ${item.phone}</p>
+                        </div>
+                        <button onclick="deleteSavedAddress(${index})" style="background: none; border: none; color: #ef4444; font-size: 11px; font-weight: 600; cursor: pointer;">Delete</button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function addNewSavedAddress() {
+            let name = document.getElementById('newContactName').value.trim();
+            let address = document.getElementById('newAddressDetails').value.trim();
+            let phone = document.getElementById('newPhoneNum').value.trim();
+            let state = document.getElementById('newAddrState').value.trim();
+            let pin = document.getElementById('newAddrPincode').value.trim();
+
+            if(!name || !address || !phone || !pin) {
+                alert("Please fill all required hub address fields!");
+                return;
+            }
+
+            let savedAddrs = JSON.parse(window.localStorage.getItem('safarx_saved_addresses') || '[]');
+            savedAddrs.push({ name, address, phone, state, pin });
+            window.localStorage.setItem('safarx_saved_addresses', JSON.stringify(savedAddrs));
+
+            document.getElementById('newContactName').value = "";
+            document.getElementById('newAddressDetails').value = "";
+            document.getElementById('newPhoneNum').value = "";
+            document.getElementById('newAddrPincode').value = "";
+            document.getElementById('newAddrState').value = "";
+            
+            renderSavedAddresses();
+            document.getElementById('addNewAddressSection').style.display = 'none';
+            alert("✅ Hub address saved successfully!");
+        }
+
+        function deleteSavedAddress(index) {
+            let savedAddrs = JSON.parse(window.localStorage.getItem('safarx_saved_addresses') || '[]');
+            savedAddrs.splice(index, 1);
+            window.localStorage.setItem('safarx_saved_addresses', JSON.stringify(savedAddrs));
+            renderSavedAddresses();
+        }
+  function openEditProfileModal() {
+            let currentName = document.getElementById('profileTabName').innerText;
+            document.getElementById('editFullName').value = currentName !== "Hey, User" ? currentName : "";
+            document.getElementById('editProfileModal').style.display = 'flex';
+        }
+
+        async function saveEditedProfile() {
+            let newName = document.getElementById('editFullName').value.trim();
+            let newPin = document.getElementById('editPincode').value.trim();
+            let newAddr = document.getElementById('editAddress').value.trim();
+            let newMob = document.getElementById('editMobile').value.trim();
+            let userEmail = window.localStorage.getItem('safarx_logged_user');
+
+            if(!newName) { alert("Enter name"); return; }
+
+            document.getElementById('profileTabName').innerText = newName;
+            document.getElementById('dashName').innerText = newName;
+            window.localStorage.setItem('safarx_logged_name', newName);
+
+            try {
+                await supabaseClient.from('transporter_profiles').update({ full_name: newName, pincode: newPin, address: newAddr, mobile: newMob }).eq('email', userEmail);
+            } catch(e) {}
+
+            alert("✅ Profile updated and synced globally!");
+            document.getElementById('editProfileModal').style.display = 'none';
+        }
+
+        function previewEditAvatar(event) {
+            let reader = new FileReader();
+            reader.onload = function(){
+                let res = reader.result;
+                document.getElementById('editModalAvatar').src = res;
+                document.getElementById('dashboardProfileAvatar').src = res;
+                window.localStorage.setItem('safarx_logged_avatar', res);
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+  function openManageDevicesModal() {
+            let container = document.getElementById('deviceListContainer');
+            let userEmail = window.localStorage.getItem('safarx_logged_user') || 'Terminal User';
+            
+            container.innerHTML = `
+                <div style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <p style="font-size: 13px; font-weight: 700; color: #0f172a;">💻 Current Web Terminal (Active)</p>
+                        <p style="font-size: 11px; color: #64748b;">IP: 192.168.1.45 • Global Edge Node</p>
+                        <p style="font-size: 10px; color: #16a34a; font-weight: 600; margin-top: 2px;">Last Active: Just now (${userEmail})</p>
+                    </div>
+                    <span style="background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: bold;">Authorized</span>
+                </div>
+                <div style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <p style="font-size: 13px; font-weight: 700; color: #0f172a;">📱 Mobile App Sync Node</p>
+                        <p style="font-size: 11px; color: #64748b;">OS: iOS / Android Secure Bridge</p>
+                        <p style="font-size: 10px; color: #64748b; margin-top: 2px;">Last Active: 2 hours ago</p>
+                    </div>
+                    <span style="background: #f1f5f9; color: #475569; padding: 2px 8px; border-radius: 6px; font-size: 11px;">Synced</span>
+                </div>
+            `;
+            document.getElementById('manageDevicesModal').style.display = 'flex';
+        }
+
+        function openPrivacyCenterModal() {
+            document.getElementById('privacyCenterModal').style.display = 'flex';
+        }
+
+        function openGstInvoiceModal() {
+            alert("🧾 GST Invoicing Hub:\n\nAll B2B commercial shipment tax invoices with HSN codes and digital signatures are generated here automatically.");
+        }
+<script>
         function calculateSafarXEstimatedFare(distanceKm, vehicleClass) {
             let baseRates = {
                 'Quick Drop': 40, 'Two Wheeler': 60, 'E-Rickshaw': 90,
@@ -1389,9 +1735,7 @@
             let perKm = ratePerKm[vehicleClass] || 20;
             return base + (distanceKm * perKm);
         }
-    </script>
- <!-- SAFARX ENTERPRISE BOOTSTRAPPER & SYSTEM INITIALIZER -->
-    <script>
+
         window.addEventListener('DOMContentLoaded', () => {
             console.log("🚀 SafarX Enterprise Logistics Engine initialized successfully across global nodes.");
         });
