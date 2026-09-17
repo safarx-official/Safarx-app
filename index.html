@@ -90,7 +90,7 @@
         .modal-card { background: #ffffff; padding: 30px; border-radius: 16px; border: 1px solid #cbd5e1; width: 100%; max-width: 400px; text-align: left; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
     </style>
 </head>
- <body>
+<body>
 
     <!-- 1. INITIAL SPLASH SCREEN -->
     <div id="splashScreen">
@@ -289,7 +289,7 @@
             </div>
 
             <h3 style="color: #0f172a; font-size: 16px; margin-bottom: 15px; text-align: left; font-weight: 700;">📦 Select Transport & Delivery</h3>
- <!-- VEHICLES & QUICK DROP LIST CONTAINER -->
+<!-- VEHICLES & QUICK DROP LIST CONTAINER -->
             <div style="display: flex; flex-direction: column; gap: 12px; padding-bottom: 30px;">
                 
                 <!-- 0. QUICK DROP (Instant Small Parcel) -->
@@ -298,7 +298,7 @@
                         <img src="https://cdn-icons-png.flaticon.com/512/3500/3500833.png" alt="Quick Drop" style="width: 50px; height: 50px; object-fit: contain; background: #eff6ff; padding: 6px; border-radius: 10px;">
                         <div style="text-align: left;">
                             <h4 style="color: #0f172a; font-size: 15px; font-weight: 700;">⚡ Quick Drop</h4>
-                            <p style="color: #64748b; font-size: 12px;">Instant local runner for small parcels </p>
+                            <p style="color: #64748b; font-size: 12px;">Instant local runner for small parcels, tiffin, charger & keys</p>
                         </div>
                     </div>
                     <span style="color: #2563eb; font-weight: bold; font-size: 18px;">➔</span>
@@ -417,7 +417,15 @@
 <script>
         const SUPABASE_URL = "https://oczoyqkxryppdwomqbgx.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable__LpoKgOtsPR8vJWSm1DaeQ_xWa13Z_C"; 
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // PERSISTENT 30-DAY SESSION STORAGE CONFIGURATION
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true,
+                storage: window.localStorage
+            }
+        });
 
         let selectedUserRole = "Customer";
         let isSignUpMode = true; 
@@ -425,7 +433,29 @@
         let pendingSignupEmail = "";
         let pendingSignupPassword = "";
 
-        window.addEventListener('load', () => {
+        window.addEventListener('load', async () => {
+            // Check if user has an active persistent session (stored for up to 30 days)
+            try {
+                let { data: { session } } = await supabaseClient.auth.getSession();
+                if (session && session.user) {
+                    let userEmail = session.user.email;
+                    let userName = userEmail.split('@')[0];
+                    userName = userName.charAt(0).toUpperCase() + userName.slice(1);
+                    
+                    let splash = document.getElementById('splashScreen');
+                    if (splash) {
+                        splash.style.opacity = '0';
+                        setTimeout(() => { 
+                            splash.style.display = 'none'; 
+                            triggerDashboardSplashTransition(userName);
+                        }, 600);
+                    }
+                    return;
+                }
+            } catch(e) {
+                console.log("Session check notice");
+            }
+
             setTimeout(() => {
                 let splash = document.getElementById('splashScreen');
                 if (splash) {
@@ -446,8 +476,7 @@
                 console.log("Google SDK initializing...");
             }
         });
-
-        function selectRole(role) {
+function selectRole(role) {
             selectedUserRole = role;
             document.getElementById('roleScreen').style.display = 'none';
             document.getElementById('authScreen').style.display = 'flex';
