@@ -964,7 +964,7 @@
             window.localStorage.setItem('safarx_user_mobile_' + email, mobile);
 
             try {
-                await supabaseClient.from('transporter_profiles').insert([{ full_name: name, email: email, pincode: pincode, address: address, mobile: mobile, role: selectedUserRole }]);
+                await supabaseClient.from('transporter_profiles').upsert([{ full_name: name, email: email, pincode: pincode, address: address, mobile: mobile, role: selectedUserRole }], { onConflict: 'email' });
             } catch(e) {}
 
             triggerDashboardSplashTransition(name, email);
@@ -1013,11 +1013,11 @@
             }, 1800);
         }
 
-        // Exact Device Hardware Model Detection for Cloud Active Sessions
+        // Exact Device Hardware Model Detection with Unique Session Registry
         async function registerCloudDeviceSession(email) {
             let ua = navigator.userAgent;
-            let deviceName = "Desktop / Laptop Browser";
-            let osInfo = "Windows / macOS Node";
+            let deviceName = "Desktop / Laptop Terminal";
+            let osInfo = "Windows / macOS Secure Node";
 
             if (/android/i.test(ua)) {
                 let match = ua.match(/;\s([^;]+)\sBuild\//);
@@ -1037,11 +1037,9 @@
             let globalSessions = JSON.parse(window.localStorage.getItem('safarx_global_sessions') || '{}');
             if (!globalSessions[email]) globalSessions[email] = [];
 
-            let sessionKey = deviceName + " (" + email + ")";
-            let existingIdx = globalSessions[email].findIndex(s => s.key === sessionKey);
-            
+            let sessionId = deviceName + " - " + osInfo + " (" + Math.random().toString(36.substring(2, 7)) + ")";
             let sessionObj = {
-                key: sessionKey,
+                id: sessionId,
                 name: deviceName,
                 os: osInfo,
                 user: email,
@@ -1049,11 +1047,10 @@
                 location: document.getElementById('topLiveLocation').innerText || "Kota, Rajasthan"
             };
 
-            if (existingIdx >= 0) {
-                globalSessions[email][existingIdx] = sessionObj;
-            } else {
-                globalSessions[email].push(sessionObj);
-            }
+            globalSessions[email].push(sessionObj);
+            // Keep only latest 5 active sessions
+            if (globalSessions[email].length > 5) globalSessions[email].shift();
+
             window.localStorage.setItem('safarx_global_sessions', JSON.stringify(globalSessions));
         }
 
@@ -1167,7 +1164,7 @@
                 container.innerHTML = `<p style="font-size: 12px; color: #64748b; text-align: center; padding: 10px;">No saved hubs yet. Add your frequent operating locations!</p>`;
             } else {
                 container.innerHTML = savedAddrs.map((item, index) => `
-                    <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
                         <div>
                             <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
                                 <span style="font-size: 14px;">📌</span>
@@ -1425,7 +1422,7 @@
                     orders: "ઓર્ડર્સ અને શિપમેન્ટ્સ", gstInv: "જીએસટી ઇનવોイス", profSet: "પ્રોફાઇલ સેટિંગ્સ", editProf: "👤 પ્રોફાઇલ સંપાદિત કરો",
                     savedAddr: "📍 સાચવેલા સરનામાં", changeLang: "🌐 ભાષા બદલો",
                     privSec: "ગોપનીયता અને સુરક્ષા", privCenter: "🔒 પ્રાઇવસી સેન્ટર", manageDev: "📱 ડિવાઇસ મેનેજ કરો",
-                    logout: "લૉગ આઉટ", langDisplay: "ગુજરાતી ➔"
+                    logout: "લૉગ આઉਟ", langDisplay: "ગુજરાતી ➔"
                 },
                 'pa': {
                     home: "ਹੋਮ", cat: "ਸ਼੍ਰੇਣੀਆਂ", parcel: "ਪਾਰਸਲ", account: "ਆਈਡੀ",
@@ -1440,7 +1437,7 @@
                     truckTitle: "ਟਰੱਕ", truckSub: "ਭਾਰੀ ਕਮਰਸ਼ੀਅਲ ਫ੍ਰੇਟ (5 ਟਨ ਤੱਕ)",
                     trailerTitle: "ਟਰੇਲਰ ਟਰੱਕ", trailerSub: "ਉਦਯੋਗਿਕ ਮਲਟੀ-ਟਨ ਕਾਰਗੋ (20+ ਟਨ ਤੱਕ)",
                     xCoin: "ਤੁਹਾਡਾ ਐਕਸ-ਕੋਇਨ ਬੈਲੇਂਸ", xCoinSub: "ਸਫ਼ਰਐਕਸ ਨਾਲ ਵਿਸ਼ੇਸ਼ ਇਨਾਮ ਅਤੇ ਛੋਟ",
-                    orders: "ਆਰਡਰ અને ਸ਼ਿਪਮੈਂਟ", gstInv: "ਜੀਐਸਟੀ ਇਨਵੌਇਸ", profSet: "ਪ੍ਰੋਫਾਈल ਸੈਟਿੰਗ", editProf: "👤 ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਿਤ ਕਰੋ",
+                    orders: "ਆਰਡਰ અને ਸ਼ਿਪਮੈਂਟ", gstInv: "ਜੀਐਸਟੀ ਇਨਵੌਇਸ", profSet: "ਪ੍ਰੋਫਾਈਲ ਸੈਟਿੰਗ", editProf: "👤 ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਿਤ ਕਰੋ",
                     savedAddr: "📍 ਸੁਰੱਖਿਅਤ ਪਤੇ", changeLang: "🌐 ਭਾਸ਼ਾ ਬਦਲੋ",
                     privSec: "ਪ੍ਰਾਈਵੇਸੀ ਅਤੇ ਸੁਰੱਖਿਆ", privCenter: "🔒 ਪ੍ਰਾਈਵੇਸੀ ਸੈਂਟਰ", manageDev: "📱 ਡਿਵਾਈਸ ਪ੍ਰਬੰਧਨ",
                     logout: "ਲੌਗ ਆਉਟ", langDisplay: "ਪੰਜਾਬੀ ➔"
@@ -1649,6 +1646,7 @@
                 window.localStorage.removeItem('safarx_logged_user');
                 window.localStorage.removeItem('safarx_logged_name');
                 window.localStorage.removeItem('safarx_logged_avatar');
+                window.localStorage.removeItem('safarx_global_sessions');
                 window.sessionStorage.clear();
 
                 document.getElementById('dashboardScreen').style.display = 'none';
