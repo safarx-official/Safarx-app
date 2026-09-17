@@ -35,7 +35,8 @@
         .card { background-color: #ffffff; padding: 35px; border-radius: 16px; border: 1px solid #cbd5e1; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.08); position: relative; }
         .card h1 { font-size: 24px; color: #0f172a; margin-bottom: 5px; }
         .card p { color: #64748b; font-size: 13px; margin-bottom: 20px; }
- .btn-google {
+
+        .btn-google {
             width: 100%; background-color: #ffffff; color: #1e2124; border: 1px solid #cbd5e1; padding: 14px;
             font-size: 15px; font-weight: 600; border-radius: 8px; cursor: pointer; display: flex;
             align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; transition: background 0.2s;
@@ -62,7 +63,8 @@
         .auth-switch span { color: #2563eb; font-weight: 600; }
         .forgot-link { display: block; text-align: right; font-size: 12px; color: #2563eb; margin-top: -6px; margin-bottom: 15px; cursor: pointer; text-decoration: none; }
         .back-btn { position: absolute; top: 20px; left: 20px; background: none; border: none; color: #64748b; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
- .profile-container { position: relative; width: 80px; height: 80px; margin: 0 auto 15px auto; }
+
+        .profile-container { position: relative; width: 80px; height: 80px; margin: 0 auto 15px auto; }
         .profile-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #2563eb; background: #f1f5f9; }
         .upload-badge {
             position: absolute; bottom: 0; right: 0; background: #2563eb; color: white;
@@ -74,7 +76,7 @@
         .modal-card { background: #ffffff; padding: 30px; border-radius: 16px; border: 1px solid #cbd5e1; width: 100%; max-width: 420px; text-align: left; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); max-height: 90vh; overflow-y: auto; }
     </style>
 </head>
- <body>
+<body>
     <div id="splashScreen">
         <img src="logo1.jpg" alt="SafarX Logo" class="splash-logo-img">
         <div class="splash-logo-container">
@@ -102,7 +104,8 @@
             </button>
         </div>
     </div>
- <div id="authScreen" class="screen-box">
+
+    <div id="authScreen" class="screen-box">
         <div class="card">
             <button class="back-btn" onclick="backToRoleScreen()">← Back</button>
             <h1 id="authTitle">SafarX Sign Up</h1>
@@ -131,7 +134,8 @@
             </div>
         </div>
     </div>
-<div id="signupVerifyModal" class="modal-overlay">
+
+    <div id="signupVerifyModal" class="modal-overlay">
         <div class="modal-card">
             <h2 style="color: #0f172a; font-size: 20px; margin-bottom: 5px;">SafarX Enterprise Verification</h2>
             <p style="color: #64748b; font-size: 12px; margin-bottom: 15px;" id="verifyModalText">Enter the 8-digit security verification code sent to your email.</p>
@@ -181,7 +185,8 @@
             <button style="background: none; border: none; color: #64748b; font-size: 12px; margin-top: 15px; cursor: pointer; width: 100%; text-align: center;" onclick="closeForgotModal()">Cancel</button>
         </div>
     </div>
- <div id="editProfileModal" class="modal-overlay">
+
+    <div id="editProfileModal" class="modal-overlay">
         <div class="modal-card">
             <h2 style="color: #0f172a; font-size: 20px; margin-bottom: 5px;">Edit Enterprise Profile</h2>
             <p style="color: #64748b; font-size: 12px; margin-bottom: 15px;">Update your global account details & profile avatar instantly.</p>
@@ -213,7 +218,8 @@
             <button style="background: none; border: none; color: #64748b; font-size: 12px; margin-top: 15px; cursor: pointer; width: 100%; text-align: center;" onclick="document.getElementById('editProfileModal').style.display='none'">Cancel</button>
         </div>
     </div>
- <div id="savedAddressesModal" class="modal-overlay">
+
+    <div id="savedAddressesModal" class="modal-overlay">
         <div class="modal-card" style="max-width: 480px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                 <h2 style="color: #0f172a; font-size: 20px;">Saved Hubs & Addresses</h2>
@@ -284,7 +290,8 @@
             <button class="btn-primary" id="langConfirmBtn" onclick="confirmAndApplyLanguage()">Confirm Language</button>
         </div>
     </div>
-  <div id="manageDevicesModal" class="modal-overlay">
+
+    <div id="manageDevicesModal" class="modal-overlay">
         <div class="modal-card" style="max-width: 440px;">
             <h2 style="color: #0f172a; font-size: 20px; margin-bottom: 5px;">Active Security & Devices</h2>
             <p style="color: #64748b; font-size: 12px; margin-bottom: 15px;">Monitor all active sessions across your authorized enterprise terminals.</p>
@@ -309,7 +316,8 @@
             <button class="btn-primary" onclick="document.getElementById('privacyCenterModal').style.display='none'">Got It</button>
         </div>
     </div>
- <div id="profileScreen" class="screen-box">
+
+    <div id="profileScreen" class="screen-box">
         <div class="card" style="max-width: 500px;">
             <button class="back-btn" onclick="backToAuthFromProfile()">← Back</button>
 
@@ -355,9 +363,9 @@
             <button class="btn-primary" onclick="submitProfileSetup()">Confirm & Enter App</button>
         </div>
     </div>
- <div id="dashboardScreen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f1f5f9; flex-direction: column; justify-content: space-between;">
+
+    <div id="dashboardScreen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f1f5f9; flex-direction: column; justify-content: space-between;">
         
-        <!-- TOP HEADER -->
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #ffffff; border-bottom: 1px solid #cbd5e1; z-index: 10; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
             <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #475569;">
                 <span>📍 Current Location:</span>
@@ -377,8 +385,9 @@
                     <p style="color: #64748b; font-size: 13px;" id="welcomeSubHeader">Select your transport or delivery option below for instant booking.</p>
                 </div>
 
-                <h3 style="color: #0f172a; font-size: 16px; margin-bottom: 15px; text-align: left; font-weight: 700;" id="selectTransportHeader">📦 Select Transport & Delivery Fleet</h3> 
- <div style="display: flex; flex-direction: column; gap: 12px; padding-bottom: 30px;">
+                <h3 style="color: #0f172a; font-size: 16px; margin-bottom: 15px; text-align: left; font-weight: 700;" id="selectTransportHeader">📦 Select Transport & Delivery Fleet</h3>
+
+                <div style="display: flex; flex-direction: column; gap: 12px; padding-bottom: 30px;">
                     
                     <div onclick="selectVehicle('Quick Drop')" style="background: #ffffff; border: 1px solid #2563eb; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 4px 12px rgba(37,99,235,0.1); position: relative;">
                         <span style="position: absolute; top: 10px; right: 15px; background: #ef4444; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px;">PROMO</span>
@@ -472,7 +481,7 @@
 
                 </div>
             </div>
-  <!-- TAB 2: PROFILE / ACCOUNT TAB -->
+
             <div id="tabContentProfile" class="tab-pane" style="display: none; text-align: left; padding-bottom: 40px;">
                 
                 <div style="background: #ffffff; padding: 20px; border-radius: 14px; border: 1px solid #cbd5e1; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
@@ -483,11 +492,9 @@
                             <p style="color: #64748b; font-size: 12px;" id="profileTabEmail">user@domain.com</p>
                         </div>
                     </div>
-                    <!-- Replaced SOS with Help Button as requested -->
                     <button onclick="alert('🎧 SafarX 24/7 Enterprise Help & Support Center:\n\nFor assistance with dispatch, shipments, or corporate queries, email support@safarx.app')" style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; color: #2563eb;" id="helpBtnTxt">🎧 Help</button>
                 </div>
 
-                <!-- X-Coins Balance Box -->
                 <div style="background: #ffffff; padding: 15px 20px; border-radius: 12px; border: 1px solid #cbd5e1; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <span style="font-size: 20px;">🪙</span>
@@ -525,7 +532,8 @@
                         <span style="color: #2563eb; font-size: 12px; font-weight: 600;" id="currentLangDisplay">English ➔</span>
                     </div>
                 </div>
- <h4 style="color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; margin-left: 5px;" id="secPrivacy">Privacy & Security</h4>
+
+                <h4 style="color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; margin-left: 5px;" id="secPrivacy">Privacy & Security</h4>
                 <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; margin-bottom: 20px; overflow: hidden;">
                     <div onclick="openPrivacyCenterModal()" style="padding: 14px 16px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
                         <span style="font-size: 14px; color: #0f172a; font-weight: 500;" id="menuPrivacyCenter">🔒 Privacy center</span>
@@ -544,7 +552,6 @@
             </div>
         </div>
 
-        <!-- BOTTOM NAVIGATION BAR -->
         <div style="display: flex; justify-content: space-around; align-items: center; background: #ffffff; border-top: 1px solid #cbd5e1; padding: 12px 10px; z-index: 10; box-shadow: 0 -2px 5px rgba(0,0,0,0.05);">
             <div id="navTabHome" onclick="switchNavTab('home')" style="text-align: center; cursor: pointer; color: #2563eb;">
                 <span style="font-size: 20px; display: block;">🏠</span>
@@ -567,7 +574,8 @@
             </div>
         </div>
     </div>
-  </script>
+
+    <script>
         const SUPABASE_URL = "https://oczoyqkxryppdwomqbgx.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable__LpoKgOtsPR8vJWSm1DaeQ_xWa13Z_C"; 
         
@@ -659,7 +667,8 @@
                 });
             } catch(e) {}
         });
- function selectRole(role) {
+
+        function selectRole(role) {
             selectedUserRole = role;
             document.getElementById('roleScreen').style.display = 'none';
             document.getElementById('authScreen').style.display = 'flex';
@@ -742,7 +751,8 @@
 
             switchToProfileScreen();
         }
- async function handleAuthAction() {
+
+        async function handleAuthAction() {
             let email = document.getElementById('loginEmail').value.trim();
             let pass = document.getElementById('loginPassword').value.trim();
 
@@ -815,7 +825,8 @@
                 }
             }
         }
-async function confirmSignupOtpAndProceed() {
+
+        async function confirmSignupOtpAndProceed() {
             let enteredOtp = document.getElementById('signupOtpInput').value.trim();
 
             if (!enteredOtp || enteredOtp.length < 8) {
@@ -914,7 +925,8 @@ async function confirmSignupOtpAndProceed() {
             document.getElementById('profileScreen').style.display = 'none';
             document.getElementById('authScreen').style.display = 'flex';
         }
-  async function fetchLocationByPincode(pincode) {
+
+        async function fetchLocationByPincode(pincode) {
             if (pincode.length === 6) {
                 try {
                     let response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
@@ -991,7 +1003,8 @@ async function confirmSignupOtpAndProceed() {
                 }, 600);
             }, 1800);
         }
-  function openEditProfileModal() {
+
+        function openEditProfileModal() {
             let currentName = document.getElementById('profileTabName').innerText;
             document.getElementById('editFullName').value = currentName !== "Hey, User" ? currentName : "";
             document.getElementById('editProfileModal').style.display = 'flex';
@@ -1098,7 +1111,8 @@ async function confirmSignupOtpAndProceed() {
             window.localStorage.setItem('safarx_saved_addresses', JSON.stringify(savedAddrs));
             renderSavedAddresses();
         }
-function openManageDevicesModal() {
+
+        function openManageDevicesModal() {
             let container = document.getElementById('deviceListContainer');
             let userEmail = window.localStorage.getItem('safarx_logged_user') || 'Terminal User';
             
@@ -1130,7 +1144,8 @@ function openManageDevicesModal() {
         function openGstInvoiceModal() {
             alert("🧾 GST Invoicing Hub:\n\nAll B2B commercial shipment tax invoices with HSN codes and digital signatures are generated here automatically.");
         }
- function openLanguageModal() {
+
+        function openLanguageModal() {
             document.getElementById('languageModal').style.display = 'flex';
         }
 
@@ -1178,7 +1193,7 @@ function openManageDevicesModal() {
                     privSec: "गोपनीयता और सुरक्षा", privCenter: "🔒 प्राइवेसी सेंटर", manageDev: "📱 डिवाइस मैनेज करें",
                     logout: "लॉग आउट", langDisplay: "हिंदी ➔"
                 },
-'bn': {
+                'bn': {
                     home: "হোম", cat: "বিভাগ", parcel: "পার্সেল", account: "অ্যাকাউন্ট",
                     welcomeSub: "তাত্ক্ষণিক বুকিংয়ের জন্য নিচের পরিবহন বা ডেলিভারি বিকল্পটি বেছে নিন।",
                     selectTrans: "📦 পরিবহন এবং ডেলিভারি ফ্লিট নির্বাচন করুন",
@@ -1250,7 +1265,7 @@ function openManageDevicesModal() {
                     privSec: "గోప్యత & భద్రత", privCenter: "🔒 ప్రైవసీ సెంటర్", manageDev: "📱 పరికరాల నిర్వహణ",
                     logout: "లాగ్ అవుట్", langDisplay: "తెలుగు ➔"
                 },
- 'gu': {
+                'gu': {
                     home: "હોમ", cat: "કેટેગરીઝ", parcel: "પાર્સલ", account: "એકાઉન્ટ",
                     welcomeSub: "ત્વરિત બુકિંગ માટે નીચે તમારું વાહન અથવા ડિલિવરી વિકલ્પ પસંદ કરો.",
                     selectTrans: "📦 પરિવહન અને ડિલિવરી ફ્લીટ પસંદ કરો",
@@ -1265,8 +1280,8 @@ function openManageDevicesModal() {
                     xCoin: "તમારું એક્સ-કોઇન બેલેન્સ", xCoinSub: "સફરએક્સ સાથે વિશેષ પુરસ્કારો",
                     orders: "ઓર્ડર્સ અને શિપમેન્ટ્સ", gstInv: "જીએસટી ઇનવોイス", profSet: "પ્રોફાઇલ સેટિંગ્સ", editProf: "👤 પ્રોફાઇલ સંપાદિત કરો",
                     savedAddr: "📍 સાચવેલા સરનામાં", changeLang: "🌐 ભાષા બદલો",
-                    privSec: "ગોપનીયતા અને સુરક્ષા", privCenter: "🔒 પ્રાઇવસી સેન્ટર", manageDev: "📱 ડિવાઇસ મેનેજ કરો",
-                    logout: "લૉગ આઉટ", langDisplay: "ગુજરાતી ➔"
+                    privSec: "ગોપનીયता અને સુરક્ષા", privCenter: "🔒 પ્રાઇવસી સેન્ટર", manageDev: "📱 ડિવાઇસ મેનેજ કરો",
+                    logout: "લૉગ આઉਟ", langDisplay: "ગુજરાતી ➔"
                 },
                 'pa': {
                     home: "ਹੋਮ", cat: "ਸ਼੍ਰੇਣੀਆਂ", parcel: "ਪਾਰਸਲ", account: "ਆਈਡੀ",
@@ -1422,7 +1437,7 @@ function openManageDevicesModal() {
                     autoTitle: "Auto", autoSub: "Mini veículo de carga (Até 500 kg)",
                     carTitle: "Carro", carSub: "Bagagem segura e frágil (Até 250 kg)",
                     wheelTitle: "6 Rodas", wheelSub: "Carga comercial média (Até 2.5 Toneladas)",
-                    truckTitle: "Caminhão", truckSub: "Frete comercial pesado (Até 5 Toneladas)",
+                    truckTitle: "Caminhão", wheelSub: "Frete comercial pesado (Até 5 Toneladas)",
                     trailerTitle: "Carreta / Trailer", trailerSub: "Carga industrial pesada (Até 20+ Toneladas)",
                     xCoin: "Seu Saldo X-Coins", xCoinSub: "Recompensas exclusivas e descontos",
                     orders: "Pedidos e Remessas", gstInv: "Faturas GST", profSet: "Configurações de Perfil", editProf: "👤 Editar perfil",
@@ -1431,7 +1446,8 @@ function openManageDevicesModal() {
                     logout: "Sair", langDisplay: "Português ➔"
                 }
             };
- let t = translations[langCode] || translations['en'];
+
+            let t = translations[langCode] || translations['en'];
 
             try {
                 if(document.getElementById('welcomeSubHeader')) document.getElementById('welcomeSubHeader').innerText = t.welcomeSub;
@@ -1481,7 +1497,8 @@ function openManageDevicesModal() {
                 alert(`✅ Language switched successfully! Platform updated.`);
             }
         }
- async function handleUserLogOut() {
+
+        async function handleUserLogOut() {
             if (confirm("Are you sure you want to log out of SafarX?")) {
                 try { await supabaseClient.auth.signOut(); } catch(e) {}
                 
@@ -1528,7 +1545,8 @@ function openManageDevicesModal() {
                 alert("📦 Parcel Tracking: Active dispatch orders & GPS tracking.");
             }
         }
- function fetchRealLiveLocationAndWeather() {
+
+        function fetchRealLiveLocationAndWeather() {
             if (navigator.geolocation) {
                 navigator.geolocation.watchPosition(async (position) => {
                     let lat = position.coords.latitude;
@@ -1561,7 +1579,8 @@ function openManageDevicesModal() {
                 document.getElementById('topLiveLocation').innerText = "Geolocation Not Supported";
             }
         }
- function selectVehicle(vehicleType) {
+
+        function selectVehicle(vehicleType) {
             let savedAddrs = JSON.parse(window.localStorage.getItem('safarx_saved_addresses') || '[]');
             if(savedAddrs.length > 0) {
                 openSavedAddressesModal();
@@ -1572,156 +1591,6 @@ function openManageDevicesModal() {
             }
         }
 
-        function openSavedAddressesModal() {
-            renderSavedAddresses();
-            document.getElementById('savedAddressesModal').style.display = 'flex';
-            document.getElementById('addNewAddressSection').style.display = 'none';
-        }
-
-        function toggleAddAddressForm() {
-            let sec = document.getElementById('addNewAddressSection');
-            sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
-        }
-
-        async function fetchAddressLocationByPin(pin) {
-            if(pin.length === 6) {
-                try {
-                    let res = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
-                    let json = await res.json();
-                    if(json[0].Status === "Success") {
-                        let po = json[0].PostOffice[0];
-                        document.getElementById('newAddrState').value = `${po.District}, ${po.State}`;
-                    }
-                } catch(e) {}
-            }
-        }
-
-        function renderSavedAddresses() {
-            let container = document.getElementById('addressListContainer');
-            let savedAddrs = JSON.parse(window.localStorage.getItem('safarx_saved_addresses') || '[]');
-            
-            if (savedAddrs.length === 0) {
-                container.innerHTML = `<p style="font-size: 12px; color: #64748b; text-align: center; padding: 10px;">No saved hubs yet. Add your frequent operating locations!</p>`;
-            } else {
-                container.innerHTML = savedAddrs.map((item, index) => `
-                    <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: flex-start;">
-                        <div>
-                            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
-                                <span style="font-size: 13px;">🏢</span>
-                                <span style="font-size: 13px; font-weight: 700; color: #0f172a;">${item.name} (${item.state || 'Hub'})</span>
-                            </div>
-                            <p style="font-size: 11px; color: #475569; margin-bottom: 2px;">${item.address}</p>
-                            <p style="font-size: 11px; font-weight: 600; color: #0284c7;">📞 ${item.phone}</p>
-                        </div>
-                        <button onclick="deleteSavedAddress(${index})" style="background: none; border: none; color: #ef4444; font-size: 11px; font-weight: 600; cursor: pointer;">Delete</button>
-                    </div>
-                `).join('');
-            }
-        }
-
-        function addNewSavedAddress() {
-            let name = document.getElementById('newContactName').value.trim();
-            let address = document.getElementById('newAddressDetails').value.trim();
-            let phone = document.getElementById('newPhoneNum').value.trim();
-            let state = document.getElementById('newAddrState').value.trim();
-            let pin = document.getElementById('newAddrPincode').value.trim();
-
-            if(!name || !address || !phone || !pin) {
-                alert("Please fill all required hub address fields!");
-                return;
-            }
-
-            let savedAddrs = JSON.parse(window.localStorage.getItem('safarx_saved_addresses') || '[]');
-            savedAddrs.push({ name, address, phone, state, pin });
-            window.localStorage.setItem('safarx_saved_addresses', JSON.stringify(savedAddrs));
-
-            document.getElementById('newContactName').value = "";
-            document.getElementById('newAddressDetails').value = "";
-            document.getElementById('newPhoneNum').value = "";
-            document.getElementById('newAddrPincode').value = "";
-            document.getElementById('newAddrState').value = "";
-            
-            renderSavedAddresses();
-            document.getElementById('addNewAddressSection').style.display = 'none';
-            alert("✅ Hub address saved successfully!");
-        }
-
-        function deleteSavedAddress(index) {
-            let savedAddrs = JSON.parse(window.localStorage.getItem('safarx_saved_addresses') || '[]');
-            savedAddrs.splice(index, 1);
-            window.localStorage.setItem('safarx_saved_addresses', JSON.stringify(savedAddrs));
-            renderSavedAddresses();
-        }
-  function openEditProfileModal() {
-            let currentName = document.getElementById('profileTabName').innerText;
-            document.getElementById('editFullName').value = currentName !== "Hey, User" ? currentName : "";
-            document.getElementById('editProfileModal').style.display = 'flex';
-        }
-
-        async function saveEditedProfile() {
-            let newName = document.getElementById('editFullName').value.trim();
-            let newPin = document.getElementById('editPincode').value.trim();
-            let newAddr = document.getElementById('editAddress').value.trim();
-            let newMob = document.getElementById('editMobile').value.trim();
-            let userEmail = window.localStorage.getItem('safarx_logged_user');
-
-            if(!newName) { alert("Enter name"); return; }
-
-            document.getElementById('profileTabName').innerText = newName;
-            document.getElementById('dashName').innerText = newName;
-            window.localStorage.setItem('safarx_logged_name', newName);
-
-            try {
-                await supabaseClient.from('transporter_profiles').update({ full_name: newName, pincode: newPin, address: newAddr, mobile: newMob }).eq('email', userEmail);
-            } catch(e) {}
-
-            alert("✅ Profile updated and synced globally!");
-            document.getElementById('editProfileModal').style.display = 'none';
-        }
-
-        function previewEditAvatar(event) {
-            let reader = new FileReader();
-            reader.onload = function(){
-                let res = reader.result;
-                document.getElementById('editModalAvatar').src = res;
-                document.getElementById('dashboardProfileAvatar').src = res;
-                window.localStorage.setItem('safarx_logged_avatar', res);
-            }
-            reader.readAsDataURL(event.target.files[0]);
-        }
-  function openManageDevicesModal() {
-            let container = document.getElementById('deviceListContainer');
-            let userEmail = window.localStorage.getItem('safarx_logged_user') || 'Terminal User';
-            
-            container.innerHTML = `
-                <div style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <p style="font-size: 13px; font-weight: 700; color: #0f172a;">💻 Current Web Terminal (Active)</p>
-                        <p style="font-size: 11px; color: #64748b;">IP: 192.168.1.45 • Global Edge Node</p>
-                        <p style="font-size: 10px; color: #16a34a; font-weight: 600; margin-top: 2px;">Last Active: Just now (${userEmail})</p>
-                    </div>
-                    <span style="background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: bold;">Authorized</span>
-                </div>
-                <div style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <p style="font-size: 13px; font-weight: 700; color: #0f172a;">📱 Mobile App Sync Node</p>
-                        <p style="font-size: 11px; color: #64748b;">OS: iOS / Android Secure Bridge</p>
-                        <p style="font-size: 10px; color: #64748b; margin-top: 2px;">Last Active: 2 hours ago</p>
-                    </div>
-                    <span style="background: #f1f5f9; color: #475569; padding: 2px 8px; border-radius: 6px; font-size: 11px;">Synced</span>
-                </div>
-            `;
-            document.getElementById('manageDevicesModal').style.display = 'flex';
-        }
-
-        function openPrivacyCenterModal() {
-            document.getElementById('privacyCenterModal').style.display = 'flex';
-        }
-
-        function openGstInvoiceModal() {
-            alert("🧾 GST Invoicing Hub:\n\nAll B2B commercial shipment tax invoices with HSN codes and digital signatures are generated here automatically.");
-        }
-<script>
         function calculateSafarXEstimatedFare(distanceKm, vehicleClass) {
             let baseRates = {
                 'Quick Drop': 40, 'Two Wheeler': 60, 'E-Rickshaw': 90,
