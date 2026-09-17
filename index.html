@@ -12,7 +12,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #0f172a; color: #f8fafc; height: 100vh; overflow-x: hidden; }
 
-        /* SPLASH & TRANSITION SCREENS (EXACT CENTER) */
+        /* SPLASH & TRANSITION SCREENS (EXACT CENTER & CLEAN LOGO MATCH) */
         #splashScreen, #loginSplashTransition {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: #0f172a; display: flex; flex-direction: column;
@@ -20,7 +20,7 @@
         }
         #loginSplashTransition { display: none; z-index: 10001; }
         
-      .splash-logo-img {
+        .splash-logo-img {
             width: 140px; height: 140px; border-radius: 50%; object-fit: cover;
             background-color: #0f172a; border: 2px solid #0f172a;
             box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4); 
@@ -153,8 +153,7 @@
             </div>
         </div>
     </div>
-
-    <!-- SIGN UP 8-DIGIT OTP VERIFICATION MODAL -->
+ <!-- SIGN UP 8-DIGIT OTP VERIFICATION MODAL -->
     <div id="signupVerifyModal" class="modal-overlay">
         <div class="modal-card">
             <h2 style="color: #fff; font-size: 20px; margin-bottom: 5px;">SafarX Email Verification</h2>
@@ -206,7 +205,8 @@
             <button style="background: none; border: none; color: #94a3b8; font-size: 12px; margin-top: 15px; cursor: pointer; width: 100%; text-align: center;" onclick="closeForgotModal()">Cancel</button>
         </div>
     </div>
- <!-- 3. PROFILE SETUP FORM SCREEN -->
+
+    <!-- 3. PROFILE SETUP FORM SCREEN -->
     <div id="profileScreen" class="screen-box">
         <div class="card" style="max-width: 500px;">
             <button class="back-btn" onclick="backToAuthFromProfile()">← Back</button>
@@ -267,15 +267,15 @@
  <!-- 4. MAIN CUSTOMER DASHBOARD SCREEN -->
     <div id="dashboardScreen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0f172a; flex-direction: column; justify-content: space-between;">
         
-        <!-- TOP HEADER (Live Location & Temperature) -->
+        <!-- TOP HEADER (Live Real-Time GPS Location & Real Temperature) -->
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #1e293b; border-bottom: 1px solid #334155; z-index: 10;">
             <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #94a3b8;">
-                <span>📍 Live Location:</span>
-                <span id="topLiveLocation" style="color: #fff; font-weight: 600;">India (Verified)</span>
+                <span>📍 Live GPS:</span>
+                <span id="topLiveLocation" style="color: #fff; font-weight: 600;">Detecting exact location...</span>
             </div>
             <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #3b82f6; font-weight: bold;">
                 <span>🌡️</span>
-                <span id="topLiveTemp">32°C, India</span>
+                <span id="topLiveTemp">--°C</span>
             </div>
         </div>
 
@@ -289,8 +289,7 @@
             </div>
 
             <h3 style="color: #fff; font-size: 16px; margin-bottom: 15px; text-align: left;">📦 Select Transport Vehicle</h3>
-
-            <!-- VEHICLES LIST CONTAINER -->
+ <!-- VEHICLES LIST CONTAINER -->
             <div style="display: flex; flex-direction: column; gap: 12px; padding-bottom: 30px;">
                 
                 <!-- 1. Two Wheeler -->
@@ -403,7 +402,7 @@
             </div>
         </div>
     </div>
-<script>
+ <script>
         const SUPABASE_URL = "https://oczoyqkxryppdwomqbgx.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable__LpoKgOtsPR8vJWSm1DaeQ_xWa13Z_C"; 
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -509,7 +508,7 @@
                     .eq('email', email);
 
                 if (existingProfiles && existingProfiles.length > 0) {
-                    triggerDashboardSplashTransition(name, "India (Verified)");
+                    triggerDashboardSplashTransition(name);
                     return;
                 }
             } catch(e) {
@@ -588,15 +587,14 @@
                     }
 
                     let name = email.split('@')[0];
-                    triggerDashboardSplashTransition(name.charAt(0).toUpperCase() + name.slice(1), "India (Verified)");
+                    triggerDashboardSplashTransition(name.charAt(0).toUpperCase() + name.slice(1));
 
                 } catch (err) {
                     alert("❌ Login connection error.");
                 }
             }
         }
-
-        async function confirmSignupOtpAndProceed() {
+ async function confirmSignupOtpAndProceed() {
             let enteredOtp = document.getElementById('signupOtpInput').value.trim();
 
             if (!enteredOtp || enteredOtp.length < 8) {
@@ -743,8 +741,7 @@
             document.getElementById('profileScreen').style.display = 'none';
             document.getElementById('authScreen').style.display = 'flex';
         }
-
-        async function fetchLocationByPincode(pincode) {
+async function fetchLocationByPincode(pincode) {
             if (pincode.length === 6) {
                 try {
                     let response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
@@ -798,16 +795,18 @@
                 console.log("Database sync notice");
             }
 
-            triggerDashboardSplashTransition(name, `${district}, ${state} (${pincode})`);
+            triggerDashboardSplashTransition(name);
         }
 
-        function triggerDashboardSplashTransition(userName, locationStr = "India (Verified)") {
+        function triggerDashboardSplashTransition(userName) {
             let transitionScreen = document.getElementById('loginSplashTransition');
             transitionScreen.style.display = 'flex';
             transitionScreen.style.opacity = '1';
 
             document.getElementById('dashName').innerText = userName;
-            document.getElementById('topLiveLocation').innerText = locationStr;
+
+            // FETCH REAL LIVE GPS & WEATHER AUTOMATICALLY ON DASHBOARD ENTRY
+            fetchRealLiveLocationAndWeather();
 
             setTimeout(() => {
                 transitionScreen.style.opacity = '0';
@@ -818,6 +817,43 @@
                     document.getElementById('dashboardScreen').style.display = 'flex';
                 }, 600);
             }, 2000);
+        }
+
+        // REAL LIVE GPS & WEATHER ENGINE
+        function fetchRealLiveLocationAndWeather() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    let lat = position.coords.latitude;
+                    let lon = position.coords.longitude;
+
+                    try {
+                        let geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+                        let geoData = await geoRes.json();
+                        let address = geoData.address || {};
+                        let city = address.city || address.town || address.village || address.county || "Current Location";
+                        let state = address.state || "";
+                        let locationString = state ? `${city}, ${state}` : city;
+                        
+                        document.getElementById('topLiveLocation').innerText = locationString;
+
+                        let weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+                        let weatherData = await weatherRes.json();
+                        if (weatherData && weatherData.current_weather) {
+                            let temp = Math.round(weatherData.current_weather.temperature);
+                            document.getElementById('topLiveTemp').innerText = `${temp}°C, ${city}`;
+                        }
+                    } catch (err) {
+                        console.log("GPS fetch fallback", err);
+                        document.getElementById('topLiveLocation').innerText = "Live GPS Active";
+                    }
+                }, (error) => {
+                    console.log("GPS permission denied or unavailable", error);
+                    document.getElementById('topLiveLocation').innerText = "Location Access Needed";
+                    document.getElementById('topLiveTemp').innerText = "32°C";
+                }, { timeout: 10000, maximumAge: 60000 });
+            } else {
+                document.getElementById('topLiveLocation').innerText = "GPS Not Supported";
+            }
         }
 
         function switchNavTab(tabName) {
