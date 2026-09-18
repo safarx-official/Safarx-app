@@ -388,7 +388,7 @@
 
                 <h3 style="color: #0f172a; font-size: 16px; margin-bottom: 15px; text-align: left; font-weight: 700;" id="selectTransportHeader">📦 Select Transport & Delivery Fleet</h3>
 
-                <div style="display: flex; flex-direction: column; gap: 12px; padding-bottom: 30px;">
+                <div style="display: flex; flex-direction: column; gap: 12px; padding-bottom: 30px;" id="vehicleListContainer">
                     
                     <div onclick="selectVehicle('Quick Drop')" style="background: #ffffff; border: 1px solid #2563eb; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 4px 12px rgba(37,99,235,0.1); position: relative;">
                         <span style="position: absolute; top: 10px; right: 15px; background: #ef4444; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px;">PROMO</span>
@@ -609,6 +609,17 @@
         let targetResetEmail = "";
         let pendingSignupEmail = "";
         let pendingSignupPassword = "";
+
+        const vehicleCatalog = [
+            { id: 'Quick Drop', img: 'https://cdn-icons-png.flaticon.com/512/3500/3500833.png', titleKey: 'quickTitle', subKey: 'quickSub', promo: 'PROMO' },
+            { id: 'Two Wheeler', img: 'https://cdn-icons-png.flaticon.com/512/3448/3448339.png', titleKey: 'twoWheelerTitle', subKey: 'twoWheelerSub', promo: '10% OFF' },
+            { id: 'E-Rickshaw', img: 'https://cdn-icons-png.flaticon.com/512/3198/3198424.png', titleKey: 'eRickTitle', subKey: 'eRickSub', promo: null },
+            { id: 'Auto', img: 'https://cdn-icons-png.flaticon.com/512/1048/1048313.png', titleKey: 'autoTitle', subKey: 'autoSub', promo: null },
+            { id: 'Car', img: 'https://cdn-icons-png.flaticon.com/512/3202/3202926.png', titleKey: 'carTitle', subKey: 'carSub', promo: null },
+            { id: '6-Wheeler', img: 'https://cdn-icons-png.flaticon.com/512/2964/2964514.png', titleKey: 'wheelTitle', subKey: 'wheelSub', promo: null },
+            { id: 'Truck', img: 'https://cdn-icons-png.flaticon.com/512/741/741407.png', titleKey: 'truckTitle', subKey: 'truckSub', promo: null },
+            { id: 'Trailer Truck', img: 'https://cdn-icons-png.flaticon.com/512/3067/3067417.png', titleKey: 'trailerTitle', subKey: 'trailerSub', promo: null }
+        ];
 
         window.addEventListener('load', async () => {
             let splash = document.getElementById('splashScreen');
@@ -1036,7 +1047,6 @@
             }, 800);
         }
 
-        // Advanced Hardware Model & 30-Day Trusted Device Sync with Supabase
         async function registerCloudDeviceSession(email) {
             let ua = navigator.userAgent;
             let deviceName = "Desktop / Laptop PC";
@@ -1059,10 +1069,6 @@
 
             let loginTime = new Date().toLocaleString();
             let locationStr = document.getElementById('topLiveLocation').innerText || "Kota, Rajasthan";
-            let uniqueDeviceKey = email + "_" + deviceName;
-
-            // Check if device is marked trusted in localStorage
-            let isTrusted = window.localStorage.getItem('safarx_trusted_' + uniqueDeviceKey) === 'true';
 
             try {
                 let { data: existing } = await supabaseClient
@@ -1083,7 +1089,6 @@
             } catch(e) {}
         }
 
-        // Toggle 30-Day Trust Status for Device
         function toggleTrustDevice(deviceName) {
             let userEmail = window.localStorage.getItem('safarx_logged_user');
             let key = userEmail + "_" + deviceName;
@@ -1099,7 +1104,6 @@
             openManageDevicesModal();
         }
 
-        // Terminate / Remove specific device session remotely
         async function terminateDeviceSession(deviceName) {
             let userEmail = window.localStorage.getItem('safarx_logged_user');
             if (confirm(`Are you sure you want to log out from "${deviceName}"?`)) {
@@ -1544,7 +1548,7 @@
                     orders: "ઓર્ડર્સ અને શિપમેન્ટ્સ", gstInv: "જીએસટી ઇનવોイス", profSet: "પ્રોફાઇલ સેટિંગ્સ", editProf: "👤 પ્રોફાઇલ સંપાદિત કરો",
                     savedAddr: "📍 સાચવેલા સરનામાં", changeLang: "🌐 ભાષા બદલો",
                     privSec: "ગોપનીયता અને સુરક્ષા", privCenter: "🔒 પ્રાઇવસી સેન્ટર", manageDev: "📱 ડિવાઇસ મેનેજ કરો",
-                    logout: "લૉગ આઉਟ", langDisplay: "ગુજરાતી ➔"
+                    logout: "લૉગ આઉટ", langDisplay: "ગુજરાતી ➔"
                 },
                 'pa': {
                     home: "ਹੋਮ", cat: "ਸ਼੍ਰੇਣੀਆਂ", parcel: "ਪਾਰਸਲ", account: "ਆਈਡੀ",
@@ -1558,7 +1562,7 @@
                     wheelTitle: "6-ਪਹੀਆ ਵਾਹਨ", wheelSub: "ਮੱਧਮ ਕਮਰਸ਼ੀਅਲ ਲੋਡ (2.5 ਟਨ ਤੱਕ)",
                     truckTitle: "ਟਰੱਕ", truckSub: "ਭਾਰੀ ਕਮਰਸ਼ੀਅਲ ਫ੍ਰੇਟ (5 ਟਨ ਤੱਕ)",
                     trailerTitle: "ਟਰੇਲਰ ਟਰੱਕ", trailerSub: "ਉਦਯੋਗਿਕ ਮਲਟੀ-ਟਨ ਕਾਰਗੋ (20+ ਟਨ ਤੱਕ)",
-                    xCoin: "ਤੁਹਾਡਾ ਐਕਸ-ਕੋਇਨ ਬੈਲੇਂਸ", xCoinSub: "ਸਫ਼ਰਐਕਸ ਨਾਲ ਵਿਸ਼ੇਸ਼ ਇਨਾਮ ਅਤੇ ਛੋਟ",
+                    xCoin: "ਤੁਹਾਡਾ ਐਕਸ-ਕੋਇਨ ਬੈਲੇਂਸ", xCoinSub: "ਸਫ਼ਰਐਕਸ ਨਾਲ ਵਿਸ਼ੇਸ਼ ਇਨਾਮ এবং ਛੋਟ",
                     orders: "ਆਰਡਰ এবং ਸ਼ਿਪਮੈਂਟ", gstInv: "ਜੀਐਸਟੀ ਇਨਵੌਇਸ", profSet: "ਪ੍ਰੋਫਾਈਲ ਸੈਟਿੰਗ", editProf: "👤 ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਿਤ ਕਰੋ",
                     savedAddr: "📍 ਸੁਰੱਖਿਅਤ ਪਤੇ", changeLang: "🌐 ਭਾਸ਼ਾ ਬਦਲੋ",
                     privSec: "ਪ੍ਰਾਈਵੇਸੀ এবং ਸੁਰੱਖਿਆ", privCenter: "🔒 ਪ੍ਰਾਈਵੇਸੀ ਸੈਂਟਰ", manageDev: "📱 ਡਿਵਾਈਸ ਪ੍ਰਬੰਧन",
@@ -1700,9 +1704,9 @@
                     autoTitle: "Auto", autoSub: "Mini veículo de carga (Até 500 kg)",
                     carTitle: "Carro", carSub: "Bagagem segura e frágil (Até 250 kg)",
                     wheelTitle: "6 Rodas", wheelSub: "Carga comercial média (Até 2.5 Toneladas)",
-                    truckTitle: "Caminhão", wheelSub: "Frete comercial pesado (Até 5 Toneladas)",
+                    truckTitle: "Caminhão", truckSub: "Frete comercial pesado (Até 5 Toneladas)",
                     trailerTitle: "Carreta / Trailer", trailerSub: "Carga industrial pesada (Até 20+ Toneladas)",
-                    xCoin: "Seu Saldo X-Coins", xCoinSub: "Recompensas exclusivas e descontos",
+                    xCoin: "Seu Saldo X-Coins", xCoinSub: "Recompensas exclusivas y descuentos",
                     orders: "Pedidos e Remessas", gstInv: "Faturas GST", profSet: "Configurações de Perfil", editProf: "👤 Editar perfil",
                     savedAddr: "📍 Endereços salvos", changeLang: "🌐 Mudar idioma",
                     privSec: "Privacidad e Segurança", privCenter: "🔒 Central de Privacidade", manageDev: "📱 Gerenciar dispositivos",
@@ -1715,23 +1719,25 @@
             try {
                 if(document.getElementById('welcomeSubHeader')) document.getElementById('welcomeSubHeader').innerText = t.welcomeSub;
                 if(document.getElementById('selectTransportHeader')) document.getElementById('selectTransportHeader').innerText = t.selectTrans;
-                if(document.getElementById('vehQuickDropTitle')) document.getElementById('vehQuickDropTitle').innerText = t.quickTitle;
-                if(document.getElementById('vehQuickDropSub')) document.getElementById('vehQuickDropSub').innerText = t.quickSub;
-                if(document.getElementById('vehTwoWheelerTitle')) document.getElementById('vehTwoWheelerTitle').innerText = t.twoWheelerTitle;
-                if(document.getElementById('vehTwoWheelerSub')) document.getElementById('vehTwoWheelerSub').innerText = t.vehTwoWheelerSub;
-                if(document.getElementById('vehERickTitle')) document.getElementById('vehERickTitle').innerText = t.eRickTitle;
-                if(document.getElementById('vehERickSub')) document.getElementById('vehERickSub').innerText = t.eRickSub;
-                if(document.getElementById('vehAutoTitle')) document.getElementById('vehAutoTitle').innerText = t.autoTitle;
-                if(document.getElementById('vehAutoSub')) document.getElementById('vehAutoSub').innerText = t.vehAutoSub;
-                if(document.getElementById('vehCarTitle')) document.getElementById('vehCarTitle').innerText = t.carTitle;
-                if(document.getElementById('vehCarSub')) document.getElementById('vehCarSub').innerText = t.vehCarSub;
-                if(document.getElementById('veh6WheelTitle')) document.getElementById('veh6WheelTitle').innerText = t.wheelTitle;
-                if(document.getElementById('veh6WheelSub')) document.getElementById('veh6WheelSub').innerText = t.veh6WheelSub;
-                if(document.getElementById('vehTruckTitle')) document.getElementById('vehTruckTitle').innerText = t.truckTitle;
-                if(document.getElementById('vehTruckSub')) document.getElementById('vehTruckSub').innerText = t.vehTruckSub;
-                if(document.getElementById('vehTrailerTitle')) document.getElementById('vehTrailerTitle').innerText = t.trailerTitle;
-                if(document.getElementById('vehTrailerSub')) document.getElementById('vehTrailerSub').innerText = t.vehTrailerSub;
                 
+                // Re-render Vehicle Catalog dynamically to prevent "undefined" translation bugs
+                let container = document.getElementById('vehicleListContainer');
+                if(container) {
+                    container.innerHTML = vehicleCatalog.map(v => `
+                        <div onclick="selectVehicle('${v.id}')" style="background: #ffffff; border: 1px solid ${v.promo === 'PROMO' ? '#2563eb' : '#cbd5e1'}; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; position: relative; box-shadow: ${v.promo === 'PROMO' ? '0 4px 12px rgba(37,99,235,0.1)' : 'none'};">
+                            ${v.promo ? `<span style="position: absolute; top: 10px; right: 15px; background: ${v.promo === 'PROMO' ? '#ef4444' : '#22c55e'}; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px;">${v.promo}</span>` : ''}
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <img src="${v.img}" alt="${v.id}" style="width: 50px; height: 50px; object-fit: contain; background: #f8fafc; padding: 6px; border-radius: 10px;">
+                                <div style="text-align: left;">
+                                    <h4 style="color: #0f172a; font-size: 15px; font-weight: 700;">${t[v.titleKey] || v.id}</h4>
+                                    <p style="color: #64748b; font-size: 12px;">${t[v.subKey] || 'Commercial transport & logistics fleet'}</p>
+                                </div>
+                            </div>
+                            <span style="color: #2563eb; font-weight: bold; font-size: 18px;">➔</span>
+                        </div>
+                    `).join('');
+                }
+
                 if(document.getElementById('xCoinTitleTxt')) document.getElementById('xCoinTitleTxt').innerText = t.xCoin;
                 if(document.getElementById('xCoinSubTxt')) document.getElementById('xCoinSubTxt').innerText = t.xCoinSub;
                 if(document.getElementById('ordersBtnTxt')) document.getElementById('ordersBtnTxt').innerText = t.orders;
@@ -1773,7 +1779,6 @@
                     deviceName = "Apple iPhone / iOS Device";
                 }
 
-                // Remove this device session from Supabase cloud database upon logout
                 try {
                     await supabaseClient
                         .from('active_sessions')
