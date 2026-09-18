@@ -295,9 +295,9 @@
     <div id="manageDevicesModal" class="modal-overlay">
         <div class="modal-card" style="max-width: 440px;">
             <h2 style="color: #0f172a; font-size: 20px; margin-bottom: 5px;">Active Security & Devices</h2>
-            <p style="color: #64748b; font-size: 12px; margin-bottom: 15px;">Monitor all active sessions across your authorized enterprise terminals.</p>
+            <p style="color: #64748b; font-size: 12px; margin-bottom: 15px;">Monitor active sessions, mark trusted devices (30 days), and terminate remote terminals.</p>
             
-            <div id="deviceListContainer" style="display: flex; flex-direction: column; gap: 10px; max-height: 250px; overflow-y: auto; margin-bottom: 15px;"></div>
+            <div id="deviceListContainer" style="display: flex; flex-direction: column; gap: 10px; max-height: 280px; overflow-y: auto; margin-bottom: 15px;"></div>
 
             <button class="btn-primary" onclick="document.getElementById('manageDevicesModal').style.display='none'">Close Security Hub</button>
         </div>
@@ -1036,6 +1036,7 @@
             }, 800);
         }
 
+        // Advanced Hardware Model & 30-Day Trusted Device Sync with Supabase
         async function registerCloudDeviceSession(email) {
             let ua = navigator.userAgent;
             let deviceName = "Desktop / Laptop PC";
@@ -1058,6 +1059,10 @@
 
             let loginTime = new Date().toLocaleString();
             let locationStr = document.getElementById('topLiveLocation').innerText || "Kota, Rajasthan";
+            let uniqueDeviceKey = email + "_" + deviceName;
+
+            // Check if device is marked trusted in localStorage
+            let isTrusted = window.localStorage.getItem('safarx_trusted_' + uniqueDeviceKey) === 'true';
 
             try {
                 let { data: existing } = await supabaseClient
@@ -1076,6 +1081,41 @@
                     }]);
                 }
             } catch(e) {}
+        }
+
+        // Toggle 30-Day Trust Status for Device
+        function toggleTrustDevice(deviceName) {
+            let userEmail = window.localStorage.getItem('safarx_logged_user');
+            let key = userEmail + "_" + deviceName;
+            let currentStatus = window.localStorage.getItem('safarx_trusted_' + key) === 'true';
+            
+            if (!currentStatus) {
+                window.localStorage.setItem('safarx_trusted_' + key, 'true');
+                alert(`🛡️ "${deviceName}" is now marked as a Trusted Device for 30 Days!`);
+            } else {
+                window.localStorage.removeItem('safarx_trusted_' + key);
+                alert(`🔓 Trust status removed for "${deviceName}".`);
+            }
+            openManageDevicesModal();
+        }
+
+        // Terminate / Remove specific device session remotely
+        async function terminateDeviceSession(deviceName) {
+            let userEmail = window.localStorage.getItem('safarx_logged_user');
+            if (confirm(`Are you sure you want to log out from "${deviceName}"?`)) {
+                try {
+                    await supabaseClient
+                        .from('active_sessions')
+                        .delete()
+                        .eq('email', userEmail)
+                        .eq('device_name', deviceName);
+                    
+                    alert(`✅ Successfully signed out from ${deviceName}`);
+                    openManageDevicesModal();
+                } catch(e) {
+                    alert("❌ Failed to terminate session.");
+                }
+            }
         }
 
         async function openEditProfileModal() {
@@ -1333,16 +1373,23 @@
                 userSessions.push({ name: currentDev, os: ua, loginTime: 'Just now (Active)', location: 'Kota, Rajasthan' });
             }
 
-            container.innerHTML = userSessions.map(session => `
+            container.innerHTML = userSessions.map(session => {
+                let trustKey = userEmail + "_" + session.name;
+                let isTrusted = window.localStorage.getItem('safarx_trusted_' + trustKey) === 'true';
+                return `
                 <div style="background: #f8fafc; border: 1px solid #2563eb; padding: 14px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                     <div>
-                        <p style="font-size: 13px; font-weight: 700; color: #0f172a;">📱 ${session.name} (Active)</p>
+                        <p style="font-size: 13px; font-weight: 700; color: #0f172a;">📱 ${session.name} ${isTrusted ? '🛡️ (Trusted)' : '(Active)'}</p>
                         <p style="font-size: 11px; color: #64748b;">${session.os} • ${session.location}</p>
                         <p style="font-size: 10px; color: #16a34a; font-weight: 600; margin-top: 3px;">Logged in: ${session.loginTime}</p>
                     </div>
-                    <span style="background: #dcfce7; color: #166534; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold;">Online</span>
+                    <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-end;">
+                        <button onclick="toggleTrustDevice('${session.name}')" style="background: ${isTrusted ? '#16a34a' : '#e2e8f0'}; color: ${isTrusted ? '#fff' : '#334155'}; border: none; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; cursor: pointer;">${isTrusted ? 'Trusted (30d)' : 'Trust 30d'}</button>
+                        <button onclick="terminateDeviceSession('${session.name}')" style="background: #fee2e2; color: #991b1b; border: none; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; cursor: pointer;">Log Out</button>
+                    </div>
                 </div>
-            `).join('') + `
+            `;
+            }).join('') + `
                 <div style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; opacity: 0.8;">
                     <div>
                         <p style="font-size: 13px; font-weight: 700; color: #0f172a;">☁️ SafarX Cloud Sync Node</p>
@@ -1503,7 +1550,7 @@
                     home: "ਹੋਮ", cat: "ਸ਼੍ਰੇਣੀਆਂ", parcel: "ਪਾਰਸਲ", account: "ਆਈਡੀ",
                     welcomeSub: "ਝੱਟਪਟ ਬੁੱਕ ਕਰਨ ਲਈ ਹੇਠਾਂ ਆਪਣਾ ਵਾਹਨ ਜਾਂ ਡਿਲਿਵਰੀ ਵਿਕਲਪ ਚੁਣੋ।",
                     selectTrans: "📦 ਵਾਹਨ ਅਤੇ ਡਿਲਿਵਰੀ ਚੁਣੋ",
-                    quickTitle: "⚡ ਕਵਿੱਕ ਡ੍ਰਾਪ", quickSub: "ਛੋਟੇ ਪਾਰਸਲ, ਦਸਤਾਵੇਜ਼ਾਂ ਅਤੇ ਚਾਬੀਆਂ ਲਈ",
+                    quickTitle: "⚡ ਕਵਿੱਕ ਡ੍ਰਾਪ", quickSub: "ਛੋਟੇ ਪਾਰਸਲ, ਦਸਤਾਵੇਜ਼ਾਂ এবং ਚਾਬੀਆਂ ਲਈ",
                     twoWheelerTitle: "ਦੋ ਪਹੀਆ ਵਾਹਨ", twoWheelerSub: "ਤੇਜ਼ ਮੋਟਰਸਾਈਕਲ ਡਿਲਿਵਰੀ (20 ਕਿਲੋ ਤੱਕ)",
                     eRickTitle: "ਈ-ਰਿਕਸ਼ਾ", eRickSub: "ਵਾਤਾਵਰਣ-ਅਨੁਕੂਲ ਲੋਕਲ ਟ੍ਰਾਂਸਪੋਰਟ (350 ਕਿਲੋ ਤੱਕ)",
                     autoTitle: "ਆਟੋ", autoSub: "ਓਪਨ ਬੌਡੀ ਮਿਨੀ ਕੈਰੀਅਰ (500 ਕਿਲੋ ਤੱਕ)",
@@ -1512,9 +1559,9 @@
                     truckTitle: "ਟਰੱਕ", truckSub: "ਭਾਰੀ ਕਮਰਸ਼ੀਅਲ ਫ੍ਰੇਟ (5 ਟਨ ਤੱਕ)",
                     trailerTitle: "ਟਰੇਲਰ ਟਰੱਕ", trailerSub: "ਉਦਯੋਗਿਕ ਮਲਟੀ-ਟਨ ਕਾਰਗੋ (20+ ਟਨ ਤੱਕ)",
                     xCoin: "ਤੁਹਾਡਾ ਐਕਸ-ਕੋਇਨ ਬੈਲੇਂਸ", xCoinSub: "ਸਫ਼ਰਐਕਸ ਨਾਲ ਵਿਸ਼ੇਸ਼ ਇਨਾਮ ਅਤੇ ਛੋਟ",
-                    orders: "ਆਰਡਰ ਅਤੇ ਸ਼ਿਪਮੈਂਟ", gstInv: "ਜੀਐਸਟੀ ਇਨਵੌਇਸ", profSet: "ਪ੍ਰੋਫਾਈਲ ਸੈਟਿੰਗ", editProf: "👤 ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਿਤ ਕਰੋ",
+                    orders: "ਆਰਡਰ এবং ਸ਼ਿਪਮੈਂਟ", gstInv: "ਜੀਐਸਟੀ ਇਨਵੌਇਸ", profSet: "ਪ੍ਰੋਫਾਈਲ ਸੈਟਿੰਗ", editProf: "👤 ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਿਤ ਕਰੋ",
                     savedAddr: "📍 ਸੁਰੱਖਿਅਤ ਪਤੇ", changeLang: "🌐 ਭਾਸ਼ਾ ਬਦਲੋ",
-                    privSec: "ਪ੍ਰਾਈਵੇਸੀ ਅਤੇ સુરક્ષા", privCenter: "🔒 ਪ੍ਰਾਈਵੇਸੀ ਸੈਂਟਰ", manageDev: "📱 ਡਿਵਾਈਸ ਪ੍ਰਬੰਧਨ",
+                    privSec: "ਪ੍ਰਾਈਵੇਸੀ এবং ਸੁਰੱਖਿਆ", privCenter: "🔒 ਪ੍ਰਾਈਵੇਸੀ ਸੈਂਟਰ", manageDev: "📱 ਡਿਵਾਈਸ ਪ੍ਰਬੰਧन",
                     logout: "ਲੌਗ ਆਉਟ", langDisplay: "ਪੰਜਾਬੀ ➔"
                 },
                 'ar': {
@@ -1679,11 +1726,11 @@
                 if(document.getElementById('vehCarTitle')) document.getElementById('vehCarTitle').innerText = t.carTitle;
                 if(document.getElementById('vehCarSub')) document.getElementById('vehCarSub').innerText = t.vehCarSub;
                 if(document.getElementById('veh6WheelTitle')) document.getElementById('veh6WheelTitle').innerText = t.wheelTitle;
-                if(document.getElementById('veh6WheelSub')) document.getElementById('veh6WheelSub').innerText = t.wheelSub;
+                if(document.getElementById('veh6WheelSub')) document.getElementById('veh6WheelSub').innerText = t.veh6WheelSub;
                 if(document.getElementById('vehTruckTitle')) document.getElementById('vehTruckTitle').innerText = t.truckTitle;
-                if(document.getElementById('vehTruckSub')) document.getElementById('vehTruckSub').innerText = t.truckSub;
+                if(document.getElementById('vehTruckSub')) document.getElementById('vehTruckSub').innerText = t.vehTruckSub;
                 if(document.getElementById('vehTrailerTitle')) document.getElementById('vehTrailerTitle').innerText = t.trailerTitle;
-                if(document.getElementById('vehTrailerSub')) document.getElementById('vehTrailerSub').innerText = t.trailerSub;
+                if(document.getElementById('vehTrailerSub')) document.getElementById('vehTrailerSub').innerText = t.vehTrailerSub;
                 
                 if(document.getElementById('xCoinTitleTxt')) document.getElementById('xCoinTitleTxt').innerText = t.xCoin;
                 if(document.getElementById('xCoinSubTxt')) document.getElementById('xCoinSubTxt').innerText = t.xCoinSub;
@@ -1716,12 +1763,30 @@
 
         async function handleUserLogOut() {
             if (confirm("Are you sure you want to log out of SafarX?")) {
+                let userEmail = window.localStorage.getItem('safarx_logged_user');
+                let ua = navigator.userAgent;
+                let deviceName = "Desktop / Laptop PC";
+                if (/android/i.test(ua)) {
+                    let match = ua.match(/;\s([^;]+)\sBuild\//);
+                    deviceName = match ? match[1] : "Android Mobile Phone";
+                } else if (/iphone|ipad|ipod/i.test(ua)) {
+                    deviceName = "Apple iPhone / iOS Device";
+                }
+
+                // Remove this device session from Supabase cloud database upon logout
+                try {
+                    await supabaseClient
+                        .from('active_sessions')
+                        .delete()
+                        .eq('email', userEmail)
+                        .eq('device_name', deviceName);
+                } catch(e) {}
+
                 try { await supabaseClient.auth.signOut(); } catch(e) {}
                 
                 window.localStorage.removeItem('safarx_logged_user');
                 window.localStorage.removeItem('safarx_logged_name');
                 window.localStorage.removeItem('safarx_logged_avatar');
-                window.localStorage.removeItem('safarx_global_sessions');
                 window.sessionStorage.clear();
 
                 document.getElementById('dashboardScreen').style.display = 'none';
