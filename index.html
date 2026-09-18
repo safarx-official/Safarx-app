@@ -659,7 +659,7 @@
                         document.getElementById('roleScreen').style.display = 'flex';
                     }, 400);
                 }
-            }, 1000);
+            }, 800);
 
             try {
                 google.accounts.id.initialize({
@@ -730,7 +730,10 @@
 
             window.localStorage.setItem('safarx_logged_user', email);
             window.localStorage.setItem('safarx_logged_name', name);
-            if(picture) window.localStorage.setItem('safarx_logged_avatar', picture);
+            if(picture) {
+                window.localStorage.setItem('safarx_logged_avatar', picture);
+                window.localStorage.setItem('safarx_user_avatar_' + email, picture);
+            }
 
             try {
                 let { data: existingProfiles } = await supabaseClient
@@ -741,6 +744,10 @@
                 if (existingProfiles && existingProfiles.length > 0) {
                     let dbProf = existingProfiles[0];
                     if(dbProf.full_name) window.localStorage.setItem('safarx_logged_name', dbProf.full_name);
+                    if(dbProf.pincode) window.localStorage.setItem('safarx_user_pincode_' + email, dbProf.pincode);
+                    if(dbProf.address) window.localStorage.setItem('safarx_user_address_' + email, dbProf.address);
+                    if(dbProf.mobile) window.localStorage.setItem('safarx_user_mobile_' + email, dbProf.mobile);
+                    
                     triggerDashboardSplashTransition(dbProf.full_name || name, email);
                     return;
                 }
@@ -775,7 +782,7 @@
                 try {
                     let { data: existingProfiles } = await supabaseClient
                         .from('transporter_profiles')
-                        .select('email, full_name')
+                        .select('email, full_name, pincode, address, mobile')
                         .eq('email', email);
 
                     if (existingProfiles && existingProfiles.length > 0) {
@@ -784,6 +791,10 @@
                         let formattedName = dbProf.full_name || email.split('@')[0];
                         window.localStorage.setItem('safarx_logged_user', email);
                         window.localStorage.setItem('safarx_logged_name', formattedName);
+                        if(dbProf.pincode) window.localStorage.setItem('safarx_user_pincode_' + email, dbProf.pincode);
+                        if(dbProf.address) window.localStorage.setItem('safarx_user_address_' + email, dbProf.address);
+                        if(dbProf.mobile) window.localStorage.setItem('safarx_user_mobile_' + email, dbProf.mobile);
+
                         triggerDashboardSplashTransition(formattedName, email);
                         return; 
                     }
@@ -810,8 +821,12 @@
 
                     try {
                         let { data: dbData } = await supabaseClient.from('transporter_profiles').select('*').eq('email', email);
-                        if (dbData && dbData.length > 0 && dbData[0].full_name) {
-                            formattedName = dbData[0].full_name;
+                        if (dbData && dbData.length > 0) {
+                            let p = dbData[0];
+                            if(p.full_name) formattedName = p.full_name;
+                            if(p.pincode) window.localStorage.setItem('safarx_user_pincode_' + email, p.pincode);
+                            if(p.address) window.localStorage.setItem('safarx_user_address_' + email, p.address);
+                            if(p.mobile) window.localStorage.setItem('safarx_user_mobile_' + email, p.mobile);
                         }
                     } catch(e) {}
                     
@@ -912,6 +927,8 @@
                 document.getElementById('editModalAvatar').src = res;
                 document.getElementById('dashboardProfileAvatar').src = res;
                 window.localStorage.setItem('safarx_logged_avatar', res);
+                let userEmail = window.localStorage.getItem('safarx_logged_user');
+                if(userEmail) window.localStorage.setItem('safarx_user_avatar_' + userEmail, res);
             }
             reader.readAsDataURL(event.target.files[0]);
         }
@@ -963,7 +980,14 @@
             window.localStorage.setItem('safarx_user_mobile_' + email, mobile);
 
             try {
-                await supabaseClient.from('transporter_profiles').upsert([{ full_name: name, email: email, pincode: pincode, address: address, mobile: mobile, role: selectedUserRole }], { onConflict: 'email' });
+                await supabaseClient.from('transporter_profiles').upsert([{ 
+                    full_name: name, 
+                    email: email, 
+                    pincode: pincode, 
+                    address: address, 
+                    mobile: mobile, 
+                    role: selectedUserRole 
+                }], { onConflict: 'email' });
             } catch(e) {}
 
             triggerDashboardSplashTransition(name, email);
@@ -992,7 +1016,7 @@
             document.getElementById('profileTabName').innerText = userName;
             document.getElementById('profileTabEmail').innerText = userEmail;
 
-            let savedAvatar = window.localStorage.getItem('safarx_logged_avatar');
+            let savedAvatar = window.localStorage.getItem('safarx_user_avatar_' + userEmail) || window.localStorage.getItem('safarx_logged_avatar');
             if (savedAvatar) {
                 document.getElementById('dashboardProfileAvatar').src = savedAvatar;
                 document.getElementById('editModalAvatar').src = savedAvatar;
@@ -1008,11 +1032,10 @@
                     document.getElementById('authScreen').style.display = 'none';
                     document.getElementById('profileScreen').style.display = 'none';
                     document.getElementById('dashboardScreen').style.display = 'flex';
-                }, 400);
-            }, 1200);
+                }, 300);
+            }, 800);
         }
 
-        // Real-Time Hardware & Model Detection for Active Sessions
         async function registerCloudDeviceSession(email) {
             let ua = navigator.userAgent;
             let deviceName = "Desktop / Laptop PC";
@@ -1060,7 +1083,7 @@
             let currentName = document.getElementById('profileTabName').innerText;
             let userEmail = window.localStorage.getItem('safarx_logged_user');
 
-            document.getElementById('editFullName').value = currentName !== "Hey, User" ? currentName : "";
+            document.getElementById('editFullName').value = window.localStorage.getItem('safarx_logged_name') || currentName || "";
             document.getElementById('editPincode').value = window.localStorage.getItem('safarx_user_pincode_' + userEmail) || "";
             document.getElementById('editAddress').value = window.localStorage.getItem('safarx_user_address_' + userEmail) || "";
             document.getElementById('editMobile').value = window.localStorage.getItem('safarx_user_mobile_' + userEmail) || "";
@@ -1069,7 +1092,10 @@
                 let { data: dbProf } = await supabaseClient.from('transporter_profiles').select('*').eq('email', userEmail);
                 if (dbProf && dbProf.length > 0) {
                     let p = dbProf[0];
-                    if(p.full_name) document.getElementById('editFullName').value = p.full_name;
+                    if(p.full_name) {
+                        document.getElementById('editFullName').value = p.full_name;
+                        window.localStorage.setItem('safarx_logged_name', p.full_name);
+                    }
                     if(p.pincode) {
                         document.getElementById('editPincode').value = p.pincode;
                         window.localStorage.setItem('safarx_user_pincode_' + userEmail, p.pincode);
@@ -1085,7 +1111,7 @@
                 }
             } catch(e) {}
 
-            let savedAvatar = window.localStorage.getItem('safarx_logged_avatar');
+            let savedAvatar = window.localStorage.getItem('safarx_user_avatar_' + userEmail) || window.localStorage.getItem('safarx_logged_avatar');
             if (savedAvatar) {
                 document.getElementById('editModalAvatar').src = savedAvatar;
             }
@@ -1424,7 +1450,7 @@
                     orders: "ઓર્ડર્સ અને શિપમેન્ટ્સ", gstInv: "જીએસટી ઇનવોイス", profSet: "પ્રોફાઇલ સેટિંગ્સ", editProf: "👤 પ્રોફાઇલ સંપાદિત કરો",
                     savedAddr: "📍 સાચવેલા સરનામાં", changeLang: "🌐 ભાષા બદલો",
                     privSec: "ગોપનીયता અને સુરક્ષા", privCenter: "🔒 પ્રાઇવસી સેન્ટર", manageDev: "📱 ડિવાઇસ મેનેજ કરો",
-                    logout: "લૉગ આઉਟ", langDisplay: "ગુજરાતી ➔"
+                    logout: "લૉગ આઉટ", langDisplay: "ગુજરાતી ➔"
                 },
                 'pa': {
                     home: "ਹੋਮ", cat: "ਸ਼੍ਰੇਣੀਆਂ", parcel: "ਪਾਰਸਲ", account: "ਆਈਡੀ",
@@ -1623,7 +1649,7 @@
                 if(document.getElementById('currentLangDisplay')) document.getElementById('currentLangDisplay').innerText = t.langDisplay;
                 if(document.getElementById('secPrivacy')) document.getElementById('secPrivacy').innerText = t.privSec;
                 if(document.getElementById('menuPrivacyCenter')) document.getElementById('menuPrivacyCenter').innerText = t.privCenter;
-                if(document.getElementById('menuManageDevices')) document.getElementById('menuManageDevices').innerText = t.manageDev;
+                if(document.getElementById('menuManageDevices')) document.getElementById('manageDevicesManageDevices')) document.getElementById('menuManageDevices').innerText = t.manageDev;
                 if(document.getElementById('logoutBtnTxt')) document.getElementById('logoutBtnTxt').innerText = t.logout;
 
                 if(document.getElementById('navHomeTxt')) document.getElementById('navHomeTxt').innerText = t.home;
