@@ -1036,6 +1036,7 @@
             }, 800);
         }
 
+        // Exact Device Hardware Model Detection for Active Sessions
         async function registerCloudDeviceSession(email) {
             let ua = navigator.userAgent;
             let deviceName = "Desktop / Laptop PC";
@@ -1077,6 +1078,17 @@
                 globalSessions[email].push(sessionObj);
             }
             window.localStorage.setItem('safarx_global_sessions', JSON.stringify(globalSessions));
+
+            // Sync with Supabase active_sessions cloud table
+            try {
+                await supabaseClient.from('active_sessions').insert([{
+                    email: email,
+                    device_name: deviceName,
+                    os_info: osInfo,
+                    location: sessionObj.location,
+                    login_time: sessionObj.loginTime
+                }]);
+            } catch(e) {}
         }
 
         async function openEditProfileModal() {
@@ -1183,10 +1195,30 @@
             return 'safarx_saved_addresses_' + userEmail;
         }
 
-        function renderSavedAddresses() {
+        async function renderSavedAddresses() {
             let container = document.getElementById('addressListContainer');
+            let userEmail = window.localStorage.getItem('safarx_logged_user') || 'default_user';
             let storageKey = getAccountSpecificKey();
-            let savedAddrs = JSON.parse(window.localStorage.getItem(storageKey) || '[]');
+            
+            // Try fetching from cloud saved_hubs table first
+            let savedAddrs = [];
+            try {
+                let { data: cloudHubs } = await supabaseClient.from('saved_hubs').select('*').eq('email', userEmail);
+                if (cloudHubs && cloudHubs.length > 0) {
+                    savedAddrs = cloudHubs.map(h => ({
+                        name: h.hub_name,
+                        address: h.address,
+                        pin: h.pincode,
+                        phone: h.phone,
+                        state: h.state
+                    }));
+                    window.localStorage.setItem(storageKey, JSON.stringify(savedAddrs));
+                } else {
+                    savedAddrs = JSON.parse(window.localStorage.getItem(storageKey) || '[]');
+                }
+            } catch(e) {
+                savedAddrs = JSON.parse(window.localStorage.getItem(storageKey) || '[]');
+            }
             
             if (savedAddrs.length === 0) {
                 container.innerHTML = `<p style="font-size: 12px; color: #64748b; text-align: center; padding: 10px;">No saved hubs yet. Add your frequent operating locations!</p>`;
@@ -1210,13 +1242,14 @@
             }
         }
 
-        function addNewSavedAddress() {
+        async function addNewSavedAddress() {
             let name = document.getElementById('newContactName').value.trim();
             let address = document.getElementById('newAddressDetails').value.trim();
             let phone = document.getElementById('newPhoneNum').value.trim();
             let state = document.getElementById('newAddrState').value.trim();
             let pin = document.getElementById('newAddrPincode').value.trim();
             let editIndex = parseInt(document.getElementById('editAddressIndex').value);
+            let userEmail = window.localStorage.getItem('safarx_logged_user');
 
             if(!name || !address || !phone || !pin) {
                 alert("Please fill all required hub address fields!");
@@ -1235,6 +1268,17 @@
             }
 
             window.localStorage.setItem(storageKey, JSON.stringify(savedAddrs));
+
+            try {
+                await supabaseClient.from('saved_hubs').insert([{
+                    email: userEmail,
+                    hub_name: name,
+                    address: address,
+                    pincode: pin,
+                    phone: phone,
+                    state: state
+                }]);
+            } catch(e) {}
 
             document.getElementById('newContactName').value = "";
             document.getElementById('newAddressDetails').value = "";
@@ -1273,11 +1317,27 @@
             renderSavedAddresses();
         }
 
-        function openManageDevicesModal() {
+        async function openManageDevicesModal() {
             let container = document.getElementById('deviceListContainer');
             let userEmail = window.localStorage.getItem('safarx_logged_user') || 'default_user';
-            let globalSessions = JSON.parse(window.localStorage.getItem('safarx_global_sessions') || '{}');
-            let userSessions = globalSessions[userEmail] || [];
+            
+            let userSessions = [];
+            try {
+                let { data: cloudSessions } = await supabaseClient.from('active_sessions').select('*').eq('email', userEmail);
+                if (cloudSessions && cloudSessions.length > 0) {
+                    userSessions = cloudSessions.map(s => ({
+                        name: s.device_name,
+                        os: s.os_info,
+                        location: s.location,
+                        loginTime: s.login_time
+                    }));
+                }
+            } catch(e) {}
+
+            if (userSessions.length === 0) {
+                let globalSessions = JSON.parse(window.localStorage.getItem('safarx_global_sessions') || '{}');
+                userSessions = globalSessions[userEmail] || [];
+            }
             
             if (userSessions.length === 0) {
                 let ua = navigator.userAgent;
@@ -1450,7 +1510,7 @@
                     orders: "ઓર્ડર્સ અને શિપમેન્ટ્સ", gstInv: "જીએસટી ઇનવોイス", profSet: "પ્રોફાઇલ સેટિંગ્સ", editProf: "👤 પ્રોફાઇલ સંપાદિત કરો",
                     savedAddr: "📍 સાચવેલા સરનામાં", changeLang: "🌐 ભાષા બદલો",
                     privSec: "ગોપનીયता અને સુરક્ષા", privCenter: "🔒 પ્રાઇવસી સેન્ટર", manageDev: "📱 ડિવાઇસ મેનેજ કરો",
-                    logout: "લૉગ આઉટ", langDisplay: "ગુજરાતી ➔"
+                    logout: "લૉગ આઉਟ", langDisplay: "ગુજરાતી ➔"
                 },
                 'pa': {
                     home: "ਹੋਮ", cat: "ਸ਼੍ਰੇਣੀਆਂ", parcel: "ਪਾਰਸਲ", account: "ਆਈਡੀ",
@@ -1465,9 +1525,9 @@
                     truckTitle: "ਟਰੱਕ", truckSub: "ਭਾਰੀ ਕਮਰਸ਼ੀਅਲ ਫ੍ਰੇਟ (5 ਟਨ ਤੱਕ)",
                     trailerTitle: "ਟਰੇਲਰ ਟਰੱਕ", trailerSub: "ਉਦਯੋਗਿਕ ਮਲਟੀ-ਟਨ ਕਾਰਗੋ (20+ ਟਨ ਤੱਕ)",
                     xCoin: "ਤੁਹਾਡਾ ਐਕਸ-ਕੋਇਨ ਬੈਲੇਂਸ", xCoinSub: "ਸਫ਼ਰਐਕਸ ਨਾਲ ਵਿਸ਼ੇਸ਼ ਇਨਾਮ ਅਤੇ ਛੋਟ",
-                    orders: "ਆਰਡਰ અને ਸ਼ਿਪਮੈਂਟ", gstInv: "ਜੀਐਸਟੀ ਇਨਵੌਇਸ", profSet: "ਪ੍ਰੋਫਾਈਲ ਸੈਟਿੰਗ", editProf: "👤 ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਿਤ ਕਰੋ",
+                    orders: "ਆਰਡਰ ਅਤੇ ਸ਼ਿਪਮੈਂਟ", gstInv: "ਜੀਐਸਟੀ ਇਨਵੌਇਸ", profSet: "ਪ੍ਰੋਫਾਈਲ ਸੈਟਿੰਗ", editProf: "👤 ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਿਤ ਕਰੋ",
                     savedAddr: "📍 ਸੁਰੱਖਿਅਤ ਪਤੇ", changeLang: "🌐 ਭਾਸ਼ਾ ਬਦਲੋ",
-                    privSec: "ਪ੍ਰਾਈਵੇਸੀ ਅਤੇ ਸੁਰੱਖਿਆ", privCenter: "🔒 ਪ੍ਰਾਈਵੇਸੀ ਸੈਂਟਰ", manageDev: "📱 ਡਿਵਾਈਸ ਪ੍ਰਬੰਧਨ",
+                    privSec: "ਪ੍ਰਾਈਵੇਸੀ ਅਤੇ સુરક્ષા", privCenter: "🔒 ਪ੍ਰਾਈਵੇਸੀ ਸੈਂਟਰ", manageDev: "📱 ਡਿਵਾਈਸ ਪ੍ਰਬੰਧन",
                     logout: "ਲੌਗ ਆਉਟ", langDisplay: "ਪੰਜਾਬੀ ➔"
                 },
                 'ar': {
@@ -1606,10 +1666,10 @@
                     autoTitle: "Auto", autoSub: "Mini veículo de carga (Até 500 kg)",
                     carTitle: "Carro", carSub: "Bagagem segura e frágil (Até 250 kg)",
                     wheelTitle: "6 Rodas", wheelSub: "Carga comercial média (Até 2.5 Toneladas)",
-                    truckTitle: "Caminhão", truckSub: "Frete comercial pesado (Até 5 Toneladas)",
+                    truckTitle: "Caminhão", wheelSub: "Frete comercial pesado (Até 5 Toneladas)",
                     trailerTitle: "Carreta / Trailer", trailerSub: "Carga industrial pesada (Até 20+ Toneladas)",
                     xCoin: "Seu Saldo X-Coins", xCoinSub: "Recompensas exclusivas e descontos",
-                    orders: "Pedidos e Remessas", gstInv: "Faturas GST", profSet: "Configurações de Perfil", editProf: "👤 Editar perfil",
+                    orders: "Pedidos e Remessas", gstInv: "Facturas GST", profSet: "Configurações de Perfil", editProf: "👤 Editar perfil",
                     savedAddr: "📍 Endereços salvos", changeLang: "🌐 Mudar idioma",
                     privSec: "Privacidad e Segurança", privCenter: "🔒 Central de Privacidade", manageDev: "📱 Gerenciar dispositivos",
                     logout: "Sair", langDisplay: "Português ➔"
