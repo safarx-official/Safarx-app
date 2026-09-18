@@ -1036,7 +1036,6 @@
             }, 800);
         }
 
-        // Exact Device Hardware Model Detection for Active Sessions
         async function registerCloudDeviceSession(email) {
             let ua = navigator.userAgent;
             let deviceName = "Desktop / Laptop PC";
@@ -1057,37 +1056,25 @@
                 osInfo = "macOS • Desktop Node";
             }
 
-            let globalSessions = JSON.parse(window.localStorage.getItem('safarx_global_sessions') || '{}');
-            if (!globalSessions[email]) globalSessions[email] = [];
+            let loginTime = new Date().toLocaleString();
+            let locationStr = document.getElementById('topLiveLocation').innerText || "Kota, Rajasthan";
 
-            let sessionKey = deviceName + " (" + osInfo + ")";
-            let existingIdx = globalSessions[email].findIndex(s => s.key === sessionKey);
-            
-            let sessionObj = {
-                key: sessionKey,
-                name: deviceName,
-                os: osInfo,
-                user: email,
-                loginTime: new Date().toLocaleString(),
-                location: document.getElementById('topLiveLocation').innerText || "Kota, Rajasthan"
-            };
-
-            if (existingIdx >= 0) {
-                globalSessions[email][existingIdx] = sessionObj;
-            } else {
-                globalSessions[email].push(sessionObj);
-            }
-            window.localStorage.setItem('safarx_global_sessions', JSON.stringify(globalSessions));
-
-            // Sync with Supabase active_sessions cloud table
             try {
-                await supabaseClient.from('active_sessions').insert([{
-                    email: email,
-                    device_name: deviceName,
-                    os_info: osInfo,
-                    location: sessionObj.location,
-                    login_time: sessionObj.loginTime
-                }]);
+                let { data: existing } = await supabaseClient
+                    .from('active_sessions')
+                    .select('*')
+                    .eq('email', email)
+                    .eq('device_name', deviceName);
+
+                if (!existing || existing.length === 0) {
+                    await supabaseClient.from('active_sessions').insert([{
+                        email: email,
+                        device_name: deviceName,
+                        os_info: osInfo,
+                        location: locationStr,
+                        login_time: loginTime
+                    }]);
+                }
             } catch(e) {}
         }
 
@@ -1200,7 +1187,6 @@
             let userEmail = window.localStorage.getItem('safarx_logged_user') || 'default_user';
             let storageKey = getAccountSpecificKey();
             
-            // Try fetching from cloud saved_hubs table first
             let savedAddrs = [];
             try {
                 let { data: cloudHubs } = await supabaseClient.from('saved_hubs').select('*').eq('email', userEmail);
@@ -1321,9 +1307,16 @@
             let container = document.getElementById('deviceListContainer');
             let userEmail = window.localStorage.getItem('safarx_logged_user') || 'default_user';
             
+            container.innerHTML = `<p style="font-size: 12px; color: #64748b; text-align: center; padding: 10px;">Fetching cloud active sessions...</p>`;
+            document.getElementById('manageDevicesModal').style.display = 'flex';
+
             let userSessions = [];
             try {
-                let { data: cloudSessions } = await supabaseClient.from('active_sessions').select('*').eq('email', userEmail);
+                let { data: cloudSessions } = await supabaseClient
+                    .from('active_sessions')
+                    .select('*')
+                    .eq('email', userEmail);
+
                 if (cloudSessions && cloudSessions.length > 0) {
                     userSessions = cloudSessions.map(s => ({
                         name: s.device_name,
@@ -1334,11 +1327,6 @@
                 }
             } catch(e) {}
 
-            if (userSessions.length === 0) {
-                let globalSessions = JSON.parse(window.localStorage.getItem('safarx_global_sessions') || '{}');
-                userSessions = globalSessions[userEmail] || [];
-            }
-            
             if (userSessions.length === 0) {
                 let ua = navigator.userAgent;
                 let currentDev = /mobile/i.test(ua) ? "Mobile Smartphone" : "Desktop Terminal";
@@ -1363,7 +1351,6 @@
                     <span style="background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: bold;">Synced</span>
                 </div>
             `;
-            document.getElementById('manageDevicesModal').style.display = 'flex';
         }
 
         function openPrivacyCenterModal() {
@@ -1527,7 +1514,7 @@
                     xCoin: "ਤੁਹਾਡਾ ਐਕਸ-ਕੋਇਨ ਬੈਲੇਂਸ", xCoinSub: "ਸਫ਼ਰਐਕਸ ਨਾਲ ਵਿਸ਼ੇਸ਼ ਇਨਾਮ ਅਤੇ ਛੋਟ",
                     orders: "ਆਰਡਰ ਅਤੇ ਸ਼ਿਪਮੈਂਟ", gstInv: "ਜੀਐਸਟੀ ਇਨਵੌਇਸ", profSet: "ਪ੍ਰੋਫਾਈਲ ਸੈਟਿੰਗ", editProf: "👤 ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਿਤ ਕਰੋ",
                     savedAddr: "📍 ਸੁਰੱਖਿਅਤ ਪਤੇ", changeLang: "🌐 ਭਾਸ਼ਾ ਬਦਲੋ",
-                    privSec: "ਪ੍ਰਾਈਵੇਸੀ ਅਤੇ સુરક્ષા", privCenter: "🔒 ਪ੍ਰਾਈਵੇਸੀ ਸੈਂਟਰ", manageDev: "📱 ਡਿਵਾਈਸ ਪ੍ਰਬੰਧन",
+                    privSec: "ਪ੍ਰਾਈਵੇਸੀ ਅਤੇ સુરક્ષા", privCenter: "🔒 ਪ੍ਰਾਈਵੇਸੀ ਸੈਂਟਰ", manageDev: "📱 ਡਿਵਾਈਸ ਪ੍ਰਬੰਧਨ",
                     logout: "ਲੌਗ ਆਉਟ", langDisplay: "ਪੰਜਾਬੀ ➔"
                 },
                 'ar': {
@@ -1669,7 +1656,7 @@
                     truckTitle: "Caminhão", wheelSub: "Frete comercial pesado (Até 5 Toneladas)",
                     trailerTitle: "Carreta / Trailer", trailerSub: "Carga industrial pesada (Até 20+ Toneladas)",
                     xCoin: "Seu Saldo X-Coins", xCoinSub: "Recompensas exclusivas e descontos",
-                    orders: "Pedidos e Remessas", gstInv: "Facturas GST", profSet: "Configurações de Perfil", editProf: "👤 Editar perfil",
+                    orders: "Pedidos e Remessas", gstInv: "Faturas GST", profSet: "Configurações de Perfil", editProf: "👤 Editar perfil",
                     savedAddr: "📍 Endereços salvos", changeLang: "🌐 Mudar idioma",
                     privSec: "Privacidad e Segurança", privCenter: "🔒 Central de Privacidade", manageDev: "📱 Gerenciar dispositivos",
                     logout: "Sair", langDisplay: "Português ➔"
