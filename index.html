@@ -625,7 +625,7 @@
                     setTimeout(() => { 
                         splash.style.display = 'none'; 
                         triggerDashboardSplashTransition(savedUserName, savedUserEmail);
-                    }, 400);
+                    }, 300);
                 }
                 return; 
             }
@@ -645,7 +645,7 @@
                         setTimeout(() => { 
                             splash.style.display = 'none'; 
                             triggerDashboardSplashTransition(userName, userEmail);
-                        }, 600);
+                        }, 400);
                     }
                     return;
                 }
@@ -657,7 +657,7 @@
                     setTimeout(() => { 
                         splash.style.display = 'none'; 
                         document.getElementById('roleScreen').style.display = 'flex';
-                    }, 600);
+                    }, 400);
                 }
             }, 1000);
 
@@ -793,7 +793,6 @@
                 pendingSignupPassword = pass;
 
                 document.getElementById('signupVerifyModal').style.display = 'flex';
-
                 supabaseClient.auth.signUp({ email: email, password: pass }).catch(() => {});
 
             } else {
@@ -1009,8 +1008,8 @@
                     document.getElementById('authScreen').style.display = 'none';
                     document.getElementById('profileScreen').style.display = 'none';
                     document.getElementById('dashboardScreen').style.display = 'flex';
-                }, 600);
-            }, 1800);
+                }, 400);
+            }, 1200);
         }
 
         // Real-Time Hardware & Model Detection for Active Sessions
@@ -1654,6 +1653,7 @@
 
                 document.getElementById('dashboardScreen').style.display = 'none';
                 document.getElementById('roleScreen').style.display = 'flex';
+                window.location.reload();
             }
         }
 
