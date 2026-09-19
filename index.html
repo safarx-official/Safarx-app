@@ -388,99 +388,7 @@
 
                 <h3 style="color: #0f172a; font-size: 16px; margin-bottom: 15px; text-align: left; font-weight: 700;" id="selectTransportHeader">📦 Select Transport & Delivery Fleet</h3>
 
-                <div style="display: flex; flex-direction: column; gap: 12px; padding-bottom: 30px;" id="vehicleListContainer">
-                    
-                    <div onclick="selectVehicle('Quick Drop')" style="background: #ffffff; border: 1px solid #2563eb; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 4px 12px rgba(37,99,235,0.1); position: relative;">
-                        <span style="position: absolute; top: 10px; right: 15px; background: #ef4444; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px;">PROMO</span>
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <img src="https://cdn-icons-png.flaticon.com/512/3500/3500833.png" alt="Quick Drop" style="width: 50px; height: 50px; object-fit: contain; background: #eff6ff; padding: 6px; border-radius: 10px;">
-                            <div style="text-align: left;">
-                                <h4 style="color: #0f172a; font-size: 15px; font-weight: 700;" id="vehQuickDropTitle">⚡ Quick Drop</h4>
-                                <p style="color: #64748b; font-size: 12px;" id="vehQuickDropSub">Instant local runner for small parcels, documents & keys</p>
-                            </div>
-                        </div>
-                        <span style="color: #2563eb; font-weight: bold; font-size: 18px;">➔</span>
-                    </div>
-
-                    <div onclick="selectVehicle('Two Wheeler')" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; position: relative;">
-                        <span style="position: absolute; top: 10px; right: 15px; background: #22c55e; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px;">10% OFF</span>
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <img src="https://cdn-icons-png.flaticon.com/512/3448/3448339.png" alt="Two Wheeler" style="width: 50px; height: 50px; object-fit: contain; background: #f8fafc; padding: 6px; border-radius: 10px;">
-                            <div style="text-align: left;">
-                                <h4 style="color: #0f172a; font-size: 15px; font-weight: 700;" id="vehTwoWheelerTitle">Two Wheeler</h4>
-                                <p style="color: #64748b; font-size: 12px;" id="vehTwoWheelerSub">Fast motorcycle parcel delivery (Up to 20 kg)</p>
-                            </div>
-                        </div>
-                        <span style="color: #2563eb; font-weight: bold; font-size: 18px;">➔</span>
-                    </div>
-
-                    <div onclick="selectVehicle('E-Rickshaw')" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <img src="https://cdn-icons-png.flaticon.com/512/3198/3198424.png" alt="E-Rickshaw" style="width: 50px; height: 50px; object-fit: contain; background: #f8fafc; padding: 6px; border-radius: 10px;">
-                            <div style="text-align: left;">
-                                <h4 style="color: #0f172a; font-size: 15px; font-weight: 700;" id="vehERickTitle">E-Rickshaw</h4>
-                                <p style="color: #64748b; font-size: 12px;" id="vehERickSub">Eco-friendly local transport (Up to 350 kg)</p>
-                            </div>
-                        </div>
-                        <span style="color: #2563eb; font-weight: bold; font-size: 18px;">➔</span>
-                    </div>
-
-                    <div onclick="selectVehicle('Auto')" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <img src="https://cdn-icons-png.flaticon.com/512/1048/1048313.png" alt="Auto" style="width: 50px; height: 50px; object-fit: contain; background: #f8fafc; padding: 6px; border-radius: 10px;">
-                            <div style="text-align: left;">
-                                <h4 style="color: #0f172a; font-size: 15px; font-weight: 700;" id="vehAutoTitle">Auto</h4>
-                                <p style="color: #64748b; font-size: 12px;" id="vehAutoSub">Open body mini carrier (Up to 500 kg)</p>
-                            </div>
-                        </div>
-                        <span style="color: #2563eb; font-weight: bold; font-size: 18px;">➔</span>
-                    </div>
-
-                    <div onclick="selectVehicle('Car')" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <img src="https://cdn-icons-png.flaticon.com/512/3202/3202926.png" alt="Car" style="width: 50px; height: 50px; object-fit: contain; background: #f8fafc; padding: 6px; border-radius: 10px;">
-                            <div style="text-align: left;">
-                                <h4 style="color: #0f172a; font-size: 15px; font-weight: 700;" id="vehCarTitle">Car</h4>
-                                <p style="color: #64748b; font-size: 12px;" id="vehCarSub">Secure luggage & fragile goods (Up to 250 kg)</p>
-                            </div>
-                        </div>
-                        <span style="color: #2563eb; font-weight: bold; font-size: 18px;">➔</span>
-                    </div>
-
-                    <div onclick="selectVehicle('6-Wheeler')" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <img src="https://cdn-icons-png.flaticon.com/512/2964/2964514.png" alt="6-Wheeler" style="width: 50px; height: 50px; object-fit: contain; background: #f8fafc; padding: 6px; border-radius: 10px;">
-                            <div style="text-align: left;">
-                                <h4 style="color: #0f172a; font-size: 15px; font-weight: 700;" id="veh6WheelTitle">6-Wheeler</h4>
-                                <p style="color: #64748b; font-size: 12px;" id="veh6WheelSub">Medium commercial load (Up to 2.5 Tons)</p>
-                            </div>
-                        </div>
-                        <span style="color: #2563eb; font-weight: bold; font-size: 18px;">➔</span>
-                    </div>
-
-                    <div onclick="selectVehicle('Truck')" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <img src="https://cdn-icons-png.flaticon.com/512/741/741407.png" alt="Truck" style="width: 50px; height: 50px; object-fit: contain; background: #f8fafc; padding: 6px; border-radius: 10px;">
-                            <div style="text-align: left;">
-                                <h4 style="color: #0f172a; font-size: 15px; font-weight: 700;" id="vehTruckTitle">Truck</h4>
-                                <p style="color: #64748b; font-size: 12px;" id="vehTruckSub">Heavy commercial freight (Up to 5 Tons)</p>
-                            </div>
-                        </div>
-                        <span style="color: #2563eb; font-weight: bold; font-size: 18px;">➔</span>
-                    </div>
-
-                    <div onclick="selectVehicle('Trailer Truck')" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <img src="https://cdn-icons-png.flaticon.com/512/3067/3067417.png" alt="Trailer Truck" style="width: 50px; height: 50px; object-fit: contain; background: #f8fafc; padding: 6px; border-radius: 10px;">
-                            <div style="text-align: left;">
-                                <h4 style="color: #0f172a; font-size: 15px; font-weight: 700;" id="vehTrailerTitle">Trailer Truck</h4>
-                                <p style="color: #64748b; font-size: 12px;" id="vehTrailerSub">Industrial multi-ton cargo (Up to 20+ Tons)</p>
-                            </div>
-                        </div>
-                        <span style="color: #2563eb; font-weight: bold; font-size: 18px;">➔</span>
-                    </div>
-
-                </div>
+                <div style="display: flex; flex-direction: column; gap: 12px; padding-bottom: 30px;" id="vehicleListContainer"></div>
             </div>
 
             <div id="tabContentProfile" class="tab-pane" style="display: none; text-align: left; padding-bottom: 40px;">
@@ -610,15 +518,16 @@
         let pendingSignupEmail = "";
         let pendingSignupPassword = "";
 
+        // Perfectly mapped local images matching user's folder setup
         const vehicleCatalog = [
-            { id: 'Quick Drop', img: 'https://cdn-icons-png.flaticon.com/512/3500/3500833.png', titleKey: 'quickTitle', subKey: 'quickSub', promo: 'PROMO' },
-            { id: 'Two Wheeler', img: 'https://cdn-icons-png.flaticon.com/512/3448/3448339.png', titleKey: 'twoWheelerTitle', subKey: 'twoWheelerSub', promo: '10% OFF' },
-            { id: 'E-Rickshaw', img: 'https://cdn-icons-png.flaticon.com/512/3198/3198424.png', titleKey: 'eRickTitle', subKey: 'eRickSub', promo: null },
-            { id: 'Auto', img: 'https://cdn-icons-png.flaticon.com/512/1048/1048313.png', titleKey: 'autoTitle', subKey: 'autoSub', promo: null },
-            { id: 'Car', img: 'https://cdn-icons-png.flaticon.com/512/3202/3202926.png', titleKey: 'carTitle', subKey: 'carSub', promo: null },
-            { id: '6-Wheeler', img: 'https://cdn-icons-png.flaticon.com/512/2964/2964514.png', titleKey: 'wheelTitle', subKey: 'wheelSub', promo: null },
-            { id: 'Truck', img: 'https://cdn-icons-png.flaticon.com/512/741/741407.png', titleKey: 'truckTitle', subKey: 'truckSub', promo: null },
-            { id: 'Trailer Truck', img: 'https://cdn-icons-png.flaticon.com/512/3067/3067417.png', titleKey: 'trailerTitle', subKey: 'trailerSub', promo: null }
+            { id: 'Quick Drop', img: 'Quickdrop.jpg', titleKey: 'quickTitle', subKey: 'quickSub', promo: 'PROMO' },
+            { id: 'Two Wheeler', img: 'Two-wheeler.jpg', titleKey: 'twoWheelerTitle', subKey: 'twoWheelerSub', promo: '10% OFF' },
+            { id: 'E-Rickshaw', img: 'E-Rikshaw.jpg', titleKey: 'eRickTitle', subKey: 'eRickSub', promo: null },
+            { id: 'Auto', img: 'Auto.jpg', titleKey: 'autoTitle', subKey: 'autoSub', promo: null },
+            { id: 'Car', img: 'Car.jpg', titleKey: 'carTitle', subKey: 'carSub', promo: null },
+            { id: '6-Wheeler', img: '6-Wheeler.jpg', titleKey: 'wheelTitle', subKey: 'wheelSub', promo: null },
+            { id: 'Truck', img: 'Truck.jpg', titleKey: 'truckTitle', subKey: 'truckSub', promo: null },
+            { id: 'Trailer Truck', img: 'TrailerTruck.jpg', titleKey: 'trailerTitle', subKey: 'trailerSub', promo: null }
         ];
 
         window.addEventListener('load', async () => {
@@ -1548,24 +1457,24 @@
                     orders: "ઓર્ડર્સ અને શિપમેન્ટ્સ", gstInv: "જીએસટી ઇનવોイス", profSet: "પ્રોફાઇલ સેટિંગ્સ", editProf: "👤 પ્રોફાઇલ સંપાદિત કરો",
                     savedAddr: "📍 સાચવેલા સરનામાં", changeLang: "🌐 ભાષા બદલો",
                     privSec: "ગોપનીયता અને સુરક્ષા", privCenter: "🔒 પ્રાઇવસી સેન્ટર", manageDev: "📱 ડિવાઇસ મેનેજ કરો",
-                    logout: "લૉગ આઉટ", langDisplay: "ગુજરાતી ➔"
+                    logout: "લૉગ આઉਟ", langDisplay: "ગુજરાતી ➔"
                 },
                 'pa': {
                     home: "ਹੋਮ", cat: "ਸ਼੍ਰੇਣੀਆਂ", parcel: "ਪਾਰਸਲ", account: "ਆਈਡੀ",
                     welcomeSub: "ਝੱਟਪਟ ਬੁੱਕ ਕਰਨ ਲਈ ਹੇਠਾਂ ਆਪਣਾ ਵਾਹਨ ਜਾਂ ਡਿਲਿਵਰੀ ਵਿਕਲਪ ਚੁਣੋ।",
-                    selectTrans: "📦 ਵਾਹਨ ਅਤੇ ਡਿਲਿਵਰੀ ਚੁਣੋ",
+                    selectTrans: "📦 ਵਾਹਨ এবং ਡਿਲਿਵਰੀ ਚੁਣੋ",
                     quickTitle: "⚡ ਕਵਿੱਕ ਡ੍ਰਾਪ", quickSub: "ਛੋਟੇ ਪਾਰਸਲ, ਦਸਤਾਵੇਜ਼ਾਂ এবং ਚਾਬੀਆਂ ਲਈ",
                     twoWheelerTitle: "ਦੋ ਪਹੀਆ ਵਾਹਨ", twoWheelerSub: "ਤੇਜ਼ ਮੋਟਰਸਾਈਕਲ ਡਿਲਿਵਰੀ (20 ਕਿਲੋ ਤੱਕ)",
                     eRickTitle: "ਈ-ਰਿਕਸ਼ਾ", eRickSub: "ਵਾਤਾਵਰਣ-ਅਨੁਕੂਲ ਲੋਕਲ ਟ੍ਰਾਂਸਪੋਰਟ (350 ਕਿਲੋ ਤੱਕ)",
                     autoTitle: "ਆਟੋ", autoSub: "ਓਪਨ ਬੌਡੀ ਮਿਨੀ ਕੈਰੀਅਰ (500 ਕਿਲੋ ਤੱਕ)",
-                    carTitle: "ਕਾਰ", carSub: "ਸੁਰੱਖਿਅਤ ਸਮਾਨ ਅਤੇ ਨਾਜ਼ੁਕ ਵਸਤੂਆਂ (250 ਕਿਲੋ ਤੱਕ)",
+                    carTitle: "ਕਾਰ", carSub: "ਸੁਰੱਖਿਅਤ ਸਮਾਨ এবং ਨਾਜ਼ੁਕ ਵਸਤੂਆਂ (250 ਕਿਲੋ ਤੱਕ)",
                     wheelTitle: "6-ਪਹੀਆ ਵਾਹਨ", wheelSub: "ਮੱਧਮ ਕਮਰਸ਼ੀਅਲ ਲੋਡ (2.5 ਟਨ ਤੱਕ)",
                     truckTitle: "ਟਰੱਕ", truckSub: "ਭਾਰੀ ਕਮਰਸ਼ੀਅਲ ਫ੍ਰੇਟ (5 ਟਨ ਤੱਕ)",
                     trailerTitle: "ਟਰੇਲਰ ਟਰੱਕ", trailerSub: "ਉਦਯੋਗਿਕ ਮਲਟੀ-ਟਨ ਕਾਰਗੋ (20+ ਟਨ ਤੱਕ)",
-                    xCoin: "ਤੁਹਾਡਾ ਐਕਸ-ਕੋਇਨ ਬੈਲੇਂਸ", xCoinSub: "ਸਫ਼ਰਐਕਸ ਨਾਲ ਵਿਸ਼ੇਸ਼ ਇਨਾਮ এবং ਛੋਟ",
+                    xCoin: "ਤੁਹਾਡਾ ਐਕਸ-ਕੋਇൻ ਬੈਲੇਂਸ", xCoinSub: "ਸਫ਼ਰਐਕਸ ਨਾਲ ਵਿਸ਼ੇਸ਼ ਇਨਾਮ এবং ਛੋਟ",
                     orders: "ਆਰਡਰ এবং ਸ਼ਿਪਮੈਂਟ", gstInv: "ਜੀਐਸਟੀ ਇਨਵੌਇਸ", profSet: "ਪ੍ਰੋਫਾਈਲ ਸੈਟਿੰਗ", editProf: "👤 ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਿਤ ਕਰੋ",
                     savedAddr: "📍 ਸੁਰੱਖਿਅਤ ਪਤੇ", changeLang: "🌐 ਭਾਸ਼ਾ ਬਦਲੋ",
-                    privSec: "ਪ੍ਰਾਈਵੇਸੀ এবং ਸੁਰੱਖਿਆ", privCenter: "🔒 ਪ੍ਰਾਈਵੇਸੀ ਸੈਂਟਰ", manageDev: "📱 ਡਿਵਾਈਸ ਪ੍ਰਬੰਧन",
+                    privSec: "ਪ੍ਰਾਈਵੇਸੀ এবং સુરક્ષા", privCenter: "🔒 ਪ੍ਰਾਈਵੇਸੀ ਸੈਂਟਰ", manageDev: "📱 ਡਿਵਾਈਸ ਪ੍ਰਬੰਧन",
                     logout: "ਲੌਗ ਆਉਟ", langDisplay: "ਪੰਜਾਬੀ ➔"
                 },
                 'ar': {
@@ -1704,7 +1613,7 @@
                     autoTitle: "Auto", autoSub: "Mini veículo de carga (Até 500 kg)",
                     carTitle: "Carro", carSub: "Bagagem segura e frágil (Até 250 kg)",
                     wheelTitle: "6 Rodas", wheelSub: "Carga comercial média (Até 2.5 Toneladas)",
-                    truckTitle: "Caminhão", truckSub: "Frete comercial pesado (Até 5 Toneladas)",
+                    truckTitle: "Caminhão", wheelSub: "Frete comercial pesado (Até 5 Toneladas)",
                     trailerTitle: "Carreta / Trailer", trailerSub: "Carga industrial pesada (Até 20+ Toneladas)",
                     xCoin: "Seu Saldo X-Coins", xCoinSub: "Recompensas exclusivas y descuentos",
                     orders: "Pedidos e Remessas", gstInv: "Faturas GST", profSet: "Configurações de Perfil", editProf: "👤 Editar perfil",
@@ -1720,7 +1629,6 @@
                 if(document.getElementById('welcomeSubHeader')) document.getElementById('welcomeSubHeader').innerText = t.welcomeSub;
                 if(document.getElementById('selectTransportHeader')) document.getElementById('selectTransportHeader').innerText = t.selectTrans;
                 
-                // Re-render Vehicle Catalog dynamically to prevent "undefined" translation bugs
                 let container = document.getElementById('vehicleListContainer');
                 if(container) {
                     container.innerHTML = vehicleCatalog.map(v => `
